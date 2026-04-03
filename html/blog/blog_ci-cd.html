@@ -249,82 +249,12 @@ No event triggers defined in on
             </div>
         </div> 
 
-    <div class="footer">
-        <p>© 2025 Solontsov Andrey</p>
-    </div>
+    <div id="footer"></div>
 
 </div>
 
-<!-- <script>
-const steps = document.querySelectorAll('.step');
-const log = document.querySelector('.deploy-log');
-const btn = document.querySelector('.deploy-btn');
-
-const messages = [
-    "📤 Отправка кода (git push)...",
-    "📦 Код загружен в GitHub",
-    "⚙️ Запуск CI/CD pipeline...",
-    "🖥 Подключение к серверу...",
-    "🐳 Сборка Docker контейнера...",
-    "🌐 Сайт обновлён!"
-];
-
-btn.addEventListener('click', async () => {
-    log.innerText = "";
-    steps.forEach(s => s.classList.remove('active'));
-
-    for (let i = 0; i < steps.length; i++) {
-        await new Promise(res => setTimeout(res, 800));
-
-        steps[i].classList.add('active');
-        log.innerText += messages[i] + "\n";
-    }
-});
-</script> --> 
-
-
-
-<script>
-const nodes = document.querySelectorAll('.node');
-const terminal = document.querySelector('.terminal');
-const btn = document.querySelector('.deploy-btn');
-const progress = document.querySelector('.flow-progress');
-
-const logs = [
-    "💻 git push",
-    "📤 отправка кода...",
-    "📦 код загружен в GitHub",
-    "⚙️ запуск CI/CD pipeline...",
-    "🔐 подключение к серверу...",
-    "🐳 сборка Docker image...",
-    "🚀 запуск контейнера...",
-    "✅ deploy завершен успешно!"
-];
-
-btn.addEventListener('click', async () => {
-
-    terminal.innerHTML = "";
-    nodes.forEach(n => n.classList.remove('active'));
-    progress.style.width = "0%";
-
-    for (let i = 0; i < logs.length; i++) {
-
-        // Активируем ноды только если есть
-        if (i < nodes.length) {
-            nodes[i].classList.add('active');
-            progress.style.width = ((i + 1) / nodes.length) * 100 + "%";
-        }
-
-        terminal.innerHTML += logs[i] + "<br>";
-
-        // авто-скролл вниз
-        terminal.scrollTop = terminal.scrollHeight;
-
-        await new Promise(res => setTimeout(res, 700));
-    }
-
-});
-</script>
+<script src="../js/ci-cd_deploy.js"></script>
+<script src="../js/footer.js"></script>
 
 </body>
 </html>
