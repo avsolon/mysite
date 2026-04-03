@@ -202,7 +202,7 @@ No event triggers defined in on
             <pre><code>локально → GitHub → CI/CD → сервер → Docker → сайт</code></pre>
         </div> -->
 
-        <div class="info-block animate-in">
+        <!-- <div class="info-block animate-in">
             <h2 class="section-title">🎬 Интерактивная демка деплоя</h2>
 
             <div class="deploy-demo">
@@ -221,9 +221,33 @@ No event triggers defined in on
                 <div class="deploy-log"></div>
 
             </div>
-</div>
+        </div>
 
-    </div>
+        </div>--> 
+
+       <div class="info-block animate-in">
+            <h2 class="section-title">🚀 Live CI/CD Demo</h2>
+
+            <div class="deploy-wow">
+
+                <div class="pipeline">
+                    <div class="node" data-step="0">💻<span>Code</span></div>
+                    <div class="node" data-step="1">📦<span>GitHub</span></div>
+                    <div class="node" data-step="2">⚙️<span>CI</span></div>
+                    <div class="node" data-step="3">🖥<span>Server</span></div>
+                    <div class="node" data-step="4">🐳<span>Docker</span></div>
+                    <div class="node" data-step="5">🌐<span>Live</span></div>
+
+                    <div class="flow-line"></div>
+                    <div class="flow-progress"></div>
+                </div>
+
+                <button class="deploy-btn">▶ Запустить деплой</button>
+
+                <div class="terminal"></div>
+
+            </div>
+        </div> 
 
     <div class="footer">
         <p>© 2025 Solontsov Andrey</p>
@@ -231,7 +255,7 @@ No event triggers defined in on
 
 </div>
 
-<script>
+<!-- <script>
 const steps = document.querySelectorAll('.step');
 const log = document.querySelector('.deploy-log');
 const btn = document.querySelector('.deploy-btn');
@@ -255,6 +279,50 @@ btn.addEventListener('click', async () => {
         steps[i].classList.add('active');
         log.innerText += messages[i] + "\n";
     }
+});
+</script> --> 
+
+
+
+<script>
+const nodes = document.querySelectorAll('.node');
+const terminal = document.querySelector('.terminal');
+const btn = document.querySelector('.deploy-btn');
+const progress = document.querySelector('.flow-progress');
+
+const logs = [
+    "💻 git push",
+    "📤 отправка кода...",
+    "📦 код загружен в GitHub",
+    "⚙️ запуск CI/CD pipeline...",
+    "🔐 подключение к серверу...",
+    "🐳 сборка Docker image...",
+    "🚀 запуск контейнера...",
+    "✅ deploy завершен успешно!"
+];
+
+btn.addEventListener('click', async () => {
+
+    terminal.innerHTML = "";
+    nodes.forEach(n => n.classList.remove('active'));
+    progress.style.width = "0%";
+
+    for (let i = 0; i < logs.length; i++) {
+
+        // Активируем ноды только если есть
+        if (i < nodes.length) {
+            nodes[i].classList.add('active');
+            progress.style.width = ((i + 1) / nodes.length) * 100 + "%";
+        }
+
+        terminal.innerHTML += logs[i] + "<br>";
+
+        // авто-скролл вниз
+        terminal.scrollTop = terminal.scrollHeight;
+
+        await new Promise(res => setTimeout(res, 700));
+    }
+
 });
 </script>
 
