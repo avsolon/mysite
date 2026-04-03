@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обо мне | Портфолио Программиста</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/about.css">
+</head>
+<body>
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <div class="container">
+        <nav class="page-nav">
+            <a href="index.html" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                На главную
+            </a>
+        </nav>
+
+        <main class="about-page">
+            <section class="about-hero">
+                <div class="about-hero-content">
+                    <h1 class="about-title animate-in">Обо мне</h1>
+                    <p class="about-subtitle animate-in delay-1">Познакомимся ближе</p>
+                </div>
+            </section>
+
+            <section class="about-grid">
+                <div class="about-card animate-in delay-2">
+                    <div class="about-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <h3 class="about-card-title">Личная информация</h3>
+                    <div class="about-card-content">
+                        <div class="info-row">
+                            <span class="info-label">Имя:</span>
+                            <span class="info-value">Андрей Солонцов</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Возраст:</span>
+                            <span class="info-value">молод душой</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Город:</span>
+                            <span class="info-value">Новосибирск, Россия</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Языки:</span>
+                            <span class="info-value">Русский, Английский</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Стек технологий:</span>
+                            <span class="info-value">Python, Fast API, Java, SpringBoot, C/C++, HTML/CSS/JS, SQL, Git, Docker</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-card animate-in delay-3">
+                    <div class="about-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        </svg>
+                    </div>
+                    <h3 class="about-card-title">Образование</h3>
+                    <div class="about-card-content">
+                        <div class="education-item">
+                            <h4 class="education-degree">Промышленная микроэлектроника</h4>
+                            <p class="education-school">НГТУ</p>
+                            <p class="education-year">1999 - 2004</p>
+                        </div>
+                        <div class="education-item">
+                            <h4 class="education-degree">Development, QA, DevOps</h4>
+                            <p class="education-school">School21 by SBER</p>
+                            <p class="education-year">2023 - 2026</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section animate-in delay-4">
+                <h2 class="section-title">Опыт работы</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h3 class="timeline-title">Senior Developer</h3>
+                                <span class="timeline-period">2022 - Настоящее время</span>
+                            </div>
+                            <p class="timeline-company">Tech Company LLC</p>
+                            <p class="timeline-description">
+                                Разработка и поддержка высоконагруженных веб-приложений. 
+                                Руководство командой из 5 разработчиков.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h3 class="timeline-title">Middle Developer</h3>
+                                <span class="timeline-period">2020 - 2022</span>
+                            </div>
+                            <p class="timeline-company">StartUp Studio</p>
+                            <p class="timeline-description">
+                                Full-stack разработка мобильных и веб-приложений.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h3 class="timeline-title">Junior Developer</h3>
+                                <span class="timeline-period">2018 - 2020</span>
+                            </div>
+                            <p class="timeline-company">Web Agency</p>
+                            <p class="timeline-description">
+                                Разработка лендингов и корпоративных сайтов.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section animate-in delay-4">
+                <h2 class="section-title">Навыки</h2>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">Frontend</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">HTML/CSS</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">JavaScript</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">React</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">TypeScript</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">Backend</h3>
+                        <div class="skill-items">
+                            <div class="skill-item">
+                                <span class="skill-name">Node.js</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Python</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">PostgreSQL</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Docker</span>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 70%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section animate-in delay-4">
+                <h2 class="section-title">Хобби и Интересы</h2>
+                <div class="interests-grid">
+                    <div class="interest-card">
+                        <div class="interest-icon">🎮</div>
+                        <h4>Геймдев</h4>
+                        <p>Разработка мини-игр</p>
+                    </div>
+                    <div class="interest-card">
+                        <div class="interest-icon">🎸</div>
+                        <h4>Музыка</h4>
+                        <p>Игра на гитаре</p>
+                    </div>
+                    <div class="interest-card">
+                        <div class="interest-icon">📚</div>
+                        <h4>Книги</h4>
+                        <p>Фэнтези</p>
+                    </div>
+                    <div class="interest-card">
+                        <div class="interest-icon">🏃</div>
+                        <h4>Спорт</h4>
+                        <p>Тренажерный зал, бассейн</p>
+                    </div>
+                    <div class="interest-card">
+                        <div class="interest-icon">🪙</div>
+                        <h4>Коллекционирование</h4>
+                        <p>Нумизматика и бонистика</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section animate-in delay-4">
+                <h2 class="section-title">Дополнительная информация</h2>
+                <div class="info-block">
+                    <div class="info-text">
+                        <p>
+                            Я увлечённый разработчик с опытом создания веб-приложений, ботов для мессенджеров и интеграций с разными сервисами. 
+                            Моя страсть — находить или придумывать идеи, переводить их в задачи и создавать решения.
+                        </p>
+                        <p>
+                            В работе я придерживаюсь принципов чистого кода, тестирования и непрерывного 
+                            улучшения. Верю, что качественное программное обеспечение должно быть не только 
+                            функциональным, но и поддерживаемым.
+                        </p>
+                        <p>
+                            Помимо технической работы, я активно участвую в жизни IT-сообщества: посещаю 
+                            конференции, митапы, делюсь опытом с начинающими разработчиками.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-cta animate-in delay-4">
+                <h2 class="cta-title">Давайте работать вместе!</h2>
+                <p class="cta-text">Открыт для интересных проектов и предложений</p>
+                <div class="cta-buttons">
+                    <a href="https://t.me/avsolon" class="telegram-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                        </svg>
+                        Написать в Telegram
+                    </a>
+                    <a href="contact.html" class="contact-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        Другие контакты
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Solontsov Andrey</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

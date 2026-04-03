@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шпаргалка по Docker</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="page-nav">
+            <a href="../blog.html" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Назад
+            </a>
+    </nav>
+
+    <div class="main-content">
+
+        <div class="info-block animate-in">
+            <h1 class="name-title">🐳 Docker шпаргалка</h1>
+            <p class="subtitle">Быстрый справочник по основным командам Docker</p>
+        </div>
+
+        <div class="info-block animate-in delay-1">
+            <h2 class="section-title">Основные команды</h2>
+            <pre><code>docker --version
+docker info</code></pre>
+        </div>
+
+        <div class="info-block animate-in delay-2">
+            <h2 class="section-title">Работа с образами</h2>
+            <pre><code># Скачать образ
+docker pull nginx
+
+# Список образов
+docker images
+
+# Удалить образ
+docker rmi nginx</code></pre>
+        </div>
+
+        <div class="info-block animate-in delay-3">
+            <h2 class="section-title">Контейнеры</h2>
+            <pre><code># Запуск
+docker run -d -p 80:80 nginx
+
+# Список
+docker ps
+
+# Все контейнеры
+docker ps -a
+
+# Остановить
+docker stop CONTAINER_ID
+
+# Удалить
+docker rm CONTAINER_ID</code></pre>
+        </div>
+
+        <div class="info-block animate-in delay-4">
+            <h2 class="section-title">Dockerfile</h2>
+            <pre><code>FROM python:3.11
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]</code></pre>
+        </div>
+
+        <div class="info-block">
+            <h2 class="section-title">Сборка и запуск</h2>
+            <pre><code># Сборка
+docker build -t myapp .
+
+# Запуск
+docker run -d -p 5000:5000 myapp</code></pre>
+        </div>
+
+        <div class="info-block">
+            <h2 class="section-title">Полезные команды</h2>
+            <pre><code># Логи
+docker logs CONTAINER_ID
+
+# Войти в контейнер
+docker exec -it CONTAINER_ID bash
+
+# Очистка
+docker system prune -a</code></pre>
+        </div>
+
+        <div class="info-block">
+            <h2 class="section-title">docker-compose</h2>
+            <pre><code>version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+  redis:
+    image: redis</code></pre>
+
+            <pre><code># Запуск
+docker-compose up -d
+
+# Остановка
+docker-compose down</code></pre>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>© 2026 | Docker шпаргалка</p>
+    </div>
+
+</div>
+
+</body>
+</html>

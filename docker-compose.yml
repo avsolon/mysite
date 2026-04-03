@@ -1,0 +1,10 @@
+version: '3'
+services:
+  mysite:
+    build: .
+    container_name: mysite_new
+    restart: always
+    ports:
+      - "8081:80"
+    volumes:
+      - ./html:/usr/share/nginx/html

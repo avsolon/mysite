@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Услуги | Портфолио Программиста</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/services.css">
+</head>
+<body>
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <div class="container">
+        <nav class="page-nav">
+            <a href="index.html" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                На главную
+            </a>
+        </nav>
+
+        <main class="services-page">
+            <section class="services-hero">
+                <div class="services-hero-content">
+                    <h1 class="services-title animate-in">Услуги</h1>
+                    <p class="services-subtitle animate-in delay-1">Что я могу предложить</p>
+                </div>
+            </section>
+
+            <section class="services-intro animate-in delay-2">
+                <div class="info-block">
+                    <div class="info-text">
+                        <p>
+                            Я предлагаю полный цикл разработки — от идеи до запуска и поддержки. 
+                            Работаю как с отдельными проектами, так и на долгосрочной основе.
+                        </p>
+                        <p>
+                            Каждый проект начинается с детального обсуждения требований и составления 
+                            технического задания. Это помогает избежать недопонимания и достичь 
+                            наилучшего результата.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="services-grid animate-in delay-3">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Разработка Чат-ботов</h3>
+                        <p class="service-description">
+                            Создание умных и удобных чат-ботов для автоматизации бизнеса: 
+                            обработка заявок, интеграции с сервисами, платежки, внедрение AI.
+                        </p>
+                        <ul class="service-features">
+                            <li>Telegram, Max, WhatsApp, VK и др.</li>
+                            <li>Интеграции с API, БД, CRM</li>
+                            <li>Автоматизация процессов</li>
+                            <li>Интеграции с ИИ: ChatGPT, Gemini, YandexGPT, GigaChat и др. </li>
+                        </ul>
+                    <div class="service-price">
+                        <span class="price-from">от</span>
+                        <span class="price-value">10 000 ₽</span>
+                    </div>
+                    <a href="https://t.me/yourusername" class="service-btn" target="_blank">
+                        Заказать
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                            <line x1="12" y1="18" x2="12.01" y2="18"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Веб-разработка</h3>
+                    <p class="service-description">
+                        Создание современных веб-сайтов и приложений любой сложности: 
+                        от лендингов до корпоративных порталов и SaaS-платформ.
+                    </p>
+                    <ul class="service-features">
+                        <li>Адаптивный дизайн</li>
+                        <li>SEO-оптимизация</li>
+                        <li>Высокая производительность</li>
+                        <li>Интеграция с API</li>
+                    </ul>
+                    <div class="service-price">
+                        <span class="price-from">от</span>
+                        <span class="price-value">50 000 ₽</span>
+                    </div>
+                    <a href="https://t.me/yourusername" class="service-btn" target="_blank">
+                        Заказать
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10"/>
+                            <path d="M12 20V4"/>
+                            <path d="M6 20v-6"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Мобильные приложения</h3>
+                    <p class="service-description">
+                        Разработка нативных и кроссплатформенных приложений для iOS и Android 
+                        с современным UI/UX.
+                    </p>
+                    <ul class="service-features">
+                        <li>Разработка под Android / IOS</li>
+                        <li>Публикация в сторах</li>
+                        <li>Интеграции</li>
+                        <li>Офлайн-режим</li>
+                    </ul>                    
+                    <div class="service-price">
+                        <span class="price-from">от</span>
+                        <span class="price-value">50 000 ₽</span>
+                    </div>
+                    <a href="https://t.me/yourusername" class="service-btn" target="_blank">
+                        Заказать
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Backend разработка</h3>
+                    <p class="service-description">
+                        Проектирование и разработка серверной части приложений: API, 
+                        базы данных, микросервисы.
+                    </p>
+                    <ul class="service-features">
+                        <li>Архитектура, Бизнес-логика</li>
+                        <li>REST API</li>
+                        <li>Проектирование БД</li>
+                        <li>Аутентификация</li>
+                    </ul>                   
+                    <div class="service-price">
+                        <span class="price-from">от</span>
+                        <span class="price-value">15 000 ₽</span>
+                    </div>
+                    <a href="https://t.me/yourusername" class="service-btn" target="_blank">
+                        Заказать
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Настройка и деплой</h3>
+                    <p class="service-description">
+                        Развёртывание приложений на серверах, настройка CI/CD, 
+                        мониторинг и обеспечение безопасности.
+                    </p>
+                    <ul class="service-features">
+                        <li>Docker / Kubernetes</li>
+                        <li>CI/CD пайплайны</li>
+                        <li>Облачные платформы</li>
+                        <li>Мониторинг</li>
+                    </ul>
+                    <div class="service-price">
+                        <span class="price-from">от</span>
+                        <span class="price-value">30 000 ₽</span>
+                    </div>
+                    <a href="https://t.me/yourusername" class="service-btn" target="_blank">
+                        Заказать
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Техническая поддержка</h3>
+                    <p class="service-description">
+                        Сопровождение проектов после запуска: исправление ошибок, 
+                        обновления, добавление нового функционала.
+                    </p>
+                    <ul class="service-features">
+                        <li>Мониторинг 24/7</li>
+                        <li>Быстрые фиксы</li>
+                        <li>Регулярные обновления</li>
+                        <li>Консультации</li>
+                    </ul>
+                    <div class="service-price">
+                        <span class="price-from">от</span>
+                        <span class="price-value">5 000 ₽/мес</span>
+                    </div>
+                    <a href="https://t.me/yourusername" class="service-btn" target="_blank">
+                        Заказать
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                </div>
+            </section>
+
+            <section class="process-section animate-in delay-4">
+                <h2 class="section-title">Как я работаю</h2>
+                <div class="process-grid">
+                    <div class="process-step">
+                        <div class="step-number">01</div>
+                        <h3 class="step-title">Обсуждение</h3>
+                        <p class="step-description">
+                            Детально обсуждаем проект, требования и сроки. 
+                            Составляем техническое задание.
+                        </p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">02</div>
+                        <h3 class="step-title">Прототип</h3>
+                        <p class="step-description">
+                            Создаю прототипы и дизайн-макеты. 
+                            Согласовываем внешний вид и логику работы.
+                        </p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">03</div>
+                        <h3 class="step-title">Разработка</h3>
+                        <p class="step-description">
+                            Пишу код, тестирую функционал. 
+                            Регулярно показываю промежуточные результаты.
+                        </p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">04</div>
+                        <h3 class="step-title">Запуск</h3>
+                        <p class="step-description">
+                            Развёртываю проект на сервере. 
+                            Обучаю работе с админ-панелью.
+                        </p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">05</div>
+                        <h3 class="step-title">Поддержка</h3>
+                        <p class="step-description">
+                            Продолжаю поддерживать проект после запуска. 
+                            Вношу правки и добавляю новый функционал.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="faq-section animate-in delay-4">
+                <h2 class="section-title">Частые вопросы</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <h3 class="faq-question">Какие сроки разработки?</h3>
+                        <p class="faq-answer">
+                            Сроки зависят от сложности проекта. Лендинги и простые боты — от 3 дней, 
+                            более сложные боты с интеграциями и веб-приложения — 
+                            от 2-3 недель. Точные сроки всегда обсуждаются индивидуально.
+                        </p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">Работаете по договору?</h3>
+                        <p class="faq-answer">
+                            Да, работаю официально по договору - самозанятость. 
+                            Предоставление необходимых закрывающих документов для бухгалтерии.
+                        </p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">Какая форма оплаты?</h3>
+                        <p class="faq-answer">
+                            Работаю по предоплате 50%. Оставшаяся часть оплачивается 
+                            после завершения проекта. Возможна оплата в рассрочку или поэтапно для 
+                            крупных проектов.
+                        </p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">Даёте гарантию?</h3>
+                        <p class="faq-answer">
+                            Да, предоставляю гарантию на все работы от 3 до 12 месяцев. 
+                            В течение гарантийного периода исправляю ошибки бесплатно.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="services-cta animate-in delay-4">
+                <h2 class="cta-title">Готовы начать проект?</h2>
+                <p class="cta-text">Свяжитесь со мной для обсуждения деталей и получения оценки</p>
+                <div class="cta-buttons">
+                    <a href="https://t.me/yourusername" class="telegram-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                        </svg>
+                        Написать в Telegram
+                    </a>
+                    <a href="contact.html" class="contact-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        Другие контакты
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Solontsov Andrey</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+                    

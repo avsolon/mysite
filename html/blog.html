@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блог | Портфолио Программиста</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/blog.css">
+</head>
+<body>
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <div class="container">
+        <nav class="page-nav">
+            <a href="index.html" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                На главную
+            </a>
+        </nav>
+
+        <div class="nav-grid">
+            <a href="about.html" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 16v-4"/>
+                    <path d="M12 8h.01"/>
+                </svg>
+                Обо мне
+            </a>
+            <a href="services.html" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+                Услуги
+            </a>
+            <a href="portfolio.html" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                Портфолио
+            </a>
+            <a href="blog.html" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                Блог
+            </a>
+            <a href="contact.html" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                Контакты
+            </a>        
+        </div>
+        
+
+        <main class="blog-page">
+            <section class="blog-hero">
+                <div class="blog-hero-content">
+                    <h1 class="blog-title animate-in">Блог</h1>
+                    <p class="blog-subtitle animate-in delay-1">Статьи о разработке, технологиях и не только</p>
+                </div>
+            </section>
+
+            <section class="blog-filters animate-in delay-2">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Все</button>
+                    <button class="filter-btn" data-filter="frontend">Frontend</button>
+                    <button class="filter-btn" data-filter="backend">Backend</button>
+                    <button class="filter-btn" data-filter="mobile">Mobile</button>
+                    <button class="filter-btn" data-filter="devops">DevOps</button>
+                    <button class="filter-btn" data-filter="career">Карьера</button>
+                </div>
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" placeholder="Поиск статей..." id="searchInput">
+                </div>
+            </section>
+
+            
+
+            <section class="blog-grid animate-in delay-3">
+                <!-- Article 1 -->
+                <article class="blog-card" data-category="frontend">
+                    <div class="blog-card-image">
+                        <img src="images/blog/docker_shpora.png" alt="Шпаргалка по Docker" class="blog-image">
+                        <div class="blog-category">DevOps</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                31 Мар 2026
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                8 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">Шпаргалка по Docker и Docker-Compose</h3>
+                        <p class="blog-excerpt">
+                            Основные команды по работе с контейнерами 
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">docker</span>
+                            <span class="blog-tag">docker-compose</span>
+                            <span class="blog-tag">devops</span>
+                        </div>
+                        <a href="blog/blog_docker_shpargalka.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="blog-card" data-category="frontend">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/6366f1/ffffff?text=React+2025" alt="React 2025" class="blog-image">
+                        <div class="blog-category">Frontend</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                9 Мар 2026
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                8 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">Что нового в React за ушедший 2025: Полный обзор изменений</h3>
+                        <p class="blog-excerpt">
+                            Разбираем все важные обновления React: Server Components, улучшения хуков, 
+                            новые возможности оптимизации производительности и что это значит для разработчиков.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">React</span>
+                            <span class="blog-tag">JavaScript</span>
+                            <span class="blog-tag">Frontend</span>
+                        </div>
+                        <a href="blog/blog_1.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 2 -->
+                <article class="blog-card" data-category="backend">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/10b981/ffffff?text=Node.js+API" alt="Node.js API" class="blog-image">
+                        <div class="blog-category">Backend</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                10 Фев 2026
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                12 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">Проектирование REST API: Лучшие практики 2025</h3>
+                        <p class="blog-excerpt">
+                            Руководство по созданию масштабируемых и безопасных REST API. 
+                            Аутентификация, валидация, документация и тестирование.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">Node.js</span>
+                            <span class="blog-tag">API</span>
+                            <span class="blog-tag">Backend</span>
+                        </div>
+                        <a href="blog-post-2.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 3 -->
+                <article class="blog-card" data-category="devops">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/8b5cf6/ffffff?text=Docker+K8s" alt="Docker Kubernetes" class="blog-image">
+                        <div class="blog-category">DevOps</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                15 Янв 2026
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                15 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">Docker и Kubernetes: От контейнера до продакшена</h3>
+                        <p class="blog-excerpt">
+                            Пошаговое руководство по контейнеризации приложений и оркестрации 
+                            с помощью Kubernetes. Развёртывание, мониторинг, масштабирование.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">Docker</span>
+                            <span class="blog-tag">Kubernetes</span>
+                            <span class="blog-tag">DevOps</span>
+                        </div>
+                        <a href="blog-post-3.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 4 -->
+                <article class="blog-card" data-category="mobile">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/f59e0b/ffffff?text=React+Native" alt="React Native" class="blog-image">
+                        <div class="blog-category">Mobile</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                28 Дек 2025
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                10 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">React Native vs Flutter: Что выбрать в 2025?</h3>
+                        <p class="blog-excerpt">
+                            Сравниваем две популярные кроссплатформенные технологии. 
+                            Производительность, экосистема, сообщество и реальные кейсы использования.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">React Native</span>
+                            <span class="blog-tag">Flutter</span>
+                            <span class="blog-tag">Mobile</span>
+                        </div>
+                        <a href="blog-post-4.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 5 -->
+                <article class="blog-card" data-category="career">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/ec4899/ffffff?text=Career+Growth" alt="Career Growth" class="blog-image">
+                        <div class="blog-category">Карьера</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                20 Дек 2025
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                7 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">Путь от Junior до Senior: Личный опыт и советы</h3>
+                        <p class="blog-excerpt">
+                            Делюсь своим опытом роста в IT. Какие навыки развивать, 
+                            как проходить собеседования и строить карьеру в разработке.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">Карьера</span>
+                            <span class="blog-tag">Развитие</span>
+                            <span class="blog-tag">Советы</span>
+                        </div>
+                        <a href="blog-post-5.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 6 -->
+                <article class="blog-card" data-category="frontend">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/06b6d4/ffffff?text=TypeScript" alt="TypeScript" class="blog-image">
+                        <div class="blog-category">Frontend</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                15 Дек 2025
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                11 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">TypeScript для начинающих: Полное руководство</h3>
+                        <p class="blog-excerpt">
+                            Основы TypeScript: типы, интерфейсы, дженерики. 
+                            Как начать использовать в проекте и избежать распространённых ошибок.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">TypeScript</span>
+                            <span class="blog-tag">JavaScript</span>
+                            <span class="blog-tag">Frontend</span>
+                        </div>
+                        <a href="blog-post-6.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 7 -->
+                <article class="blog-card" data-category="backend">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/ef4444/ffffff?text=Database" alt="Database" class="blog-image">
+                        <div class="blog-category">Backend</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                8 Дек 2025
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                14 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">PostgreSQL vs MongoDB: Когда что использовать</h3>
+                        <p class="blog-excerpt">
+                            Сравниваем реляционные и документоориентированные базы данных. 
+                            Плюсы, минусы и реальные сценарии использования каждой.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">PostgreSQL</span>
+                            <span class="blog-tag">MongoDB</span>
+                            <span class="blog-tag">Database</span>
+                        </div>
+                        <a href="blog-post-7.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 8 -->
+                <article class="blog-card" data-category="devops">
+                    <div class="blog-card-image">
+                        <img src="https://placehold.co/600x400/84cc16/ffffff?text=CI+CD" alt="CI CD" class="blog-image">
+                        <div class="blog-category">DevOps</div>
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                1 Дек 2025
+                            </span>
+                            <span class="blog-read-time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                9 мин
+                            </span>
+                        </div>
+                        <h3 class="blog-card-title">CI/CD Пайплайны: Автоматизация доставки кода</h3>
+                        <p class="blog-excerpt">
+                            Настраиваем непрерывную интеграцию и доставку. 
+                            GitHub Actions, GitLab CI, тестирование и деплой.
+                        </p>
+                        <div class="blog-tags">
+                            <span class="blog-tag">CI/CD</span>
+                            <span class="blog-tag">DevOps</span>
+                            <span class="blog-tag">Automation</span>
+                        </div>
+                        <a href="blog-post-8.html" class="blog-read-more">
+                            Читать далее
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+            </section>
+
+            <section class="blog-pagination animate-in delay-4">
+                <button class="pagination-btn" id="loadMore">
+                    Загрузить ещё
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <polyline points="19 12 12 19 5 12"/>
+                    </svg>
+                </button>
+            </section>
+
+            <section class="blog-newsletter animate-in delay-4">
+                <div class="newsletter-content">
+                    <h2 class="newsletter-title">Подпишитесь на рассылку</h2>
+                    <p class="newsletter-text">
+                        Получайте новые статьи прямо на почту. Никакого спама, только полезный контент.
+                    </p>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Ваш email" class="newsletter-input" required>
+                        <button type="submit" class="newsletter-btn">
+                            Подписаться
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="blog-cta animate-in delay-4">
+                <h2 class="cta-title">Есть тема для статьи?</h2>
+                <p class="cta-text">Предложите тему или станьте гостевым автором</p>
+                <div class="cta-buttons">
+                    <a href="https://t.me/yourusername" class="telegram-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                        </svg>
+                        Написать в Telegram
+                    </a>
+                    <a href="contact.html" class="contact-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        Связаться
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Solontsov Andrey</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/blog.js"></script>
+</body>
+</html>
