@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD шпаргалка</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="page-nav">
+        <a href="../blog.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Назад
+        </a>
+    </nav>
+
+    <div class="main-content">
+
+        <!-- TITLE -->
+        <div class="info-block animate-in">
+            <h1 class="name-title">🚀 CI/CD шпаргалка</h1>
+            <p class="subtitle">Автоматический деплой сайта через GitHub + Docker</p>
+        </div>
+
+        <!-- WHAT -->
+        <div class="info-block animate-in delay-1">
+            <h2 class="section-title">📌 Что такое CI/CD</h2>
+            <p>Автоматическая доставка кода на сервер.</p>
+            <pre><code>git push → GitHub → сервер → сайт обновился</code></pre>
+        </div>
+
+        <!-- FLOW -->
+        <div class="info-block animate-in delay-2">
+            <h2 class="section-title">🧠 Как это работает</h2>
+            <pre><code>1. Ты пушишь код
+2. Запускается pipeline
+3. Сервер подключается
+4. Обновляет проект
+5. Docker пересобирает контейнер
+6. Сайт обновляется</code></pre>
+        </div>
+
+        <!-- STRUCTURE -->
+        <div class="info-block animate-in delay-3">
+            <h2 class="section-title">🧱 Структура проекта</h2>
+            <pre><code>mysite/
+ ├── html/
+ │    ├── index.html
+ │    ├── css/
+ │    ├── js/
+ │    └── images/
+ ├── Dockerfile
+ └── docker-compose.yml</code></pre>
+        </div>
+
+        <!-- DOCKERFILE -->
+        <div class="info-block animate-in delay-4">
+            <h2 class="section-title">⚙️ Dockerfile</h2>
+            <pre><code>FROM nginx:alpine
+COPY html /usr/share/nginx/html
+EXPOSE 80</code></pre>
+        </div>
+
+        <!-- COMPOSE -->
+        <div class="info-block animate-in delay-5">
+            <h2 class="section-title">⚙️ docker-compose.yml</h2>
+            <pre><code>services:
+  mysite:
+    build: .
+    container_name: mysite
+    restart: always
+    ports:
+      - "8081:80"</code></pre>
+        </div>
+
+        <!-- GIT -->
+        <div class="info-block animate-in delay-6">
+            <h2 class="section-title">📦 Репозиторий</h2>
+            <pre><code>git init
+git add .
+git commit -m "init"
+git remote add origin git@github.com:USERNAME/mysite.git
+git branch -M main
+git push -u origin main</code></pre>
+        </div>
+
+        <!-- SSH -->
+        <div class="info-block animate-in delay-7">
+            <h2 class="section-title">🔐 SSH доступ</h2>
+            <pre><code>ssh-keygen -t ed25519</code></pre>
+            <p>
+                Добавить ключ:
+                <br>• сервер → ~/.ssh/authorized_keys
+                <br>• GitHub → SSH Keys
+            </p>
+        </div>
+
+        <!-- SECRETS -->
+        <div class="info-block animate-in delay-8">
+            <h2 class="section-title">🔑 Secrets</h2>
+            <pre><code>Settings → Secrets → Actions
+
+SSH_PRIVATE_KEY
+SERVER_IP
+SERVER_USER</code></pre>
+        </div>
+
+        <!-- SERVER -->
+        <div class="info-block animate-in delay-9">
+            <h2 class="section-title">🖥 Сервер</h2>
+            <pre><code>apt update
+apt install docker.io docker-compose -y
+
+cd /home
+git clone git@github.com:USERNAME/mysite.git
+cd mysite
+docker compose up -d --build</code></pre>
+        </div>
+
+        <!-- PIPELINE -->
+        <div class="info-block animate-in delay-10">
+            <h2 class="section-title">🤖 CI/CD pipeline</h2>
+            <pre><code>.github/workflows/deploy.yml
+
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/mysite
+            git pull
+            docker compose down
+            docker compose up -d --build</code></pre>
+        </div>
+
+        <!-- DEPLOY -->
+        <div class="info-block animate-in delay-11">
+            <h2 class="section-title">🚀 Деплой</h2>
+            <pre><code>git add .
+git commit -m "update"
+git push</code></pre>
+        </div>
+
+        <!-- ERRORS -->
+        <div class="info-block animate-in delay-12">
+            <h2 class="section-title">⚠️ Частые ошибки</h2>
+            <pre><code>fatal: not a git repository
+→ нет git clone
+
+No event triggers defined in on
+→ ошибка в YAML
+
+нет обновлений
+→ проверь git pull и docker</code></pre>
+        </div>
+
+        <!-- RESULT -->
+        <div class="info-block animate-in delay-13">
+            <h2 class="section-title">🧠 Итог</h2>
+            <pre><code>локально → GitHub → CI/CD → сервер → Docker → сайт</code></pre>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Solontsov Andrey</p>
+    </div>
+
+</div>
+
+</body>
+</html>
