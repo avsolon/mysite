@@ -657,3 +657,153 @@
     color: #22c55e;
     overflow: hidden;
 }
+
+/* Article Blocks (статьи) */
+.article-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px 30px;
+    margin-bottom: 25px;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* мягкий градиентный блик */
+.article-block::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top left,
+        rgba(99, 102, 241, 0.08),
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* hover эффект */
+.article-block:hover {
+    transform: translateY(-6px);
+    border-color: var(--primary);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.article-block:hover::before {
+    opacity: 1;
+}
+
+/* заголовки внутри статьи */
+.article-block h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--primary);
+    position: relative;
+}
+
+/* небольшой акцент-линия */
+.article-block h2::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    margin-top: 8px;
+    background: var(--gradient-1);
+    border-radius: 2px;
+}
+
+/* текст */
+.article-block p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    opacity: 0.9;
+    margin-bottom: 12px;
+}
+
+/* списки */
+.article-block ul {
+    padding-left: 20px;
+    margin: 10px 0 15px;
+}
+
+.article-block ul li {
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: var(--text-primary);
+    opacity: 0.9;
+    position: relative;
+}
+
+/* кастомные маркеры */
+.article-block ul li::marker {
+    color: var(--primary);
+}
+
+/* анимация появления */
+.animate-in {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* задержка для каскадного эффекта */
+.article-block:nth-child(2) { animation-delay: 0.1s; }
+.article-block:nth-child(3) { animation-delay: 0.2s; }
+.article-block:nth-child(4) { animation-delay: 0.3s; }
+.article-block:nth-child(5) { animation-delay: 0.4s; }
+.article-block:nth-child(6) { animation-delay: 0.5s; }
+.article-block:nth-child(7) { animation-delay: 0.6s; }
+.article-block:nth-child(8) { animation-delay: 0.7s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* маленький "читаемый" эффект */
+.article-block:hover p {
+    opacity: 1;
+}
+
+/* улучшение читаемости */
+.article-block p,
+.article-block li {
+    transition: opacity 0.3s ease;
+}
+
+/* выделение важных блоков */
+.article-block strong {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* адаптив */
+@media (max-width: 768px) {
+    .article-block {
+        padding: 20px;
+    }
+
+    .article-block h2 {
+        font-size: 20px;
+    }
+}
+
+.code-block {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 16px;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.code-block code {
+    font-family: "Fira Code", monospace;
+}

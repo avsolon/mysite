@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker и Kubernetes — Полное руководство</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="page-nav">
+        <a href="../blog.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Назад
+        </a>
+    </nav>
+
+    <div class="main-content">
+
+        <div class="info-block animate-in">
+            <h1 class="name-title">Docker и Kubernetes</h1>
+            <p class="subtitle">
+                От контейнера до продакшена: полное руководство по DevOps-подходу
+            </p>
+        </div>
+
+        <div class="article-block animate-in">
+            <p>
+                Контейнеризация и оркестрация стали стандартом современной разработки.
+                Docker отвечает за упаковку приложения, Kubernetes — за управление и масштабирование.
+            </p>
+        </div>
+
+        <!-- DOCKER -->
+        <div class="article-block animate-in">
+            <h2>🐳 Что такое Docker</h2>
+            <p>
+                Docker — это платформа для создания и запуска контейнеров,
+                которые изолируют приложение и его зависимости.
+            </p>
+            <ul>
+                <li>изолированная среда</li>
+                <li>одинаковое поведение</li>
+                <li>быстрый запуск</li>
+                <li>портативность</li>
+            </ul>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>📦 Пример Dockerfile</h2>
+            <ul>
+                <li>FROM — базовый образ</li>
+                <li>WORKDIR — рабочая директория</li>
+                <li>COPY — копирование файлов</li>
+                <li>RUN — установка зависимостей</li>
+                <li>CMD — запуск приложения</li>
+            </ul>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>🔧 Docker Compose</h2>
+            <p>
+                Docker Compose позволяет запускать несколько сервисов одновременно:
+            </p>
+            <ul>
+                <li>приложение</li>
+                <li>база данных</li>
+                <li>кэш</li>
+            </ul>
+        </div>
+
+        <!-- KUBERNETES -->
+        <div class="article-block animate-in">
+            <h2>☸️ Что такое Kubernetes</h2>
+            <p>
+                Kubernetes — система оркестрации контейнеров, управляющая их жизненным циклом.
+            </p>
+            <ul>
+                <li>управление контейнерами</li>
+                <li>автоскейлинг</li>
+                <li>самовосстановление</li>
+                <li>балансировка нагрузки</li>
+            </ul>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>🏗 Основные компоненты</h2>
+            <ul>
+                <li><strong>Pod</strong> — минимальная единица</li>
+                <li><strong>Deployment</strong> — управление версиями</li>
+                <li><strong>Service</strong> — доступ к приложению</li>
+                <li><strong>Ingress</strong> — маршрутизация</li>
+                <li><strong>ConfigMap / Secret</strong> — конфигурация</li>
+            </ul>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>🚀 Развёртывание</h2>
+            <p>
+                Приложение разворачивается через Deployment:
+            </p>
+            <ul>
+                <li>описание образа</li>
+                <li>количество реплик</li>
+                <li>политика обновления</li>
+            </ul>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>🌐 Service</h2>
+            <p>
+                Service открывает доступ к приложению и балансирует трафик.
+            </p>
+            <ul>
+                <li>ClusterIP</li>
+                <li>NodePort</li>
+                <li>LoadBalancer</li>
+            </ul>
+        </div>
+
+        <!-- SCALING -->
+        <div class="article-block animate-in">
+            <h2>📈 Масштабирование</h2>
+            <p>
+                Kubernetes позволяет масштабировать приложение:
+            </p>
+            <ul>
+                <li>ручное масштабирование</li>
+                <li>Horizontal Pod Autoscaler</li>
+                <li>автоматическая балансировка</li>
+            </ul>
+        </div>
+
+        <!-- CI/CD -->
+        <div class="article-block animate-in">
+            <h2>🔄 CI/CD Pipeline</h2>
+            <ul>
+                <li>сборка Docker образа</li>
+                <li>тестирование</li>
+                <li>загрузка в registry</li>
+                <li>деплой в Kubernetes</li>
+            </ul>
+        </div>
+
+        <!-- MONITORING -->
+        <div class="article-block animate-in">
+            <h2>📊 Мониторинг</h2>
+            <ul>
+                <li>Prometheus — сбор метрик</li>
+                <li>Grafana — визуализация</li>
+                <li>ELK — логирование</li>
+            </ul>
+        </div>
+
+        <!-- SECURITY -->
+        <div class="article-block animate-in">
+            <h2>🔐 Безопасность</h2>
+            <ul>
+                <li>HTTPS</li>
+                <li>RBAC</li>
+                <li>Secrets</li>
+                <li>ограничение доступа</li>
+                <li>сканирование образов</li>
+            </ul>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="article-block animate-in">
+            <h2>⚡ Итог</h2>
+            <p>
+                Docker и Kubernetes позволяют строить масштабируемые, надёжные и автоматизированные системы.
+            </p>
+            <ul>
+                <li>Docker — упаковка</li>
+                <li>Kubernetes — управление</li>
+                <li>CI/CD — автоматизация</li>
+                <li>Мониторинг — контроль</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="article-block animate-in">
+        <h2>📦 Пример Dockerfile</h2>
+        <p>Базовый Dockerfile для Node.js приложения:</p>
+
+        <pre class="code-block">
+            <code>
+                # Базовый образ
+                FROM node:18-alpine
+
+                # Рабочая директория
+                WORKDIR /app
+
+                # Копируем зависимости
+                COPY package*.json ./
+
+                # Установка зависимостей
+                RUN npm install
+
+                # Копируем проект
+                COPY . .
+
+                # Открываем порт
+                EXPOSE 3000
+
+                # Запуск приложения
+                CMD ["npm", "start"]
+            </code>
+        </pre>
+    </div>
+
+        <div class="article-block animate-in">
+            <h2>🔧 Docker Compose</h2>
+            <p>Пример запуска приложения + базы данных:</p>
+
+            <pre class="code-block">
+        <code>
+        version: "3.9"
+
+        services:
+        app:
+            build: .
+            ports:
+            - "3000:3000"
+            depends_on:
+            - db
+
+        db:
+            image: postgres:15
+            environment:
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: mydb
+        </code>
+            </pre>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>☸️ Kubernetes Deployment</h2>
+            <p>Пример Deployment для приложения:</p>
+
+            <pre class="code-block">
+        <code>
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+        name: my-app
+        spec:
+        replicas: 3
+        selector:
+            matchLabels:
+            app: my-app
+        template:
+            metadata:
+            labels:
+                app: my-app
+            spec:
+            containers:
+                - name: app
+                image: my-app:latest
+                ports:
+                    - containerPort: 3000
+        </code>
+            </pre>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>🌐 Kubernetes Service</h2>
+            <p>Открываем доступ к приложению:</p>
+
+            <pre class="code-block">
+        <code>
+        apiVersion: v1
+        kind: Service
+        metadata:
+        name: my-app-service
+        spec:
+        type: LoadBalancer
+        selector:
+            app: my-app
+        ports:
+            - port: 80
+            targetPort: 3000
+        </code>
+            </pre>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>📈 Horizontal Pod Autoscaler</h2>
+            <p>Автоматическое масштабирование:</p>
+
+            <pre class="code-block">
+        <code>
+        apiVersion: autoscaling/v2
+        kind: HorizontalPodAutoscaler
+        metadata:
+        name: my-app-hpa
+        spec:
+        scaleTargetRef:
+            apiVersion: apps/v1
+            kind: Deployment
+            name: my-app
+        minReplicas: 2
+        maxReplicas: 10
+        metrics:
+            - type: Resource
+            resource:
+                name: cpu
+                target:
+                type: Utilization
+                averageUtilization: 70
+        </code>
+            </pre>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>🔐 Kubernetes Secret</h2>
+
+            <pre class="code-block">
+        <code>
+        apiVersion: v1
+        kind: Secret
+        metadata:
+        name: db-secret
+        type: Opaque
+        data:
+        username: dXNlcg==   # base64
+        password: cGFzcw==
+        </code>
+    </pre>
+</div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="../js/ci-cd_deploy.js"></script>
+<script src="../js/footer.js"></script>
+
+</body>
+</html>

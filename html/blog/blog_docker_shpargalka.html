@@ -64,13 +64,17 @@ docker stop CONTAINER_ID
 docker rm CONTAINER_ID</code></pre>
         </div>
 
-        <div class="info-block animate-in delay-4">
-            <h2 class="section-title">Dockerfile</h2>
-            <pre><code>FROM python:3.11
-WORKDIR /app
-COPY . .
-RUN pip install -r requirements.txt
-CMD ["python", "app.py"]</code></pre>
+        <div class="article-block animate-in">
+            <h2>Dockerfile</h2>
+            <pre class="code-block">
+                <code>
+                    FROM python:3.11
+                    WORKDIR /app
+                    COPY . .
+                    RUN pip install -r requirements.txt
+                    CMD ["python", "app.py"]
+                </code>
+            </pre>
         </div>
 
         <div class="info-block">
@@ -84,41 +88,55 @@ docker run -d -p 5000:5000 myapp</code></pre>
 
         <div class="info-block">
             <h2 class="section-title">Полезные команды</h2>
-            <pre><code># Логи
+            <pre>
+                <code>
+# Логи
 docker logs CONTAINER_ID
 
 # Войти в контейнер
 docker exec -it CONTAINER_ID bash
 
 # Очистка
-docker system prune -a</code></pre>
+docker system prune -a
+                </code>
+            </pre>
         </div>
 
         <div class="info-block">
-            <h2 class="section-title">docker-compose</h2>
-            <pre><code>version: '3'
-services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-  redis:
-    image: redis</code></pre>
-
-            <pre><code># Запуск
+        <div class="article-block animate-in">
+            <h2>docker-compose</h2>
+            <pre class="code-block">
+                <code>
+                    version: '3'
+                    services:
+                    web:
+                        build: .
+                        ports:
+                        - "5000:5000"
+                    redis:
+                        image: redis
+                </code>
+            </pre>      
+            <pre>
+                <code>
+# Запуск
 docker-compose up -d
 
 # Остановка
-docker-compose down</code></pre>
+docker-compose down
+                </code>
+            </pre>
+        </div>
         </div>
 
     </div>
 
-    <div class="footer">
-        <p>© 2025 Solontsov Andrey</p>
-    </div>
-
 </div>
+
+<div id="footer"></div>
+<script src="../js/ci-cd_deploy.js"></script>
+<script src="../js/footer.js"></script>
+
 
 </body>
 </html>
