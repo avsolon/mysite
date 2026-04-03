@@ -1,4 +1,3 @@
-version: '3'
 services:
   mysite:
     build: .
@@ -6,5 +5,3 @@ services:
     restart: always
     ports:
       - "8081:80"
-    volumes:
-      - ./html:/usr/share/nginx/html
