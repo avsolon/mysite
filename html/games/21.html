@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра 21 (Очко)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 100%;
+            margin: 0;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            margin: 10px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0 30px;
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .score-item {
+            text-align: center;
+            padding: 8px 15px;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .hands-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            flex-wrap: nowrap;
+            gap: 15px;
+        }
+
+        .hand {
+            flex: 1;
+            min-width: 280px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease;
+            margin: 0 10px;
+        }
+
+        .hand:hover {
+            transform: translateY(-3px);
+        }
+
+        .hand-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .hand-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 8px auto 0;
+            border-radius: 2px;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            min-height: 120px;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            background-color: rgba(255,255,255,0.5);
+        }
+
+        .card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #34495e;
+            border-radius: 10px;
+            padding: 10px 14px;
+            min-width: 70px;
+            max-width: 80px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-weight: bold;
+            color: #2c3e50;
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+        }
+
+        .card.red {
+            color: #e74c3c;
+        }
+
+        .card.black {
+            color: #2c3e50;
+        }
+
+        .hidden-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: transparent;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+            border-color: #2c3e50;
+        }
+
+        .value-display {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            padding: 8px;
+            background-color: rgba(236, 240, 241, 0.5);
+            border-radius: 8px;
+        }
+
+        .controls {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            margin: 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            min-width: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .message {
+            margin: 25px 0;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-height: 25px;
+            animation: fadeIn 0.5s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .win-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .lose-message {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .tie-message {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+
+        .info {
+            margin-top: 25px;
+            color: #7f8c8d;
+            font-style: normal;
+            font-size: 0.95rem;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            line-height: 1.5;
+        }
+
+        /* Адаптив для планшетов */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 8px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .hands-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .hand {
+                flex: 1;
+                min-width: 250px;
+                margin: 5px;
+                padding: 15px;
+            }
+            
+            .card {
+                min-width: 65px;
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            button {
+                padding: 14px 20px;
+                min-width: 120px;
+                font-size: 0.95rem;
+            }
+            
+            .score-board {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .score-item {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+
+        /* Адаптив для мобильных устройств */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                padding: 15px;
+                margin: 5px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 10px;
+            }
+            
+            .subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 20px;
+            }
+            
+            .hands-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .hand {
+                width: 100%;
+                min-width: auto;
+                margin: 0;
+                padding: 15px;
+            }
+            
+            .hand-title {
+                font-size: 1.2rem;
+            }
+            
+            .cards {
+                min-height: 100px;
+                padding: 12px;
+                gap: 8px;
+            }
+            
+            .card {
+                min-width: 60px;
+                padding: 8px 10px;
+                font-size: 0.8rem;
+                max-width: 70px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 280px;
+                padding: 16px 20px;
+                font-size: 1rem;
+            }
+            
+            .score-board {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 5px;
+                padding: 12px;
+            }
+            
+            .score-item {
+                flex: 1;
+                min-width: 80px;
+                padding: 6px 10px;
+            }
+            
+            .score-label {
+                font-size: 0.8rem;
+            }
+            
+            .score-value {
+                font-size: 1.2rem;
+            }
+            
+            .message {
+                font-size: 1rem;
+                padding: 16px;
+            }
+            
+            .info {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+        }
+
+        /* Очень маленькие экраны */
+        @media (max-width: 360px) {
+            .score-board {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .score-item {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .hand-title {
+                font-size: 1.1rem;
+            }
+            
+            .value-display {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🃏 Игра 21 (Очко)</h1>
+        <div class="subtitle">Классическая карточная игра против компьютера</div>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">Победы игрока</div>
+                <div class="score-value" id="player-wins">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Победы компьютера</div>
+                <div class="score-value" id="computer-wins">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Ничьи</div>
+                <div class="score-value" id="ties">0</div>
+            </div>
+        </div>
+        
+        <div class="hands-container">
+            <div class="hand">
+                <div class="hand-title">🂠 Ваша рука</div>
+                <div id="player-cards" class="cards"></div>
+                <div class="value-display">Сумма: <span id="player-value">0</span></div>
+            </div>
+            
+            <div class="hand">
+                <div class="hand-title">🤖 Рука компьютера</div>
+                <div id="computer-cards" class="cards"></div>
+                <div class="value-display">Сумма: <span id="computer-value">?</span></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="hit-btn">🂱 Еще карту</button>
+            <button id="stand-btn">⏸️ Хватит</button>
+            <button id="new-game-btn">🔄 Новая игра</button>
+        </div>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="info">
+            🎯 Цель: Набрать сумму очков, максимально близкую к 21, но не больше<br>
+            ♣️ Туз = 11 или 1, Валет/Дама/Король = 10
+        </div>
+    </div>
+
+    <script>
+        class Card {
+            constructor(suit, rank) {
+                this.suit = suit;
+                this.rank = rank;
+                if (['J', 'Q', 'K'].includes(rank)) {
+                    this.value = 10;
+                } else if (rank === 'A') {
+                    this.value = 11;
+                } else {
+                    this.value = parseInt(rank);
+                }
+            }
+            
+            toString() {
+                return `${this.rank}${this.suit}`;
+            }
+            
+            getColorClass() {
+                return (this.suit === '♥' || this.suit === '♦') ? 'red' : 'black';
+            }
+        }
+
+        class Deck {
+            constructor() {
+                this.suits = ['♠', '♥', '♦', '♣'];
+                this.ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+                this.cards = [];
+                this.createDeck();
+                this.shuffle();
+            }
+            
+            createDeck() {
+                for (let suit of this.suits) {
+                    for (let rank of this.ranks) {
+                        this.cards.push(new Card(suit, rank));
+                    }
+                }
+            }
+            
+            shuffle() {
+                for (let i = this.cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+                }
+            }
+            
+            dealCard() {
+                return this.cards.pop();
+            }
+        }
+
+        function calculateHandValue(hand) {
+            let value = hand.reduce((sum, card) => sum + card.value, 0);
+            let aces = hand.filter(card => card.rank === 'A').length;
+            
+            while (value > 21 && aces > 0) {
+                value -= 10;
+                aces--;
+            }
+            
+            return value;
+        }
+
+        class BlackjackGame {
+            constructor() {
+                this.deck = null;
+                this.playerHand = [];
+                this.computerHand = [];
+                this.gameOver = false;
+                this.playerTurn = true;
+                
+                // Счетчики побед
+                this.playerWins = 0;
+                this.computerWins = 0;
+                this.ties = 0;
+                
+                this.hitBtn = document.getElementById('hit-btn');
+                this.standBtn = document.getElementById('stand-btn');
+                this.newGameBtn = document.getElementById('new-game-btn');
+                this.messageEl = document.getElementById('message');
+                
+                this.initEventListeners();
+                this.startNewGame();
+            }
+            
+            initEventListeners() {
+                this.hitBtn.addEventListener('click', () => this.playerHit());
+                this.standBtn.addEventListener('click', () => this.playerStand());
+                this.newGameBtn.addEventListener('click', () => this.startNewGame());
+            }
+            
+            startNewGame() {
+                this.deck = new Deck();
+                this.playerHand = [this.deck.dealCard(), this.deck.dealCard()];
+                this.computerHand = [this.deck.dealCard(), this.deck.dealCard()];
+                this.gameOver = false;
+                this.playerTurn = true;
+                
+                this.updateDisplay();
+                this.clearMessage();
+                this.enableButtons();
+                
+                // Проверка на блэкджек сразу
+                if (calculateHandValue(this.playerHand) === 21) {
+                    setTimeout(() => this.endGame(), 500);
+                }
+            }
+            
+            playerHit() {
+                if (!this.playerTurn || this.gameOver) return;
+                
+                this.playerHand.push(this.deck.dealCard());
+                this.updateDisplay();
+                
+                const playerValue = calculateHandValue(this.playerHand);
+                if (playerValue > 21) {
+                    setTimeout(() => {
+                        this.showMessage('❌ Вы проиграли! Перебор.', 'lose-message');
+                        this.gameOver = true;
+                        this.computerWins++;
+                        this.updateScores();
+                        this.disableButtons();
+                    }, 300);
+                } else if (playerValue === 21) {
+                    setTimeout(() => this.playerStand(), 500);
+                }
+            }
+            
+            playerStand() {
+                if (!this.playerTurn || this.gameOver) return;
+                
+                this.playerTurn = false;
+                this.disableButtons();
+                this.showMessage('🧠 Компьютер думает...', 'tie-message');
+                
+                setTimeout(() => {
+                    this.computerPlay();
+                }, 1000);
+            }
+            
+            computerPlay() {
+                let computerValue = calculateHandValue(this.computerHand);
+                
+                // Анимация "думания" компьютера
+                let thinkingCount = 0;
+                const thinkingInterval = setInterval(() => {
+                    thinkingCount++;
+                    if (thinkingCount % 2 === 1) {
+                        this.showMessage('🧠 Компьютер думает...', 'tie-message');
+                    } else {
+                        this.showMessage('', '');
+                    }
+                    
+                    if (thinkingCount >= 4) {
+                        clearInterval(thinkingInterval);
+                        
+                        // Компьютер берет карты пока значение меньше 17
+                        const playComputerMove = () => {
+                            if (calculateHandValue(this.computerHand) < 17) {
+                                this.computerHand.push(this.deck.dealCard());
+                                this.updateDisplay(false);
+                                
+                                setTimeout(playComputerMove, 800);
+                            } else {
+                                this.endGame();
+                            }
+                        };
+                        
+                        playComputerMove();
+                    }
+                }, 500);
+            }
+            
+            endGame() {
+                this.gameOver = true;
+                this.updateDisplay(true); // Показать все карты компа
+                
+                const playerValue = calculateHandValue(this.playerHand);
+                const computerValue = calculateHandValue(this.computerHand);
+                
+                let message = '';
+                let messageClass = '';
+                
+                if (playerValue > 21) {
+                    message = '❌ Вы проиграли! Перебор.';
+                    messageClass = 'lose-message';
+                    this.computerWins++;
+                } else if (computerValue > 21) {
+                    message = '✅ Вы выиграли! Компьютер перебрал.';
+                    messageClass = 'win-message';
+                    this.playerWins++;
+                } else if (playerValue > computerValue) {
+                    message = '✅ Вы выиграли!';
+                    messageClass = 'win-message';
+                    this.playerWins++;
+                } else if (computerValue > playerValue) {
+                    message = '❌ Компьютер выиграл.';
+                    messageClass = 'lose-message';
+                    this.computerWins++;
+                } else {
+                    message = '🤝 Ничья!';
+                    messageClass = 'tie-message';
+                    this.ties++;
+                }
+                
+                this.updateScores();
+                this.showMessage(message, messageClass);
+                this.disableButtons();
+            }
+            
+            updateDisplay(showAllComputerCards = false) {
+                // Обновляем карты игрока
+                const playerCardsEl = document.getElementById('player-cards');
+                playerCardsEl.innerHTML = '';
+                this.playerHand.forEach(card => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = `card ${card.getColorClass()}`;
+                    cardEl.textContent = card.toString();
+                    playerCardsEl.appendChild(cardEl);
+                });
+                
+                // Обновляем сумму игрока
+                document.getElementById('player-value').textContent = calculateHandValue(this.playerHand);
+                
+                // Обновляем карты компьютера
+                const computerCardsEl = document.getElementById('computer-cards');
+                computerCardsEl.innerHTML = '';
+                
+                if (showAllComputerCards || !this.playerTurn) {
+                    this.computerHand.forEach(card => {
+                        const cardEl = document.createElement('div');
+                        cardEl.className = `card ${card.getColorClass()}`;
+                        cardEl.textContent = card.toString();
+                        computerCardsEl.appendChild(cardEl);
+                    });
+                    document.getElementById('computer-value').textContent = calculateHandValue(this.computerHand);
+                } else {
+                    // Показываем только первую карту и скрытую вторую
+                    const firstCardEl = document.createElement('div');
+                    firstCardEl.className = `card ${this.computerHand[0].getColorClass()}`;
+                    firstCardEl.textContent = this.computerHand[0].toString();
+                    computerCardsEl.appendChild(firstCardEl);
+                    
+                    const hiddenCardEl = document.createElement('div');
+                    hiddenCardEl.className = 'card hidden-card';
+                    hiddenCardEl.textContent = '🂠';
+                    computerCardsEl.appendChild(hiddenCardEl);
+                    
+                    document.getElementById('computer-value').textContent = '?';
+                }
+            }
+            
+            updateScores() {
+                document.getElementById('player-wins').textContent = this.playerWins;
+                document.getElementById('computer-wins').textContent = this.computerWins;
+                document.getElementById('ties').textContent = this.ties;
+            }
+            
+            showMessage(text, className) {
+                this.messageEl.textContent = text;
+                this.messageEl.className = `message ${className}`;
+            }
+            
+            clearMessage() {
+                this.messageEl.textContent = '';
+                this.messageEl.className = 'message';
+            }
+            
+            disableButtons() {
+                this.hitBtn.disabled = true;
+                this.standBtn.disabled = true;
+            }
+            
+            enableButtons() {
+                this.hitBtn.disabled = false;
+                this.standBtn.disabled = false;
+            }
+        }
+
+        // Запускаем игру при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            new BlackjackGame();
+        });
+    </script>
+</body>
+</html>
+
