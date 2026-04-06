@@ -12,6 +12,8 @@
 
 <div class="container">
 
+
+
     <nav class="page-nav">
         <a href="../index.html" class="back-btn">
             ← Назад
@@ -27,25 +29,75 @@
 
         <div class="games-grid">
 
-            <a href="snake.html" class="game-card">
+            <div class="game-card" onclick="openGame('snake.html')">
+                <div class="icon">🐍</div>
+                <h3>Змейка</h3>
+                <p>Классическая игра</p>
+            </div>
+
+            <div class="game-card" onclick="openGame('tetris.html')">
+                <div class="icon">🧩</div>
+                <h3>Тетрис</h3>
+                <p>Собери линии</p>
+            </div>
+
+            <div class="game-card" onclick="openGame('21.html')">
+                <div class="icon">🎴</div>
+                <h3>21</h3>
+                <p>Собери 21</p>
+            </div>
+
+            <div class="game-card" onclick="openGame('association_helper.html')">
+                <div class="icon">🧠</div>
+                <h3>Ассоциации</h3>
+                <p>Помощник (CodeNames)</p>
+            </div>
+
+        </div>
+
+    
+
+    <!-- МОДАЛКА -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <button class="close" onclick="closeGame()">✖</button>
+            <iframe id="gameFrame"></iframe>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Solontsov Andrey</p>
+    </footer>
+
+</div>
+    <!-- <div class="main-content">
+
+        <div class="info-block animate-in">
+            <h1 class="name-title">🎮 Мини лаунчер игр</h1>
+            <p class="subtitle">Выбери игру и играй прямо в браузере</p>
+        </div>
+
+        <div class="games-grid">
+
+            <a href="snake.html" class="game-card" target="_blank">
                 🐍
                 <h3>Змейка</h3>
                 <p>Классическая игра</p>
             </a>
 
-            <a href="tetris.html" class="game-card">
+            <a href="tetris.html" class="game-card" target="_blank">
                 🧩
                 <h3>Тетрис</h3>
                 <p>Собери линии</p>
             </a>
 
-            <a href="21.html" class="game-card">
+            <a href="21.html" class="game-card" target="_blank">
                 🎴
                 <h3>21</h3>
                 <p>Собери 21</p>
             </a>
 
-            <a href="association_helper.html" class="game-card">
+            <a href="association_helper.html" class="game-card" target="_blank">
                 🎴
                 <h3>Помощник для игры в ассоциации</h3>
                 <p>code names</p>
@@ -59,7 +111,9 @@
         <p>&copy; 2025 Solontsov Andrey</p>
     </footer>
 
-</div>
+</div> -->
+
+<script src="../js/games.js"></script>
 
 </body>
 </html>
