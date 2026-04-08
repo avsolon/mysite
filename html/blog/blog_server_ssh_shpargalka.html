@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шпаргалка новичка: SSH и сервер</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="page-nav">
+        <a href="../blog.html" class="back-btn">
+            ← Назад
+        </a>
+    </nav>
+
+    <div class="main-content">
+
+        <div class="info-block animate-in">
+            <h1 class="name-title">🚀 Шпаргалка новичка: SSH и сервер</h1>
+            <p class="subtitle">
+                Доступ к серверу, SSH и некторорые базовые команды Linux
+            </p>
+        </div>
+
+        <!-- INTRO -->
+        <div class="article-block animate-in">
+            <p>
+                Эта статья — практическое руководство по работе с удалённым сервером:
+                от подключения по SSH до настройки пользователей и прав доступа.
+            </p>
+        </div>
+
+        <!-- SSH -->
+        <div class="article-block animate-in">
+            <h2>🔐 Подключение к серверу</h2>
+
+            <p>Подключение по SSH:</p>
+            <pre class="code-block"><code>ssh username@server_ip</code></pre>
+
+            <p>Пример:</p>
+            <pre class="code-block"><code>ssh andrey@100.101.110.111</code></pre>
+
+            <p>Подключение с ключом:</p>
+            <pre class="code-block"><code>ssh -i ~/.ssh/id_ed25519 username@server_ip</code></pre>
+
+            <p>Debug режим:</p>
+            <pre class="code-block"><code>ssh -v username@server_ip</code></pre>
+        </div>
+
+        <!-- KEYS -->
+        <div class="article-block animate-in">
+            <h2>🔑 SSH-ключи</h2>
+
+            <p>Создание ключа:</p>
+            <pre class="code-block"><code>ssh-keygen -t ed25519 -C "your_email@example.com"</code></pre>
+
+            <p>Публичный ключ:</p>
+            <pre class="code-block"><code>cat ~/.ssh/id_ed25519.pub</code></pre>
+
+            <p>Файл на сервере:</p>
+            <pre class="code-block"><code>/home/username/.ssh/authorized_keys</code></pre>
+        </div>
+
+        <!-- STRUCTURE -->
+        <div class="article-block animate-in">
+            <h2>📁 Структура SSH</h2>
+
+            <pre class="code-block"><code>/home/username/
+└── .ssh/
+    └── authorized_keys</code></pre>
+        </div>
+
+        <!-- PERMISSIONS -->
+        <div class="article-block animate-in">
+            <h2>⚠️ Права доступа</h2>
+
+            <pre class="code-block"><code>chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys</code></pre>
+        </div>
+
+        <!-- USER -->
+        <div class="article-block animate-in">
+            <h2>👤 Пользователи</h2>
+
+            <p>Создание пользователя:</p>
+            <pre class="code-block"><code>sudo adduser deploy</code></pre>
+
+            <p>Добавить в sudo:</p>
+            <pre class="code-block"><code>sudo usermod -aG sudo deploy</code></pre>
+
+            <p>Проверка:</p>
+            <pre class="code-block"><code>whoami</code></pre>
+        </div>
+
+        <!-- ACCESS -->
+        <div class="article-block animate-in">
+            <h2>🔐 Настройка SSH доступа</h2>
+
+            <pre class="code-block"><code>mkdir -p ~/.ssh
+nano ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys</code></pre>
+
+            <p>Перезапуск SSH:</p>
+            <pre class="code-block"><code>sudo systemctl restart ssh</code></pre>
+        </div>
+
+        <!-- SECURITY -->
+        <div class="article-block animate-in">
+            <h2>🚫 Отключение пароля</h2>
+
+            <pre class="code-block"><code>sudo nano /etc/ssh/sshd_config</code></pre>
+
+            <p>Изменить:</p>
+            <pre class="code-block"><code>PasswordAuthentication no
+PubkeyAuthentication yes</code></pre>
+
+            <pre class="code-block"><code>sudo systemctl restart ssh</code></pre>
+        </div>
+
+        <!-- LINUX -->
+        <div class="article-block animate-in">
+            <h2>🔥 Основные команды Linux</h2>
+
+            <h3>📁 Навигация</h3>
+            <pre class="code-block"><code>pwd
+ls
+ls -la
+cd /path</code></pre>
+
+            <h3>📂 Файлы</h3>
+            <pre class="code-block"><code>touch file.txt
+nano file.txt
+cat file.txt
+rm file.txt</code></pre>
+
+            <h3>📁 Папки</h3>
+            <pre class="code-block"><code>mkdir folder
+mkdir -p path/path2
+rm -r folder</code></pre>
+
+            <h3>🔐 Права</h3>
+            <pre class="code-block"><code>chmod 755 file
+chmod 700 folder
+chown user:group file</code></pre>
+
+            <h3>🔧 Система</h3>
+            <pre class="code-block"><code>top
+htop
+df -h
+free -h</code></pre>
+
+            <h3>🌐 Сеть</h3>
+            <pre class="code-block"><code>ping google.com
+ip a</code></pre>
+        </div>
+
+        <!-- PROBLEMS -->
+        <div class="article-block animate-in">
+            <h2>🧠 Частые проблемы</h2>
+
+            <h3>❌ Permission denied</h3>
+            <pre class="code-block"><code>chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys</code></pre>
+
+            <h3>❌ SSH просит пароль</h3>
+            <ul>
+                <li>ключ не добавлен</li>
+                <li>неверные права</li>
+                <li>не тот пользователь</li>
+            </ul>
+
+            <h3>❌ Нет папки ~/.ssh</h3>
+            <pre class="code-block"><code>mkdir -p ~/.ssh</code></pre>
+        </div>
+
+        <!-- BEST PRACTICES -->
+        <div class="article-block animate-in">
+            <h2>🚀 Лучшие практики</h2>
+
+            <ul>
+                <li>использовать отдельного пользователя</li>
+                <li>использовать SSH-ключи</li>
+                <li>отключить пароль</li>
+                <li>не использовать root</li>
+                <li>ограничить доступ</li>
+            </ul>
+        </div>
+
+        <!-- CHECKLIST -->
+        <div class="article-block animate-in">
+            <h2>🎯 Чеклист</h2>
+
+            <pre class="code-block"><code>✓ создан пользователь
+✓ добавлен SSH-ключ
+✓ выставлены права
+✓ SSH без пароля
+✓ сервер перезапущен</code></pre>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="../js/ci-cd_deploy.js"></script>
+<script src="../js/footer.js"></script>
+
+</body>
+</html>
