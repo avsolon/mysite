@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL vs MongoDB</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="page-nav">
+        <a href="../blog.html" class="back-btn">← Назад</a>
+    </nav>
+
+    <div class="main-content">
+
+        <!-- HEADER -->
+        <div class="info-block animate-in">
+            <h1 class="name-title">🧠 PostgreSQL vs MongoDB</h1>
+            <p class="subtitle">
+                Когда использовать реляционные и документоориентированные базы данных
+            </p>
+        </div>
+
+        <!-- INTRO -->
+        <div class="article-block animate-in">
+            <p>
+                Выбор базы данных — одно из ключевых архитектурных решений.
+                :contentReference[oaicite:0]{index=0} и
+                :contentReference[oaicite:1]{index=1} —
+                два самых популярных решения, но они подходят для разных задач.
+            </p>
+        </div>
+
+        <!-- POSTGRES -->
+        <div class="article-block animate-in">
+            <h2>🐘 PostgreSQL — реляционная база данных</h2>
+
+            <ul>
+                <li>строгая схема (schema)</li>
+                <li>SQL-запросы</li>
+                <li>ACID транзакции</li>
+                <li>высокая надёжность</li>
+            </ul>
+
+            <p>Пример таблицы:</p>
+
+            <pre class="code-block"><code>
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+            </code></pre>
+
+            <p>Запрос:</p>
+
+            <pre class="code-block"><code>
+SELECT * FROM users WHERE email = 'test@mail.com';
+            </code></pre>
+        </div>
+
+        <!-- MONGO -->
+        <div class="article-block animate-in">
+            <h2>🍃 MongoDB — документоориентированная база</h2>
+
+            <ul>
+                <li>гибкая схема</li>
+                <li>JSON-подобные документы</li>
+                <li>масштабируемость</li>
+                <li>быстрая разработка</li>
+            </ul>
+
+            <p>Пример документа:</p>
+
+            <pre class="code-block"><code>
+{
+  "_id": 1,
+  "name": "Alex",
+  "email": "alex@mail.com",
+  "orders": [
+    { "id": 101, "amount": 500 },
+    { "id": 102, "amount": 300 }
+  ]
+}
+            </code></pre>
+
+            <p>Запрос:</p>
+
+            <pre class="code-block"><code>
+db.users.find({ email: "alex@mail.com" });
+            </code></pre>
+        </div>
+
+        <!-- COMPARISON -->
+        <div class="article-block animate-in">
+            <h2>⚔️ Основные различия</h2>
+
+            <ul>
+                <li><strong>PostgreSQL:</strong> строгая схема</li>
+                <li><strong>MongoDB:</strong> гибкая структура</li>
+                <li><strong>SQL vs NoSQL:</strong> разные подходы</li>
+                <li><strong>PostgreSQL:</strong> сложные связи</li>
+                <li><strong>MongoDB:</strong> вложенные документы</li>
+            </ul>
+        </div>
+
+        <!-- PERFORMANCE -->
+        <div class="article-block animate-in">
+            <h2>⚡ Производительность</h2>
+
+            <p>
+                MongoDB быстрее при:
+            </p>
+
+            <ul>
+                <li>простых запросах</li>
+                <li>работе с JSON</li>
+                <li>частых изменениях структуры</li>
+            </ul>
+
+            <p>
+                PostgreSQL лучше при:
+            </p>
+
+            <ul>
+                <li>сложных JOIN</li>
+                <li>аналитике</li>
+                <li>транзакциях</li>
+            </ul>
+        </div>
+
+        <!-- USE CASES -->
+        <div class="article-block animate-in">
+            <h2>🧩 Когда использовать PostgreSQL</h2>
+
+            <ul>
+                <li>финансовые системы</li>
+                <li>CRM / ERP</li>
+                <li>банковские приложения</li>
+                <li>сложные отчёты</li>
+            </ul>
+        </div>
+
+        <div class="article-block animate-in">
+            <h2>🚀 Когда использовать MongoDB</h2>
+
+            <ul>
+                <li>стартапы</li>
+                <li>быстро меняющиеся данные</li>
+                <li>каталоги товаров</li>
+                <li>логирование</li>
+            </ul>
+        </div>
+
+        <!-- SCALING -->
+        <div class="article-block animate-in">
+            <h2>📈 Масштабирование</h2>
+
+            <ul>
+                <li>PostgreSQL — вертикальное масштабирование</li>
+                <li>MongoDB — горизонтальное (sharding)</li>
+            </ul>
+        </div>
+
+        <!-- CONS -->
+        <div class="article-block animate-in">
+            <h2>❌ Минусы</h2>
+
+            <h3>PostgreSQL</h3>
+            <ul>
+                <li>сложнее масштабировать</li>
+                <li>жёсткая схема</li>
+            </ul>
+
+            <h3>MongoDB</h3>
+            <ul>
+                <li>нет строгих транзакций (как в SQL)</li>
+                <li>возможна избыточность данных</li>
+            </ul>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="article-block animate-in">
+            <h2>🎯 Итог</h2>
+
+            <ul>
+                <li>PostgreSQL — надёжность и структура</li>
+                <li>MongoDB — гибкость и скорость разработки</li>
+                <li>выбор зависит от задачи</li>
+            </ul>
+
+            <p>
+                В идеале современные системы часто используют обе базы:
+                каждая решает свою задачу.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="../js/ci-cd_deploy.js"></script>
+<script src="../js/footer.js"></script>
+
+</body>
+</html>
