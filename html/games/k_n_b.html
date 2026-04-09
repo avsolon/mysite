@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Камень Ножницы Бумага</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mode-switcher {
+            display: flex;
+            background: rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 5px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: rgba(255,255,255,0.4);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mode-btn.active {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .mode-btn:hover:not(.active) { color: rgba(255,255,255,0.7); }
+
+        h1 {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 20px rgba(255,255,255,0.15);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 14px 24px;
+            min-width: 110px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .score-card:hover { transform: translateY(-2px); }
+
+        .score-card.win { border-color: rgba(76, 175, 80, 0.4); }
+        .score-card.lose { border-color: rgba(244, 67, 54, 0.4); }
+        .score-card.draw { border-color: rgba(255, 193, 7, 0.4); }
+
+        .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .score-card.win .score-label { color: #4CAF50; }
+        .score-card.lose .score-label { color: #F44336; }
+        .score-card.draw .score-label { color: #FFC107; }
+
+        .score-value { font-size: 1.8rem; font-weight: 900; color: #fff; line-height: 1; }
+
+        .battle-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 35px;
+            min-height: 140px;
+        }
+
+        .fighter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fighter-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .fighter-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .fighter-icon.pvP-selected {
+            background: rgba(76,175,80,0.15);
+            border-color: #4CAF50;
+            font-size: 2rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .fighter-icon.win-glow {
+            box-shadow: 0 0 40px rgba(76, 175, 80, 0.5);
+            border-color: #4CAF50;
+            animation: pulse-win 1s ease-in-out 2;
+        }
+
+        .fighter-icon.lose-glow {
+            box-shadow: 0 0 40px rgba(244, 67, 54, 0.4);
+            border-color: #F44336;
+        }
+
+        @keyframes pulse-win {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+
+        .fighter-icon.shaking { animation: shake 0.3s ease-in-out 3; }
+
+        .vs-text {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.2);
+            align-self: flex-start;
+            margin-top: 30px;
+        }
+
+        .result-text {
+            height: 36px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-text span {
+            font-size: 1.3rem;
+            font-weight: 800;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .result-text span.show { opacity: 1; transform: translateY(0); }
+        .result-text span.win-text { color: #4CAF50; }
+        .result-text span.lose-text { color: #F44336; }
+        .result-text span.draw-text { color: #FFC107; }
+
+        .choices-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 16px;
+        }
+
+        .choices-container { display: flex; justify-content: center; margin-bottom: 10px; }
+
+        .choices, .pvp-choices {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .choice-btn {
+            width: 110px;
+            height: 130px;
+            border-radius: 24px;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .choice-btn::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: 22px; opacity: 0; transition: opacity 0.3s;
+        }
+
+        .choice-btn.rock::before { background: linear-gradient(135deg, rgba(255,152,0,0.2), rgba(255,87,34,0.1)); }
+        .choice-btn.scissors::before { background: linear-gradient(135deg, rgba(233,30,99,0.2), rgba(156,39,176,0.1)); }
+        .choice-btn.paper::before { background: linear-gradient(135deg, rgba(33,150,243,0.2), rgba(0,188,212,0.1)); }
+
+        .choice-btn:hover::before, .choice-btn:active::before { opacity: 1; }
+
+        .choice-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+
+        .choice-btn:active { transform: translateY(-4px) scale(0.98); }
+        .choice-btn.disabled { opacity: 0.3; pointer-events: none; transform: none !important; }
+
+        .choice-btn .emoji { font-size: 2.8rem; position: relative; z-index: 1; transition: transform 0.3s; }
+        .choice-btn:hover .emoji { transform: scale(1.15); }
+
+        .choice-btn .label {
+            font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.6); position: relative; z-index: 1;
+        }
+        .choice-btn:hover .label { color: rgba(255,255,255,0.9); }
+
+        .pvp-btn {
+            flex: 1;
+            max-width: 200px;
+            height: 100px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .pvp-btn:hover {
+            transform: translateY(-6px) scale(1.03);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+
+        .pvp-btn:active { transform: translateY(-3px) scale(0.98); }
+
+        .pvp-btn.locked {
+            opacity: 0.5;
+            pointer-events: none;
+            background: rgba(76,175,80,0.15);
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .reset-btn {
+            margin-top: 25px;
+            padding: 10px 28px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.5);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .particles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+        .confetti-piece {
+            position: absolute; width: 8px; height: 8px; top: -10px; animation: confetti-fall linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.6rem; }
+            .subtitle { font-size: 0.8rem; margin-bottom: 20px; }
+            .mode-switcher { margin-bottom: 18px; }
+            .mode-btn { padding: 8px 8px; font-size: 0.75rem; }
+
+            .scoreboard { gap: 8px; margin-bottom: 24px; }
+            .score-card { padding: 10px 16px; min-width: 85px; border-radius: 12px; }
+            .score-label { font-size: 0.6rem; }
+            .score-value { font-size: 1.5rem; }
+
+            .battle-area { gap: 12px; min-height: 110px; margin-bottom: 25px; }
+            .fighter-icon { width: 80px; height: 80px; font-size: 2.4rem; }
+            .vs-text { font-size: 1.2rem; margin-top: 22px; }
+
+            .result-text span { font-size: 1.1rem; }
+
+            .choices { gap: 10px; }
+            .choice-btn { width: 90px; height: 110px; border-radius: 18px; }
+            .choice-btn .emoji { font-size: 2.2rem; }
+            .choice-btn .label { font-size: 0.7rem; }
+
+            .pvp-btn { height: 80px; font-size: 0.9rem; }
+            .choices-label { margin-bottom: 12px; }
+            .reset-btn { margin-top: 20px; }
+        }
+
+        @media (max-width: 360px) {
+            .choice-btn { width: 80px; height: 100px; }
+            .choice-btn .emoji { font-size: 2rem; }
+            .fighter-icon { width: 70px; height: 70px; font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+<div class="confetti-container" id="confetti"></div>
+
+<div class="game-container">
+    <div class="mode-switcher">
+        <button class="mode-btn active" id="modePvC" onclick="setMode('pvc')">🤖 VS Компьютер</button>
+        <button class="mode-btn" id="modePvP" onclick="setMode('pvp')">👥 VS Игрок 2</button>
+    </div>
+
+    <h1>✊✋✌️</h1>
+    <p class="subtitle" id="subtitle">Сделай свой выбор!</p>
+
+    <div class="scoreboard">
+        <div class="score-card win">
+            <div class="score-label">Победы</div>
+            <div class="score-value" id="wins">0</div>
+        </div>
+        <div class="score-card draw">
+            <div class="score-label">Ничьи</div>
+            <div class="score-value" id="draws">0</div>
+        </div>
+        <div class="score-card lose">
+            <div class="score-label">Поражения</div>
+            <div class="score-value" id="losses">0</div>
+        </div>
+    </div>
+
+    <div class="battle-area">
+        <div class="fighter">
+            <span class="fighter-label" id="p1Label">Вы</span>
+            <div class="fighter-icon" id="playerIcon">❓</div>
+        </div>
+        <span class="vs-text">VS</span>
+        <div class="fighter">
+            <span class="fighter-label" id="p2Label">Компьютер</span>
+            <div class="fighter-icon" id="computerIcon">❓</div>
+        </div>
+    </div>
+
+    <div class="result-text">
+        <span id="result"></span>
+    </div>
+
+    <p class="choices-label">Выберите</p>
+    
+    <div class="choices-container">
+        <div class="choices" id="normalChoices">
+            <button class="choice-btn rock" onclick="play('rock')" aria-label="Камень">
+                <span class="emoji">🪨</span><span class="label">Камень</span>
+            </button>
+            <button class="choice-btn scissors" onclick="play('scissors')" aria-label="Ножницы">
+                <span class="emoji">✂️</span><span class="label">Ножницы</span>
+            </button>
+            <button class="choice-btn paper" onclick="play('paper')" aria-label="Бумага">
+                <span class="emoji">📄</span><span class="label">Бумага</span>
+            </button>
+        </div>
+
+        <div class="pvp-choices" id="pvpChoices" style="display: none;">
+            <button class="pvp-btn p1-btn" onclick="handlePvP(1)">🎲 Игрок 1</button>
+            <button class="pvp-btn p2-btn" onclick="handlePvP(2)">🎲 Игрок 2</button>
+        </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetGame()">Сбросить счёт</button>
+</div>
+
+<script>
+    const emojis = { rock: '🪨', scissors: '✂️', paper: '📄' };
+    const game = {
+        mode: 'pvc',
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        isPlaying: false,
+        pvp: { p1: null, p2: null, p1Locked: false, p2Locked: false }
+    };
+
+    const els = {
+        modePvC: document.getElementById('modePvC'),
+        modePvP: document.getElementById('modePvP'),
+        normalChoices: document.getElementById('normalChoices'),
+        pvpChoices: document.getElementById('pvpChoices'),
+        playerIcon: document.getElementById('playerIcon'),
+        computerIcon: document.getElementById('computerIcon'),
+        p1Label: document.getElementById('p1Label'),
+        p2Label: document.getElementById('p2Label'),
+        subtitle: document.getElementById('subtitle'),
+        result: document.getElementById('result'),
+        wins: document.getElementById('wins'),
+        draws: document.getElementById('draws'),
+        losses: document.getElementById('losses'),
+        confetti: document.getElementById('confetti')
+    };
+
+    const pContainer = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (6 + Math.random() * 8) + 's';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+        pContainer.appendChild(p);
+    }
+
+    function setMode(mode) {
+        game.mode = mode;
+        if (mode === 'pvc') {
+            els.modePvC.classList.add('active');
+            els.modePvP.classList.remove('active');
+            els.normalChoices.style.display = 'flex';
+            els.pvpChoices.style.display = 'none';
+            els.p1Label.textContent = 'Вы';
+            els.p2Label.textContent = 'Компьютер';
+            els.subtitle.textContent = 'Сделай свой выбор!';
+        } else {
+            els.modePvC.classList.remove('active');
+            els.modePvP.classList.add('active');
+            els.normalChoices.style.display = 'none';
+            els.pvpChoices.style.display = 'flex';
+            els.p1Label.textContent = 'Игрок 1';
+            els.p2Label.textContent = 'Игрок 2';
+            els.subtitle.textContent = 'Нажмите кнопку игрока для случайного выбора';
+        }
+        resetGame();
+    }
+
+    function getRandom() {
+        const opts = ['rock', 'scissors', 'paper'];
+        return opts[Math.floor(Math.random() * 3)];
+    }
+
+    function getWinner(c1, c2) {
+        if (c1 === c2) return 'draw';
+        if ((c1 === 'rock' && c2 === 'scissors') || (c1 === 'scissors' && c2 === 'paper') || (c1 === 'paper' && c2 === 'rock')) return 'win';
+        return 'lose';
+    }
+
+    function play(playerChoice) {
+        if (game.isPlaying) return;
+        game.isPlaying = true;
+
+        els.result.classList.remove('show');
+        els.playerIcon.className = 'fighter-icon';
+        els.computerIcon.className = 'fighter-icon';
+        els.playerIcon.textContent = '❓';
+        els.computerIcon.textContent = '❓';
+
+        els.playerIcon.classList.add('shaking');
+        els.computerIcon.classList.add('shaking');
+        setButtonsDisabled(true);
+
+        setTimeout(() => {
+            const compChoice = getRandom();
+            const res = getWinner(playerChoice, compChoice);
+
+            els.playerIcon.classList.remove('shaking');
+            els.computerIcon.classList.remove('shaking');
+
+            els.playerIcon.textContent = emojis[playerChoice];
+            els.computerIcon.textContent = emojis[compChoice];
+
+            if (res === 'win') {
+                game.wins++;
+                els.wins.textContent = game.wins;
+                showResult('🎉 Вы победили!', 'win-text');
+                els.playerIcon.classList.add('win-glow');
+                els.computerIcon.classList.add('lose-glow');
+                spawnConfetti();
+            } else if (res === 'lose') {
+                game.losses++;
+                els.losses.textContent = game.losses;
+                showResult('😔 Вы проиграли!', 'lose-text');
+                els.computerIcon.classList.add('win-glow');
+                els.playerIcon.classList.add('lose-glow');
+            } else {
+                game.draws++;
+                els.draws.textContent = game.draws;
+                showResult('🤝 Ничья!', 'draw-text');
+            }
+            setButtonsDisabled(false);
+            game.isPlaying = false;
+        }, 900);
+    }
+
+    function handlePvP(playerNum) {
+        if (game.isPlaying) return;
+
+        const isP1 = playerNum === 1;
+        const isP2 = playerNum === 2;
+
+        if (isP1 && !game.pvp.p1Locked) {
+            game.pvp.p1 = getRandom();
+            game.pvp.p1Locked = true;
+            document.querySelector('.p1-btn').classList.add('locked');
+            document.querySelector('.p1-btn').textContent = '✅ Выбрано';
+            els.playerIcon.textContent = '✔️';
+            els.playerIcon.classList.add('pvp-selected');
+        } else if (isP2 && !game.pvp.p2Locked) {
+            game.pvp.p2 = getRandom();
+            game.pvp.p2Locked = true;
+            document.querySelector('.p2-btn').classList.add('locked');
+            document.querySelector('.p2-btn').textContent = '✅ Выбрано';
+            els.computerIcon.textContent = '✔️';
+            els.computerIcon.classList.add('pvp-selected');
+        }
+
+        if (game.pvp.p1Locked && game.pvp.p2Locked) {
+            game.isPlaying = true;
+            els.subtitle.textContent = 'Раскрываем карты...';
+            setTimeout(() => revealPvP(), 1000);
+        }
+    }
+
+    function revealPvP() {
+        const res = getWinner(game.pvp.p1, game.pvp.p2);
+
+        els.playerIcon.classList.remove('pvp-selected');
+        els.computerIcon.classList.remove('pvp-selected');
+        els.playerIcon.textContent = emojis[game.pvp.p1];
+        els.computerIcon.textContent = emojis[game.pvp.p2];
+
+        if (res === 'win') {
+            game.wins++;
+            els.wins.textContent = game.wins;
+            showResult('🎉 Игрок 1 победил!', 'win-text');
+            els.playerIcon.classList.add('win-glow');
+            els.computerIcon.classList.add('lose-glow');
+            spawnConfetti();
+        } else if (res === 'lose') {
+            game.losses++;
+            els.losses.textContent = game.losses;
+            showResult('🎉 Игрок 2 победил!', 'lose-text');
+            els.computerIcon.classList.add('win-glow');
+            els.playerIcon.classList.add('lose-glow');
+        } else {
+            game.draws++;
+            els.draws.textContent = game.draws;
+            showResult('🤝 Ничья!', 'draw-text');
+        }
+
+        setTimeout(() => {
+            resetPvP();
+            game.isPlaying = false;
+        }, 3000);
+    }
+
+    function showResult(text, className) {
+        els.result.textContent = text;
+        els.result.className = `${className} show`;
+    }
+
+    function setButtonsDisabled(disabled) {
+        document.querySelectorAll('.choice-btn').forEach(b => disabled ? b.classList.add('disabled') : b.classList.remove('disabled'));
+    }
+
+    function resetPvP() {
+        game.pvp = { p1: null, p2: null, p1Locked: false, p2Locked: false };
+        els.playerIcon.textContent = '❓';
+        els.computerIcon.textContent = '❓';
+        els.playerIcon.className = 'fighter-icon';
+        els.computerIcon.className = 'fighter-icon';
+        document.querySelector('.p1-btn').classList.remove('locked');
+        document.querySelector('.p1-btn').textContent = '🎲 Игрок 1';
+        document.querySelector('.p2-btn').classList.remove('locked');
+        document.querySelector('.p2-btn').textContent = '🎲 Игрок 2';
+        els.result.classList.remove('show');
+        els.subtitle.textContent = 'Нажмите кнопку игрока для случайного выбора';
+    }
+
+    function resetGame() {
+        game.wins = 0;
+        game.draws = 0;
+        game.losses = 0;
+        els.wins.textContent = '0';
+        els.draws.textContent = '0';
+        els.losses.textContent = '0';
+        els.playerIcon.textContent = '❓';
+        els.computerIcon.textContent = '❓';
+        els.playerIcon.className = 'fighter-icon';
+        els.computerIcon.className = 'fighter-icon';
+        els.result.classList.remove('show');
+        els.confetti.innerHTML = '';
+        game.isPlaying = false;
+        setButtonsDisabled(false);
+        if (game.mode === 'pvp') resetPvP();
+    }
+
+    function spawnConfetti() {
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#F7DC6F'];
+        for (let i = 0; i < 35; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDuration = (1.2 + Math.random() * 2) + 's';
+            piece.style.animationDelay = (Math.random() * 0.6) + 's';
+            piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            piece.style.width = (5 + Math.random() * 6) + 'px';
+            piece.style.height = (5 + Math.random() * 6) + 'px';
+            els.confetti.appendChild(piece);
+        }
+        setTimeout(() => { els.confetti.innerHTML = ''; }, 4000);
+    }
+</script>
+
+</body>
+</html>
+
