@@ -21,12 +21,9 @@
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
             min-height: 100dvh;
             display: flex;
             align-items: flex-start;
@@ -36,18 +33,10 @@
             color: var(--text-main);
             overflow-x: hidden;
         }
-
         .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .particle { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 50%; animation: float linear infinite; }
-        @keyframes float {
-            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-15vh) rotate(720deg); opacity: 0; }
-        }
-
+        .particle { position: absolute; background: rgba(255, 255, 255, 0.12); border-radius: 50%; animation: floatP linear infinite; }
+        @keyframes floatP { 0% { transform: translateY(105vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-15vh) rotate(720deg); opacity: 0; } }
         .container { position: relative; z-index: 1; width: 100%; max-width: 460px; }
-        
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(18px);
@@ -57,145 +46,80 @@
             padding: 28px 22px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
         }
-
-        .header { text-align: center; margin-bottom: 24px; }
-        .header h1 {
-            font-size: 1.65rem; font-weight: 700;
-            background: var(--accent);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            margin-bottom: 6px;
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.65rem; font-weight: 700; background: var(--accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
+        .header p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.3; }
+        .question-section { margin-bottom: 16px; }
+        .question-input {
+            width: 100%; padding: 13px 16px;
+            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
+            color: var(--text-main); font-size: 16px; font-family: inherit; outline: none; transition: all 0.25s ease; min-height: 46px;
         }
-        .header p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
-
-        .names-section { margin-bottom: 20px; }
+        .question-input::placeholder { color: rgba(255, 255, 255, 0.35); }
+        .question-input:focus { border-color: rgba(161, 140, 209, 0.6); background: rgba(255, 255, 255, 0.14); box-shadow: 0 0 16px rgba(161, 140, 209, 0.2); }
+        .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent); margin: 16px 0; }
+        .names-section { margin-bottom: 16px; }
         .names-list { display: flex; flex-direction: column; gap: 10px; }
         .name-row { display: flex; align-items: center; gap: 8px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
-
         .name-input {
-            flex: 1; padding: 13px 16px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            color: var(--text-main);
-            font-size: 16px; /* Prevents iOS zoom */
-            font-family: inherit;
-            outline: none;
-            transition: all 0.25s ease;
-            min-height: 46px;
+            flex: 1; padding: 13px 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
+            color: var(--text-main); font-size: 16px; font-family: inherit; outline: none; transition: all 0.25s ease; min-height: 46px;
         }
         .name-input::placeholder { color: rgba(255, 255, 255, 0.35); }
         .name-input:focus { border-color: rgba(161, 140, 209, 0.6); background: rgba(255, 255, 255, 0.14); box-shadow: 0 0 16px rgba(161, 140, 209, 0.2); }
-
-        .remove-btn {
-            width: 44px; height: 44px; border: none;
-            background: rgba(255, 90, 90, 0.15); color: #ff9b9b;
-            border-radius: 11px; cursor: pointer; font-size: 1.1rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease; flex-shrink: 0;
-            touch-action: manipulation;
-        }
+        .remove-btn { width: 44px; height: 44px; border: none; background: rgba(255, 90, 90, 0.15); color: #ff9b9b; border-radius: 11px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; flex-shrink: 0; touch-action: manipulation; }
         .remove-btn:hover { background: rgba(255, 90, 90, 0.25); transform: scale(1.05); }
         .remove-btn:disabled { opacity: 0; pointer-events: none; }
-
         .add-btn {
-            width: 100%; padding: 13px;
-            border: 2px dashed rgba(255, 255, 255, 0.15); background: transparent;
-            color: var(--text-muted); border-radius: 12px; cursor: pointer;
-            font-size: 0.9rem; font-family: inherit;
-            transition: all 0.3s ease; margin-top: 10px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            min-height: 46px; touch-action: manipulation;
+            width: 100%; padding: 13px; border: 2px dashed rgba(255, 255, 255, 0.15); background: transparent; color: var(--text-muted); border-radius: 12px; cursor: pointer; font-size: 0.9rem; font-family: inherit; transition: all 0.3s ease; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; touch-action: manipulation;
         }
         .add-btn:hover { border-color: rgba(161, 140, 209, 0.5); color: #cbb4f5; background: rgba(161, 140, 209, 0.08); }
-
         .names-count { text-align: center; font-size: 0.75rem; color: var(--text-dim); margin-top: 10px; min-height: 1.2em; }
-
-        .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent); margin: 18px 0; }
-
         .launch-btn {
-            width: 100%; padding: 15px; border: none; border-radius: 13px;
-            background: var(--accent-btn); color: #fff;
-            font-size: 1.05rem; font-weight: 600; font-family: inherit;
-            cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden;
-            min-height: 50px; touch-action: manipulation;
+            width: 100%; padding: 15px; border: none; border-radius: 13px; background: var(--accent-btn); color: #fff; font-size: 1.05rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden; min-height: 50px; touch-action: manipulation;
         }
-        .launch-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.5s ease;
-        }
+        .launch-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent); transition: left 0.5s ease; }
         .launch-btn:hover::before { left: 100%; }
         .launch-btn:active { transform: scale(0.98); }
         .launch-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         .launch-btn:disabled::before { display: none; }
-
         .history-section { display: none; margin-top: 16px; }
         .history-title { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; text-align: center; }
         .history-list { display: flex; flex-direction: column; gap: 6px; max-height: 130px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.15) transparent; }
         .history-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 10px; font-size: 0.85rem; animation: slideIn 0.3s ease-out; }
         .history-round { color: var(--text-dim); font-size: 0.7rem; min-width: 65px; }
         .history-result { color: #e0aaff; font-weight: 600; }
-
-        /* Overlay */
         .roulette-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 15, 0.92);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: none; align-items: center; justify-content: center;
-            z-index: 1000; padding: 20px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 15, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
         }
         .roulette-overlay.active { display: flex; }
-
         .roulette-container { text-align: center; width: 100%; max-width: 320px; }
         .roulette-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2.5px; }
         .roulette-display {
-            width: 100%; height: 85px;
-            background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 15px; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px; overflow: hidden; position: relative;
+            width: 100%; height: 85px; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; overflow: hidden; position: relative;
         }
-        .roulette-display::before, .roulette-display::after {
-            content: ''; position: absolute; left: 0; right: 0; height: 24px; z-index: 2; pointer-events: none;
-        }
+        .roulette-display::before, .roulette-display::after { content: ''; position: absolute; left: 0; right: 0; height: 24px; z-index: 2; pointer-events: none; }
         .roulette-display::before { top: 0; background: linear-gradient(to bottom, rgba(5, 5, 15, 0.95), transparent); }
         .roulette-display::after { bottom: 0; background: linear-gradient(to top, rgba(5, 5, 15, 0.95), transparent); }
-        .roulette-name {
-            font-size: 1.5rem; font-weight: 700;
-            background: var(--accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            white-space: nowrap; padding: 0 14px;
-        }
-
+        .roulette-name { font-size: 1.5rem; font-weight: 700; background: var(--accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; white-space: nowrap; padding: 0 14px; }
         .close-btn {
-            padding: 11px 28px; border: 1px solid rgba(255, 255, 255, 0.2); background: transparent;
-            color: var(--text-muted); border-radius: 11px; cursor: pointer;
-            font-size: 0.9rem; font-family: inherit; transition: all 0.2s ease;
-            min-height: 46px; touch-action: manipulation;
+            padding: 11px 28px; border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: var(--text-muted); border-radius: 11px; cursor: pointer; font-size: 0.9rem; font-family: inherit; transition: all 0.2s ease; min-height: 46px; touch-action: manipulation;
         }
         .close-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
-
-        /* Result */
         .result-container { animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
-        .result-icon { font-size: 3.2rem; margin-bottom: 8px; display: inline-block; }
-        .result-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 5px; }
-        .result-name {
-            font-size: 1.8rem; font-weight: 700;
-            background: var(--result-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            margin-bottom: 16px;
-        }
-
-        /* Confetti */
+        .result-icon { font-size: 3.2rem; margin-bottom: 8px; display: inline-block; animation: bounce 1.5s ease-in-out infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .result-question { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 4px; line-height: 1.4; }
+        .result-name { font-size: 1.8rem; font-weight: 700; background: var(--result-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; }
         .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1001; }
         .confetti-piece { position: absolute; top: -15px; animation: confettiFall linear forwards; }
         @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-
-        /* Mobile Optimizations */
         @media (max-width: 480px) {
             body { padding: 16px 12px; }
             .card { padding: 22px 16px; border-radius: 18px; }
             .header h1 { font-size: 1.45rem; }
-            .header p { font-size: 0.8rem; }
             .roulette-display { height: 75px; }
             .roulette-name { font-size: 1.35rem; }
             .result-name { font-size: 1.6rem; }
@@ -203,50 +127,46 @@
         }
         @media (max-width: 360px) {
             .card { padding: 18px 12px; }
-            .name-input { padding: 11px 14px; }
+            .question-input, .name-input { padding: 11px 14px; }
             .remove-btn { width: 40px; height: 40px; }
             .launch-btn { padding: 13px; font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-
     <div class="particles" id="particles"></div>
-
     <div class="container">
         <div class="card">
             <div class="header">
-                <h1>🎲 Мой Рандом</h1>
-                <p>Добавляй и получай случайный результат</p>
+                <h1>🎲 Рандомный Рандом</h1>
+                <p>Задайте вопрос, добавьте варианты и получите случайный результат</p>
             </div>
-
+            <div class="question-section">
+                <input type="text" class="question-input" id="questionInput" placeholder="Ваш вопрос (необязательно)..." maxlength="120" inputmode="text" />
+            </div>
+            <div class="divider"></div>
             <div class="names-section">
                 <div class="names-list" id="namesList"></div>
                 <button class="add-btn" id="addBtn">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg>
-                    <span>Добавить</span>
+                    <span>Добавить вариант</span>
                 </button>
                 <div class="names-count" id="namesCount"></div>
             </div>
-
-            <div class="divider"></div>
-
-            <button class="launch-btn" id="launchBtn" disabled>🎲 Запустить</button>
-
+            <button class="launch-btn" id="launchBtn" disabled>🎲 Получить результат</button>
             <div class="history-section" id="historySection">
                 <div class="history-title">История рулетки</div>
                 <div class="history-list" id="historyList"></div>
             </div>
         </div>
     </div>
-
     <div class="roulette-overlay" id="rouletteOverlay">
         <div class="roulette-container" id="rouletteContainer"></div>
     </div>
-
     <div class="confetti-container" id="confettiContainer"></div>
 
     <script>
+        const questionInput = document.getElementById('questionInput');
         const namesList = document.getElementById('namesList');
         const addBtn = document.getElementById('addBtn');
         const launchBtn = document.getElementById('launchBtn');
@@ -256,12 +176,10 @@
         const confettiContainer = document.getElementById('confettiContainer');
         const historySection = document.getElementById('historySection');
         const historyList = document.getElementById('historyList');
-
         let rowCounter = 1;
         let roundNumber = 0;
         let isSpinning = false;
 
-        // Particles
         function createParticles() {
             const container = document.getElementById('particles');
             for (let i = 0; i < 25; i++) {
@@ -276,7 +194,6 @@
         }
         createParticles();
 
-        // Helpers
         function declOfNum(n, titles) {
             const cases = [2, 0, 1, 1, 1, 2];
             return titles[(n % 100 > 4 && n % 100 < 20) ? 2 : cases[Math.min(n % 10, 5)]];
@@ -291,7 +208,7 @@
         function updateNamesCount() {
             const inputs = namesList.querySelectorAll('.name-input');
             const filled = Array.from(inputs).filter(inp => inp.value.trim().length > 0).length;
-            namesCount.textContent = filled > 0 ? `Участников: ${filled} ${declOfNum(filled, ['человек', 'человека', 'человек'])}` : '';
+            namesCount.textContent = filled > 0 ? `Вариантов: ${filled} ${declOfNum(filled, ['человек', 'человека', 'человек'])}` : '';
             launchBtn.disabled = filled < 2;
         }
 
@@ -311,10 +228,8 @@
                 <button class="remove-btn" title="Удалить">✕</button>
             `;
             namesList.appendChild(row);
-
             const input = row.querySelector('.name-input');
             const removeBtn = row.querySelector('.remove-btn');
-
             input.addEventListener('input', updateNamesCount);
             removeBtn.addEventListener('click', () => {
                 row.style.transition = 'all 0.25s ease';
@@ -326,35 +241,28 @@
                     updateNamesCount();
                 }, 250);
             });
-
             input.focus();
             updateRemoveButtons();
             updateNamesCount();
         }
 
         addBtn.addEventListener('click', () => addNameField());
-
-        // Initial field
         addNameField();
 
-        // Roulette
         launchBtn.addEventListener('click', startRoulette);
 
         function getValidNames() {
-            return Array.from(namesList.querySelectorAll('.name-input'))
-                .map(inp => inp.value.trim())
-                .filter(v => v.length > 0);
+            return Array.from(namesList.querySelectorAll('.name-input')).map(inp => inp.value.trim()).filter(v => v.length > 0);
         }
 
         function startRoulette() {
             const validNames = getValidNames();
             if (validNames.length < 2 || isSpinning) return;
-
             isSpinning = true;
             launchBtn.disabled = true;
-
             const winnerIndex = Math.floor(Math.random() * validNames.length);
             const winner = validNames[winnerIndex];
+            const question = questionInput.value.trim();
 
             rouletteContainer.innerHTML = `
                 <div class="roulette-label">Выбираем...</div>
@@ -372,16 +280,13 @@
             function spinLoop() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / totalDuration, 1);
-
                 if (progress >= 1) {
                     rouletteNameEl.textContent = winner;
-                    setTimeout(() => showResult(winner), 300);
+                    setTimeout(() => showResult(question, winner), 300);
                     return;
                 }
-
                 const easeOut = 1 - Math.pow(1 - progress, 3);
                 const currentInterval = 50 + (easeOut * 380);
-
                 const now = Date.now();
                 if (now - lastSwapTime >= currentInterval) {
                     lastSwapTime = now;
@@ -391,26 +296,25 @@
                     } while (randomName === rouletteNameEl.textContent && validNames.length > 1);
                     rouletteNameEl.textContent = randomName;
                 }
-
                 requestAnimationFrame(spinLoop);
             }
-
             requestAnimationFrame(spinLoop);
         }
 
-        function showResult(name) {
+        function showResult(question, name) {
             roundNumber++;
+            const questionHtml = question ? `<div class="result-question">${escapeHtml(question)}</div>` : '';
             rouletteContainer.innerHTML = `
                 <div class="result-container">
                     <div class="result-icon">🎯</div>
-                    <div class="result-label">Результат</div>
+                    ${questionHtml}
                     <div class="result-name">${escapeHtml(name)}</div>
                     <button class="close-btn" id="closeOverlay">Закрыть</button>
                 </div>
             `;
             document.getElementById('closeOverlay').addEventListener('click', closeOverlay);
             launchConfetti();
-            addToHistory(roundNumber, name);
+            addToHistory(roundNumber, question, name);
         }
 
         function closeOverlay() {
@@ -419,13 +323,14 @@
             updateNamesCount();
         }
 
-        function addToHistory(round, name) {
+        function addToHistory(round, question, name) {
             historySection.style.display = 'block';
             const item = document.createElement('div');
             item.className = 'history-item';
+            const qText = question ? `${escapeHtml(question)} → ` : '';
             item.innerHTML = `
                 <span class="history-round">Раунд ${round}</span>
-                <span class="history-result">${escapeHtml(name)}</span>
+                <span class="history-result">${qText}${escapeHtml(name)}</span>
             `;
             historyList.insertBefore(item, historyList.firstChild);
         }
@@ -449,7 +354,6 @@
             setTimeout(() => { confettiContainer.innerHTML = ''; }, 3500);
         }
 
-        // Close overlay on outside click
         rouletteOverlay.addEventListener('click', (e) => {
             if (e.target === rouletteOverlay && !isSpinning) closeOverlay();
         });
