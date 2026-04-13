@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Пятнашки</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    padding: 20px;
+    overflow: hidden;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .stats {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  .stats span {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 20px;
+    border-radius: 30px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .stats .value {
+    font-weight: bold;
+    color: #ffd700;
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    width: min(85vw, 420px);
+    height: min(85vw, 420px);
+    position: relative;
+  }
+
+  .tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tile.number {
+    background: linear-gradient(145deg, #4a4e8a, #3d3f7a);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+      0 4px 15px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .tile.number:hover {
+    transform: scale(1.04);
+    box-shadow:
+      0 6px 25px rgba(74, 78, 138, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    background: linear-gradient(145deg, #5a5e9a, #4d4f8a);
+  }
+
+  .tile.number:active {
+    transform: scale(0.96);
+  }
+
+  .tile.number.movable {
+    background: linear-gradient(145deg, #5b6abf, #4a59a8);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 4px 15px rgba(91, 106, 191, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .tile.number.movable:hover {
+    background: linear-gradient(145deg, #6b7acf, #5a69b8);
+  }
+
+  .tile.empty {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    cursor: default;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .tile.correct {
+    background: linear-gradient(145deg, #2d8a4e, #257a42) !important;
+    border-color: rgba(100, 255, 150, 0.3) !important;
+    box-shadow:
+      0 4px 15px rgba(45, 138, 78, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  }
+
+  /* Анимация перемещения */
+  .tile.sliding {
+    transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 2;
+  }
+
+  .btn {
+    margin-top: 20px;
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    background: linear-gradient(145deg, #ffd700, #f0c000);
+    color: #1a1a2e;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    text-transform: uppercase;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(255, 215, 0, 0.5);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  /* Модальное окно победы */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal {
+    background: linear-gradient(145deg, #2a2d5e, #1e2050);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 90vw;
+  }
+
+  .modal h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #ffd700;
+  }
+
+  .modal p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    margin-bottom: 25px;
+    line-height: 1.6;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Конфетти */
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99;
+    overflow: hidden;
+  }
+
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    to {
+      top: 110vh;
+      transform: rotate(720deg);
+    }
+  }
+
+  /* Таймер */
+  .timer-display {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Адаптация для маленьких экранов */
+  @media (max-width: 400px) {
+    h1 { font-size: 1.5rem; }
+    .stats { gap: 15px; font-size: 0.9rem; }
+    .stats span { padding: 6px 14px; }
+    .board { gap: 4px; padding: 8px; }
+    .btn { padding: 12px 30px; font-size: 1rem; }
+  }
+
+  @media (max-height: 700px) and (orientation: portrait) {
+    h1 { margin-bottom: 5px; font-size: 1.4rem; }
+    .stats { margin-bottom: 10px; }
+    .btn { margin-top: 12px; }
+  }
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    body {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px;
+    }
+    h1 { width: 100%; font-size: 1.3rem; margin-bottom: 5px; }
+    .stats { margin-bottom: 5px; }
+    .board {
+      width: min(55vh, 320px);
+      height: min(55vh, 320px);
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>🧩 Пятнашки</h1>
+
+<div class="stats">
+  <span>Ходы: <span class="value" id="moves">0</span></span>
+  <span>Время: <span class="value timer-display" id="timer">00:00</span></span>
+</div>
+
+<div class="board" id="board"></div>
+
+<button class="btn" id="shuffleBtn">🔀 Новая игра</button>
+
+<!-- Модалка победы -->
+<div class="modal-overlay" id="winModal">
+  <div class="modal">
+    <h2>🎉 Победа!</h2>
+    <p id="winText">Вы собрали пятнашки!</p>
+    <button class="btn" id="playAgainBtn">Играть снова</button>
+  </div>
+</div>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+  const SIZE = 4;
+  const TOTAL = SIZE * SIZE;
+  let board = [];
+  let moves = 0;
+  let timerInterval = null;
+  let seconds = 0;
+  let gameStarted = false;
+  let gameWon = false;
+
+  const boardEl = document.getElementById('board');
+  const movesEl = document.getElementById('moves');
+  const timerEl = document.getElementById('timer');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const winModal = document.getElementById('winModal');
+  const winText = document.getElementById('winText');
+  const playAgainBtn = document.getElementById('playAgainBtn');
+  const confettiContainer = document.getElementById('confettiContainer');
+
+  // Инициализация решённой доски
+  function solvedBoard() {
+    const arr = [];
+    for (let i = 1; i < TOTAL; i++) arr.push(i);
+    arr.push(0);
+    return arr;
+  }
+
+  // Проверка решённости
+  function isSolved() {
+    const sol = solvedBoard();
+    for (let i = 0; i < TOTAL; i++) {
+      if (board[i] !== sol[i]) return false;
+    }
+    return true;
+  }
+
+  // Подсчёт инверсий (для проверки разрешимости)
+  function countInversions(arr) {
+    let inv = 0;
+    const filtered = arr.filter(x => x !== 0);
+    for (let i = 0; i < filtered.length; i++) {
+      for (let j = i + 1; j < filtered.length; j++) {
+        if (filtered[i] > filtered[j]) inv++;
+      }
+    }
+    return inv;
+  }
+
+  // Проверка разрешимости для 4x4
+  function isSolvable(arr) {
+    const inv = countInversions(arr);
+    const emptyRow = Math.floor(arr.indexOf(0) / SIZE); // 0-based
+    const emptyRowFromBottom = SIZE - emptyRow;
+    return (emptyRowFromBottom % 2 === 0) === (inv % 2 === 1);
+  }
+
+  // Перемешивание
+  function shuffle() {
+    let arr;
+    do {
+      arr = solvedBoard();
+      // Fisher-Yates shuffle
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    } while (!isSolvable(arr) || isSolved(arr));
+    return arr;
+  }
+
+  // Найти пустую ячейку
+  function emptyIndex() {
+    return board.indexOf(0);
+  }
+
+  // Получить соседние индексы
+  function getNeighbors(idx) {
+    const row = Math.floor(idx / SIZE);
+    const col = idx % SIZE;
+    const neighbors = [];
+    if (row > 0) neighbors.push(idx - SIZE);       // up
+    if (row < SIZE - 1) neighbors.push(idx + SIZE); // down
+    if (col > 0) neighbors.push(idx - 1);           // left
+    if (col < SIZE - 1) neighbors.push(idx + 1);    // right
+    return neighbors;
+  }
+
+  // Обновить отображение
+  function render() {
+    boardEl.innerHTML = '';
+    const emptyIdx = emptyIndex();
+    const neighbors = getNeighbors(emptyIdx);
+
+    for (let i = 0; i < TOTAL; i++) {
+      const tile = document.createElement('div');
+      tile.classList.add('tile');
+
+      if (board[i] === 0) {
+        tile.classList.add('empty');
+      } else {
+        tile.classList.add('number');
+        tile.textContent = board[i];
+
+        // Подсветить правильно стоящие
+        if (board[i] === i + 1) {
+          tile.classList.add('correct');
+        }
+
+        // Подсветить доступные для хода
+        if (neighbors.includes(i)) {
+          tile.classList.add('movable');
+        }
+
+        tile.addEventListener('click', () => handleMove(i));
+        tile.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          handleMove(i);
+        });
+      }
+
+      boardEl.appendChild(tile);
+    }
+  }
+
+  // Обработка хода
+  function handleMove(idx) {
+    if (gameWon) return;
+
+    const emptyIdx = emptyIndex();
+    const neighbors = getNeighbors(emptyIdx);
+
+    if (!neighbors.includes(idx)) return;
+
+    // Запустить таймер при первом ходе
+    if (!gameStarted) {
+      gameStarted = true;
+      startTimer();
+    }
+
+    // Поменять местами
+    [board[idx], board[emptyIdx]] = [board[emptyIdx], board[idx]];
+    moves++;
+    movesEl.textContent = moves;
+
+    render();
+
+    // Проверка победы
+    if (isSolved()) {
+      gameWon = true;
+      stopTimer();
+      setTimeout(showWin, 300);
+    }
+  }
+
+  // Таймер
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      seconds++;
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      timerEl.textContent = `${m}:${s}`;
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  // Победа
+  function showWin() {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    winText.innerHTML = `Ходов: <strong>${moves}</strong><br>Время: <strong>${m} мин ${s} сек</strong>`;
+    winModal.classList.add('active');
+    launchConfetti();
+  }
+
+  // Конфетти
+  function launchConfetti() {
+    const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96c93d', '#ff9ff3', '#54a0ff'];
+    for (let i = 0; i < 80; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.width = (Math.random() * 8 + 5) + 'px';
+      confetti.style.height = (Math.random() * 8 + 5) + 'px';
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      confetti.style.animationDelay = (Math.random() * 1.5) + 's';
+      confetti.style.opacity = Math.random() * 0.5 + 0.5;
+      confettiContainer.appendChild(confetti);
+    }
+    setTimeout(() => { confettiContainer.innerHTML = ''; }, 5000);
+  }
+
+  // Новая игра
+  function newGame() {
+    stopTimer();
+    moves = 0;
+    seconds = 0;
+    gameStarted = false;
+    gameWon = false;
+    movesEl.textContent = '0';
+    timerEl.textContent = '00:00';
+    winModal.classList.remove('active');
+    confettiContainer.innerHTML = '';
+    board = shuffle();
+    render();
+  }
+
+  // Кнопки
+  shuffleBtn.addEventListener('click', newGame);
+  playAgainBtn.addEventListener('click', newGame);
+
+  // Закрытие модалки по клику на оверлей
+  winModal.addEventListener('click', (e) => {
+    if (e.target === winModal) {
+      winModal.classList.remove('active');
+    }
+  });
+
+  // Клавиатурное управление
+  document.addEventListener('keydown', (e) => {
+    if (gameWon) return;
+    const emptyIdx = emptyIndex();
+    const row = Math.floor(emptyIdx / SIZE);
+    const col = emptyIdx % SIZE;
+    let targetIdx = -1;
+
+    switch (e.key) {
+      case 'ArrowUp':
+        if (row < SIZE - 1) targetIdx = emptyIdx + SIZE;
+        break;
+      case 'ArrowDown':
+        if (row > 0) targetIdx = emptyIdx - SIZE;
+        break;
+      case 'ArrowLeft':
+        if (col < SIZE - 1) targetIdx = emptyIdx + 1;
+        break;
+      case 'ArrowRight':
+        if (col > 0) targetIdx = emptyIdx - 1;
+        break;
+    }
+
+    if (targetIdx >= 0) {
+      e.preventDefault();
+      handleMove(targetIdx);
+    }
+  });
+
+  // Свайпы для мобильных
+  let touchStartX = 0, touchStartY = 0;
+  boardEl.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  boardEl.addEventListener('touchend', (e) => {
+    if (gameWon) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+
+    if (Math.max(absDx, absDy) < 30) return; // слишком маленький свайп
+
+    const emptyIdx = emptyIndex();
+    const row = Math.floor(emptyIdx / SIZE);
+    const col = emptyIdx % SIZE;
+    let targetIdx = -1;
+
+    if (absDx > absDy) {
+      // горизонтальный свайп
+      if (dx > 0 && col > 0) targetIdx = emptyIdx - 1;       // свайп вправо → tile слева
+      if (dx < 0 && col < SIZE - 1) targetIdx = emptyIdx + 1; // свайп влево → tile справа
+    } else {
+      // вертикальный свайп
+      if (dy > 0 && row > 0) targetIdx = emptyIdx - SIZE;     // свайп вниз → tile сверху
+      if (dy < 0 && row < SIZE - 1) targetIdx = emptyIdx + SIZE; // свайп вверх → tile снизу
+    }
+
+    if (targetIdx >= 0) handleMove(targetIdx);
+  }, { passive: true });
+
+  // Старт
+  newGame();
+</script>
+
+</body>
+</html>
