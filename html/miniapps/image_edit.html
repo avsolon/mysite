@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конвертер изображений</title>
+<link rel="stylesheet" href="../css/blog.css">
+<link rel="stylesheet" href="../css/styles.css">
+
+<style>
+.loader {
+    display: none;
+    margin-top: 20px;
+}
+.preview {
+    max-width: 200px;
+    margin-top: 15px;
+    border-radius: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="page-nav">
+        <a href="../index.html" class="back-btn">← Назад</a>
+    </nav>
+
+    <div class="main-content">
+
+        <div class="info-block">
+            <h1 class="name-title">🖼 Конвертер изображений</h1>
+            <p class="subtitle">Загрузка, изменение и скачивание</p>
+        </div>
+
+        <div class="info-block">
+
+            <input type="file" id="fileInput" accept="image/*">
+
+            <img id="preview" class="preview" />
+
+            <h3>Формат</h3>
+            <select id="format">
+                <option value="jpeg">JPG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WEBP</option>
+            </select>
+
+            <h3>Размер</h3>
+            <input type="number" id="width" placeholder="Ширина">
+            <input type="number" id="height" placeholder="Высота">
+
+            <label>
+                <input type="checkbox" id="keepRatio" checked>
+                Сохранять пропорции
+            </label>
+
+            <br><br>
+
+            <button onclick="upload()">🚀 Обработать</button>
+
+            <div class="loader" id="loader">⏳ Обработка...</div>
+
+        </div>
+
+        <div class="info-block">
+            <a id="downloadLink" style="display:none;" class="back-btn">⬇ Скачать</a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// preview
+document.getElementById("fileInput").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    const preview = document.getElementById("preview");
+    preview.src = URL.createObjectURL(file);
+});
+
+// upload
+async function upload() {
+    const file = document.getElementById('fileInput').files[0];
+    if (!file) return alert("Выбери файл");
+
+    const loader = document.getElementById("loader");
+    loader.style.display = "block";
+
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append("format", document.getElementById('format').value);
+    formData.append("width", document.getElementById('width').value);
+    formData.append("height", document.getElementById('height').value);
+    formData.append("keepRatio", document.getElementById('keepRatio').checked);
+
+    try {
+        const res = await fetch("/api/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res.ok) throw new Error("Ошибка сервера");
+
+        const blob = await res.blob();
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.getElementById("downloadLink");
+
+        link.href = url;
+        link.download = "image";
+        link.style.display = "inline-block";
+
+    } catch (e) {
+        alert("Ошибка: " + e.message);
+    }
+
+    loader.style.display = "none";
+}
+</script>
+
+</body>
+</html>
