@@ -103,7 +103,7 @@ async function upload() {
     formData.append("keepRatio", keepRatio);
 
     try {
-        const res = await fetch("http://109.71.242.145:8000/upload", {
+        const res = await fetch("/api/upload", {
             method: "POST",
             body: formData
         });
