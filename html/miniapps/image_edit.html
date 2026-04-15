@@ -96,7 +96,7 @@ async function upload() {
     formData.append("keepRatio", document.getElementById('keepRatio').checked);
 
     try {
-        const res = await fetch("http://2.27.48.30:8000/upload", {
+        const res = await fetch("http://109.71.242.145:8000/upload", {
             method: "POST",
             body: formData
         });
