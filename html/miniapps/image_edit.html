@@ -73,14 +73,12 @@
 </div>
 
 <script>
-// preview
 document.getElementById("fileInput").addEventListener("change", function(e){
     const file = e.target.files[0];
     const preview = document.getElementById("preview");
     preview.src = URL.createObjectURL(file);
 });
 
-// upload
 async function upload() {
     const file = document.getElementById('fileInput').files[0];
     if (!file) return alert("Выбери файл");
@@ -89,50 +87,50 @@ async function upload() {
     loader.style.display = "block";
 
     let formData = new FormData();
+
     formData.append("file", file);
     formData.append("format", document.getElementById('format').value);
-    formData.append("width", document.getElementById('width').value);
-    formData.append("height", document.getElementById('height').value);
-    formData.append("keepRatio", document.getElementById('keepRatio').checked);
 
-    fetch("http://109.71.242.145:8000/upload", {
-    method: "POST",
-    body: formData
-    })
-    .then(r => r.blob())
-    .then(blob => {
+    // ✅ безопасно добавляем width/height
+    const width = document.getElementById('width').value;
+    const height = document.getElementById('height').value;
+
+    if (width) formData.append("width", parseInt(width));
+    if (height) formData.append("height", parseInt(height));
+
+    // ✅ явно строкой
+    const keepRatio = document.getElementById('keepRatio').checked ? "true" : "false";
+    formData.append("keepRatio", keepRatio);
+
+    try {
+        const res = await fetch("http://109.71.242.145:8000/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        // ✅ логируем ответ
+        if (!res.ok) {
+            const text = await res.text();
+            console.error("SERVER ERROR:", text);
+            throw new Error("Ошибка сервера");
+        }
+
+        const blob = await res.blob();
+
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "result.jpg";
-        a.click();
-    })
-    .catch(err => console.log(err));
+        const link = document.getElementById("downloadLink");
 
-    // try {
-    //     const res = await fetch("http://109.71.242.145:8000/upload", {
-    //         method: "POST",
-    //         body: formData
-    //     });
+        link.href = url;
+        link.download = "image";
+        link.style.display = "inline-block";
 
-    //     if (!res.ok) throw new Error("Ошибка сервера");
-
-    //     const blob = await res.blob();
-
-    //     const url = window.URL.createObjectURL(blob);
-    //     const link = document.getElementById("downloadLink");
-
-    //     link.href = url;
-    //     link.download = "image";
-    //     link.style.display = "inline-block";
-
-    // } catch (e) {
-    //     alert("Ошибка: " + e.message);
-    // }
+    } catch (e) {
+        console.error(e);
+        alert("Ошибка: " + e.message);
+    }
 
     loader.style.display = "none";
 }
 </script>
-
 </body>
 </html>
