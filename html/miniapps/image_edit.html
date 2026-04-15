@@ -95,26 +95,40 @@ async function upload() {
     formData.append("height", document.getElementById('height').value);
     formData.append("keepRatio", document.getElementById('keepRatio').checked);
 
-    try {
-        const res = await fetch("http://109.71.242.145:8000/upload", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!res.ok) throw new Error("Ошибка сервера");
-
-        const blob = await res.blob();
-
+    fetch("http://109.71.242.145:8000/upload", {
+    method: "POST",
+    body: formData
+    })
+    .then(r => r.blob())
+    .then(blob => {
         const url = window.URL.createObjectURL(blob);
-        const link = document.getElementById("downloadLink");
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "result.jpg";
+        a.click();
+    })
+    .catch(err => console.log(err));
 
-        link.href = url;
-        link.download = "image";
-        link.style.display = "inline-block";
+    // try {
+    //     const res = await fetch("http://109.71.242.145:8000/upload", {
+    //         method: "POST",
+    //         body: formData
+    //     });
 
-    } catch (e) {
-        alert("Ошибка: " + e.message);
-    }
+    //     if (!res.ok) throw new Error("Ошибка сервера");
+
+    //     const blob = await res.blob();
+
+    //     const url = window.URL.createObjectURL(blob);
+    //     const link = document.getElementById("downloadLink");
+
+    //     link.href = url;
+    //     link.download = "image";
+    //     link.style.display = "inline-block";
+
+    // } catch (e) {
+    //     alert("Ошибка: " + e.message);
+    // }
 
     loader.style.display = "none";
 }
