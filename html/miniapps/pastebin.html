@@ -1,0 +1,91 @@
+<div class="paste-container">
+    <h2>📎 Pastebin сервис</h2>
+
+    <form id="pasteForm">
+        <textarea name="text" placeholder="Введите сообщение..."></textarea>
+
+        <input type="file" name="file">
+
+        <button type="submit">Отправить</button>
+    </form>
+
+    <div id="result" style="display:none;">
+    <div id="linkBox"></div>
+    <div id="qrBox" style="margin-top:15px;"></div>
+</div>
+</div>
+
+<style>
+.paste-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #0f172a;
+    padding: 30px;
+    border-radius: 16px;
+    color: white;
+    font-family: Arial;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #1e293b;
+    color: white;
+}
+
+input[type="file"] {
+    margin-bottom: 15px;
+}
+
+button {
+    background: #3b82f6;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+#result {
+    margin-top: 20px;
+    word-break: break-all;
+}
+</style>
+
+<script>
+document.getElementById("pasteForm").onsubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const res = await fetch("/create", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await res.json();
+
+    const result = document.getElementById("result");
+    const linkBox = document.getElementById("linkBox");
+    const qrBox = document.getElementById("qrBox");
+
+    result.style.display = "block";
+
+    // ссылка
+    linkBox.innerHTML = `
+        <p>🔗 Ссылка:</p>
+        <a href="${data.url}" target="_blank">${data.url}</a>
+    `;
+
+    // QR код
+    qrBox.innerHTML = `
+        <p>📱 QR код:</p>
+        <img src="${data.qr}" style="width:200px;height:200px;border-radius:10px;background:white;padding:10px;">
+    `;
+};
+</script>
