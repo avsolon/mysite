@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Деплой сайта на сервере (Docker + Nginx + Cloudflare)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+
+</head>
+
+<body>
+  <div class="container">
+
+   <div class="blog-page">
+
+  <!-- Навигация -->
+  <div class="page-nav">
+    <a href="../blog.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      Назад к статьям
+    </a>
+  </div>
+
+  <!-- Заголовок -->
+  <div class="blog-hero">
+    <h1 class="blog-title">Деплой сайта на сервере</h1>
+    <p class="blog-subtitle">Docker · Nginx · Cloudflare · SSL · CI/CD</p>
+  </div>
+
+  <!-- Контент -->
+
+  <div class="article-block animate-in">
+    <h2>1. Подготовка сервера</h2>
+    <p>Обновляем систему и ставим базовые утилиты.</p>
+
+    <div class="code-block">
+<code>sudo apt update && sudo apt upgrade -y
+sudo apt install git curl nano ufw -y</code>
+    </div>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>2. Установка Docker</h2>
+    <p>Ставим Docker и включаем автозапуск.</p>
+
+    <div class="code-block">
+<code>sudo apt install docker.io -y
+sudo systemctl enable docker
+sudo systemctl start docker</code>
+    </div>
+
+    <p>Добавляем пользователя в группу docker:</p>
+
+    <div class="code-block">
+<code>sudo usermod -aG docker $USER</code>
+    </div>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>3. Docker Compose</h2>
+
+    <p>Простой контейнер для сайта:</p>
+
+    <div class="code-block">
+<code>services:
+  mysite:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+    volumes:
+      - ./html:/usr/share/nginx/html</code>
+    </div>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>4. Nginx reverse proxy</h2>
+
+    <p>Проксируем домен на Docker контейнер.</p>
+
+    <div class="code-block">
+<code>server {
+    listen 80;
+    server_name asolontsov.ru www.asolontsov.ru;
+
+    location / {
+        proxy_pass http://localhost:8081;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}</code>
+    </div>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>5. Cloudflare DNS</h2>
+
+    <p>Настраиваем домен:</p>
+
+    <ul>
+      <li>A → @ → IP сервера</li>
+      <li>A → www → IP сервера</li>
+    </ul>
+
+    <p><strong>Важно:</strong> сначала DNS only (серое облако)</p>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>6. SSL сертификат</h2>
+
+    <p>Установка HTTPS через Certbot:</p>
+
+    <div class="code-block">
+<code>sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d asolontsov.ru -d www.asolontsov.ru</code>
+    </div>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>7. Проверка системы</h2>
+
+    <div class="code-block">
+<code>docker ps
+sudo systemctl status nginx
+sudo ss -tulpn | grep :80
+curl http://localhost:8081</code>
+    </div>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>8. Архитектура проекта</h2>
+
+    <div class="code-block">
+<code>Internet → Cloudflare → Nginx → Docker → Website</code>
+    </div>
+  </div>
+
+  <div class="article-block animate-in">
+    <h2>⚠️ Частые ошибки</h2>
+
+    <ul>
+      <li>Certbot timeout → DNS не обновился</li>
+      <li>Connection refused → nginx не слушает 80 порт</li>
+      <li>Docker OK, сайт не работает → нет proxy_pass</li>
+    </ul>
+  </div>
+
+</div>
+
+</div>
+
+<div id="footer"></div>
+<script src="../js/footer.js"></script>
+
+</body>
+</html>

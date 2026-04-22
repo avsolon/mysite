@@ -1,14 +1,14 @@
-function loadComponent(selector, url) {
-    const el = document.querySelector(selector);
-    if (!el) return;
-
-    fetch(url)
-        .then(res => res.text())
-        .then(html => {
-            el.innerHTML = html;
-        });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-    loadComponent("#footer", "../footer.html");
+  const footer = document.getElementById("footer");
+
+  if (footer) {
+    footer.innerHTML = `
+      <div class="footer">
+        © <span id="year"></span> Andrey Solontsov
+      </div>
+    `;
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+  }
 });

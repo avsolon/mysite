@@ -1,7 +1,7 @@
 services:
   mysite:
     build: .
-    container_name: mysite_new
+    container_name: mysite
     restart: always
     ports:
       - "8081:80"
