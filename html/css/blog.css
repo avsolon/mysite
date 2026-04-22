@@ -167,6 +167,21 @@
     transform: scale(1.08);
 }
 
+.image-placeholder {
+  margin: 24px auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.image-placeholder img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
 .blog-category {
     position: absolute;
     top: 15px;
