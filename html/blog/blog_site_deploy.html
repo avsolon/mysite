@@ -87,7 +87,7 @@ sudo systemctl start docker</code>
     <div class="code-block">
 <code>server {
     listen 80;
-    server_name domen-site.ru www.domen-site.ru;
+    server_name mysite.ru www.mysite.ru;
 
     location / {
         proxy_pass http://localhost:8081;
@@ -99,7 +99,7 @@ sudo systemctl start docker</code>
   </div>
 
   <div class="article-block animate-in">
-    <h2>5. Cloudflare DNS</h2>
+    <h2>5. Например Cloudflare DNS</h2>
 
     <p>Настраиваем домен:</p>
 
@@ -108,7 +108,7 @@ sudo systemctl start docker</code>
       <li>A → www → IP сервера</li>
     </ul>
 
-    <p><strong>Важно:</strong> сначала DNS only - серое облако (на примере Cloudflare)</p>
+    <p><strong>Важно:</strong> сначала DNS only - (серое облако)</p>
   </div>
 
   <div class="article-block animate-in">
@@ -118,7 +118,7 @@ sudo systemctl start docker</code>
 
     <div class="code-block">
 <code>sudo apt install certbot python3-certbot-nginx -y
-sudo certbot --nginx -d domen-site.ru -d www.domen-site.ru</code>
+sudo certbot --nginx -d mysite.ru -d www.mysite.ru</code>
     </div>
   </div>
 
