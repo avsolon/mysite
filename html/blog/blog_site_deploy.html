@@ -47,7 +47,7 @@
   </div>
 
   <div class="article-block animate-in">
-    <h2>2. Установка Docker</h2>
+    <h2>2. Установка Docker, docker-compose, Nginx</h2>
     <p>Ставим Docker и включаем автозапуск.</p>
 
     <div class="code-block">
@@ -87,7 +87,7 @@ sudo systemctl start docker</code>
     <div class="code-block">
 <code>server {
     listen 80;
-    server_name asolontsov.ru www.asolontsov.ru;
+    server_name domen-site.ru www.domen-site.ru;
 
     location / {
         proxy_pass http://localhost:8081;
