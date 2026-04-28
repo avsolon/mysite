@@ -4,26 +4,21 @@ document.getElementById("contactForm").addEventListener("submit", async (e) => {
     const formData = {
         name: e.target.name.value,
         email: e.target.email.value,
+        phone: e.target.phone.value,
+        subject: e.target.subject.value,
         message: e.target.message.value
     };
 
-    try {
-        const res = await fetch('/service/contact/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+    const res = await fetch('/service/contact/send', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    });
 
-        const data = await res.json();
-
-        alert(data.message);
-
-    } catch (err) {
-        console.error("Error:", err);
-        alert("Ошибка отправки");
-    }
+    const data = await res.json();
+    alert(data.message);
 });
 
 // Notification function
