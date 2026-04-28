@@ -1,24 +1,34 @@
-document.getElementById("contactForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
 
-    const formData = {
-        name: e.target.name.value,
-        email: e.target.email.value,
-        phone: e.target.phone.value,
-        subject: e.target.subject.value,
-        message: e.target.message.value
-    };
+    console.log("CONTACT JS LOADED");
 
-    const res = await fetch('/service/contact/send', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+    const form = document.getElementById("contactForm");
+    console.log("FORM:", form);
+
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        console.log("SUBMIT FIRED");
+
+        const formData = {
+            name: e.target.name.value,
+            email: e.target.email.value,
+            message: e.target.message.value
+        };
+
+        const res = await fetch('/service/contact/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+        alert(data.message);
     });
-
-    const data = await res.json();
-    alert(data.message);
 });
 
 // Notification function
