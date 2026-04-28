@@ -1,25 +1,22 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const contactForm = document.getElementById('contactForm');
+document.getElementById("contactForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    const formData = {
+        name: e.target.name.value,
+        email: e.target.email.value,
+        message: e.target.message.value
+    };
 
-            // Get form data
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+   fetch('/service/contact/send', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
 
-            // Here you would typically send the data to a server
-            // For now, we'll just show a success message
-            console.log('Form submitted:', data);
-
-            // Show success message
-            showNotification('Сообщение успешно отправлено! Но это не точно! Пишите в телегу!', 'success');
-
-            // Reset form
-            this.reset();
-        });
-    }
+    const data = await res.json();
+    alert(data.message);
 });
 
 // Notification function
