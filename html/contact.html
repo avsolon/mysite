@@ -90,7 +90,7 @@
                             </div>
                             <div class="contact-card-content">
                                 <h3>Email</h3>
-                                <a href="mailto:email@example.com">email@example.com</a>
+                                <a href="mailto:email@example.com">скрыто</a>
                             </div>
                         </div>
 
@@ -102,7 +102,7 @@
                             </div>
                             <div class="contact-card-content">
                                 <h3>Телефон</h3>
-                                <a href="tel:+79990000000">+7 (999) 000-00-00</a>
+                                <a href="tel:+79990000000">скрыто</a>
                             </div>
                         </div>
 
@@ -203,6 +203,11 @@
                         <div class="form-group">
                             <label for="message" class="form-label">Сообщение</label>
                             <textarea id="message" name="message" class="form-textarea" placeholder="Введите ваше сообщение..." rows="5" required></textarea>
+                        </div>
+                        
+                        <!-- honeypot -->
+                        <div style="display:none;">
+                            <input type="text" name="website">
                         </div>
 
                         <button type="submit" class="form-submit">
