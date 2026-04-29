@@ -1,56 +1,66 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-    console.log("CONTACT JS LOADED");
-
     const form = document.getElementById("contactForm");
-    console.log("FORM:", form);
-
     if (!form) return;
+
+    const button = form.querySelector("button[type='submit']");
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        console.log("SUBMIT FIRED");
+        button.disabled = true;
 
         const formData = {
             name: e.target.name.value,
             email: e.target.email.value,
-            message: e.target.message.value
+            phone: e.target.phone?.value,
+            subject: e.target.subject?.value,
+            message: e.target.message.value,
+            source: window.location.hostname
         };
 
-        const res = await fetch('/service/contact/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+        try {
+            const res = await fetch('/service/contact/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
 
-        const data = await res.json();
-        alert(data.message);
+            const data = await res.json();
+
+            showNotification(data.message || "Отправлено", "success");
+            form.reset();
+
+        } catch (err) {
+            console.error(err);
+            showNotification("Ошибка отправки 😢", "error");
+        } finally {
+            button.disabled = false;
+        }
     });
 });
 
+
 // Notification function
 function showNotification(message, type = 'success') {
-    // Remove existing notifications
     const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
+    if (existingNotification) existingNotification.remove();
 
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
+
+    // ❗ защита от XSS (вместо innerHTML строки)
     notification.innerHTML = `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
         </svg>
-        <span>${message}</span>
+        <span></span>
     `;
 
-    // Add styles
+    notification.querySelector("span").textContent = message;
+
     notification.style.cssText = `
         position: fixed;
         top: 20px;
@@ -69,7 +79,6 @@ function showNotification(message, type = 'success') {
         animation: slideIn 0.3s ease;
     `;
 
-    // Add animation keyframes
     if (!document.querySelector('#notification-styles')) {
         const style = document.createElement('style');
         style.id = 'notification-styles';
@@ -88,23 +97,22 @@ function showNotification(message, type = 'success') {
         document.head.appendChild(style);
     }
 
-    // Add to page
     document.body.appendChild(notification);
 
-    // Remove after 5 seconds
     setTimeout(() => {
         notification.style.animation = 'slideIn 0.3s ease reverse';
         setTimeout(() => notification.remove(), 300);
     }, 5000);
 }
 
-// Add input animations
+
+// Input animations (чуть безопаснее)
 document.querySelectorAll('.form-input, .form-textarea').forEach(input => {
-    input.addEventListener('focus', function() {
-        this.parentElement.classList.add('focused');
+    input.addEventListener('focus', () => {
+        input.parentElement.classList.add('focused');
     });
 
-    input.addEventListener('blur', function() {
-        this.parentElement.classList.remove('focused');
+    input.addEventListener('blur', () => {
+        input.parentElement.classList.remove('focused');
     });
 });
