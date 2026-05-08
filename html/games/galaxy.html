@@ -88,7 +88,7 @@ body {
   position: absolute;
   top: 10px;
   left: 10px;
-  right: 10px;
+  right: 55px;
   display: flex;
   justify-content: space-between;
   color: #0ff;
@@ -97,6 +97,30 @@ body {
   z-index: 10;
   pointer-events: none;
 }
+
+#btnMute {
+  position: fixed;
+  top: 58px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  background: rgba(0, 15, 30, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  padding: 0;
+  color: #0ff;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#btnMute:active { transform: scale(0.9); }
+#btnMute.muted { color: #555; border-color: rgba(100,100,100,0.3); background: rgba(30,30,30,0.6); }
+#btnMute.muted .slash { display: block; }
 
 #overlay {
   position: absolute;
@@ -184,6 +208,14 @@ body {
   <div>УРОВЕНЬ: <span id="levelVal">1</span></div>
 </div>
 
+<button id="btnMute" title="Звук">
+  <svg viewBox="0 0 24 24" width="20" height="20">
+    <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+    <path class="waves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line class="slash" x1="4" y1="4" x2="20" y2="20" stroke="#ff4444" stroke-width="2" style="display:none;"/>
+  </svg>
+</button>
+
 <div id="overlay" class="active">
   <div class="title">ГАЛАКТИКА</div>
   <div class="subtitle" id="overlayText">НАЖМИТЕ СТАРТ</div>
@@ -213,12 +245,14 @@ const overlay = document.getElementById('overlay');
 const overlayText = document.getElementById('overlayText');
 const finalScoreEl = document.getElementById('finalScore');
 const startBtn = document.getElementById('startBtn');
+const btnMute = document.getElementById('btnMute');
 
 let W, H;
 let gameState = 'menu';
 let score = 0;
 let lives = 3;
 let level = 1;
+let soundEnabled = true;
 let player = null;
 let bullets = [];
 let enemies = [];
@@ -259,9 +293,13 @@ function playTone(freq, type, duration, vol, slideTo) {
   osc.stop(t + duration);
 }
 
-function sndShoot() { playTone(900, 'square', 0.08, 0.12, 400); }
+function sndShoot() { 
+  if (!soundEnabled) return; 
+  playTone(900, 'square', 0.08, 0.12, 400); 
+}
+
 function sndExplosion() {
-  if (!audioCtx) return;
+  if (!soundEnabled) return;
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -273,8 +311,9 @@ function sndExplosion() {
   osc.connect(gain); gain.connect(audioCtx.destination);
   osc.start(t); osc.stop(t + 0.25);
 }
+
 function sndPlayerHit() {
-  if (!audioCtx) return;
+  if (!soundEnabled) return;
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -286,8 +325,9 @@ function sndPlayerHit() {
   osc.connect(gain); gain.connect(audioCtx.destination);
   osc.start(t); osc.stop(t + 0.35);
 }
+
 function sndLevelUp() {
-  if (!audioCtx) return;
+  if (!soundEnabled) return;
   const t = audioCtx.currentTime;
   [400, 600, 800].forEach((f, i) => {
     const osc = audioCtx.createOscillator();
@@ -300,8 +340,9 @@ function sndLevelUp() {
     osc.start(t + i*0.08); osc.stop(t + i*0.08 + 0.15);
   });
 }
+
 function sndGameOver() {
-  if (!audioCtx) return;
+  if (!soundEnabled) return;
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -313,6 +354,14 @@ function sndGameOver() {
   osc.connect(gain); gain.connect(audioCtx.destination);
   osc.start(t); osc.stop(t + 0.8);
 }
+
+btnMute.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  soundEnabled = !soundEnabled;
+  btnMute.classList.toggle('muted', !soundEnabled);
+  if (soundEnabled) initAudio();
+});
 // --- END AUDIO ---
 
 function resize() {
