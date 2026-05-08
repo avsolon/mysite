@@ -11,10 +11,15 @@ widget.innerHTML = `
   <div id="ai-chat-window">
 
     <div id="ai-chat-header">
-      🐱 AI Киса
+      <span class="cat-avatar">😽</span>
+      AI Киса
     </div>
 
-    <div id="ai-chat-messages"></div>
+    <div id="ai-chat-messages">
+      <div id="ai-typing" class="ai-message ai-bot" style="display:none;">
+        кисуля печатает...
+      </div>
+    </div>
 
     <div id="ai-chat-input-area">
       <input
@@ -49,12 +54,13 @@ const messages = document.getElementById("ai-chat-messages");
 async function sendMessage() {
 
   const text = input.value.trim();
-
   if (!text) return;
 
   addMessage(text, "user");
-
   input.value = "";
+
+  // 🐱 показываем typing
+  document.getElementById("ai-typing").style.display = "block";
 
   try {
 
@@ -62,31 +68,75 @@ async function sendMessage() {
       "https://asolontsov.ru/service/cat-ai/chat",
       {
         method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          message: text,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
       }
     );
 
     const data = await response.json();
 
+    setCatMood("thinking");
+   
+
+
+    // 🐱 скрываем typing
+    document.getElementById("ai-typing").style.display = "none";
+
     addMessage(data.reply, "bot");
+
+    setCatMood("happy");
 
   } catch (err) {
 
-    addMessage(
-      "Ошибка соединения 😿",
-      "bot"
-    );
+    document.getElementById("ai-typing").style.display = "none";
+
+    addMessage("Мяу… ошибка соединения 😿", "bot");
 
     console.error(err);
   }
 }
+
+// async function sendMessage() {
+
+//   const text = input.value.trim();
+
+//   if (!text) return;
+
+//   addMessage(text, "user");
+
+//   input.value = "";
+
+//   try {
+
+//     const response = await fetch(
+//       "https://asolontsov.ru/service/cat-ai/chat",
+//       {
+//         method: "POST",
+
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+
+//         body: JSON.stringify({
+//           message: text,
+//         }),
+//       }
+//     );
+
+//     const data = await response.json();
+
+//     addMessage(data.reply, "bot");
+
+//   } catch (err) {
+
+//     addMessage(
+//       "Ошибка соединения 😿",
+//       "bot"
+//     );
+
+//     console.error(err);
+//   }
+// }
 
 function addMessage(text, type) {
 
@@ -101,6 +151,16 @@ function addMessage(text, type) {
 
   messages.scrollTop =
     messages.scrollHeight;
+}
+
+function setCatMood(mood) {
+  const avatar = document.querySelector(".cat-avatar");
+
+  if (!avatar) return;
+
+  if (mood === "happy") avatar.textContent = "😺";
+  if (mood === "thinking") avatar.textContent = "🤔";
+  if (mood === "sad") avatar.textContent = "😿";
 }
 
 sendButton.addEventListener(

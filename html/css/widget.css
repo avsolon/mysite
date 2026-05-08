@@ -46,7 +46,30 @@
   background: #111;
   color: white;
   padding: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
   font-weight: bold;
+}
+
+.cat-avatar {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+
+  animation: blink 2s infinite;
+}
+
+/* лёгкое "оживание" */
+@keyframes blink {
+  0%, 90%, 100% { transform: scale(1); }
+  95% { transform: scale(1.2); }
 }
 
 /* MESSAGES AREA */
