@@ -21,6 +21,8 @@ widget.innerHTML = `
       </div>
     </div>
 
+    <div id="ai-cat-float">🐱</div>
+
     <div id="ai-chat-input-area">
       <input
         id="ai-chat-input"
@@ -50,6 +52,9 @@ catButton.addEventListener("click", () => {
 const sendButton = document.getElementById("ai-chat-send");
 const input = document.getElementById("ai-chat-input");
 const messages = document.getElementById("ai-chat-messages");
+const cat = document.getElementById("ai-cat-float");
+
+let lastActivity = Date.now();
 
 async function sendMessage() {
 
@@ -176,3 +181,32 @@ input.addEventListener(
     }
   }
 );
+
+document.addEventListener("mousemove", (e) => {
+  lastActivity = Date.now();
+
+  const x = e.clientX;
+  const y = e.clientY;
+
+  cat.style.transform = `translate(${x / 50}px, ${y / 50}px)`;
+});
+
+cat.addEventListener("click", () => {
+  cat.classList.add("cat-jump");
+
+  setTimeout(() => {
+    cat.classList.remove("cat-jump");
+  }, 200);
+});
+
+setInterval(() => {
+  const now = Date.now();
+
+  if (now - lastActivity > 10000) {
+    cat.classList.add("cat-sleep");
+    cat.textContent = "😴";
+  } else {
+    cat.classList.remove("cat-sleep");
+    cat.textContent = "🐱";
+  }
+}, 1000);
