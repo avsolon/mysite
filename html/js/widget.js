@@ -21,8 +21,6 @@ widget.innerHTML = `
       </div>
     </div>
 
-    <div id="ai-cat-float">🐱</div>
-
     <div id="ai-chat-input-area">
       <input
         id="ai-chat-input"
@@ -64,7 +62,7 @@ async function sendMessage() {
   addMessage(text, "user");
   input.value = "";
 
-  // 🐱 показываем typing
+  // показываем typing
   document.getElementById("ai-typing").style.display = "block";
 
   try {
@@ -80,16 +78,10 @@ async function sendMessage() {
 
     const data = await response.json();
 
-    setCatMood("thinking");
-   
-
-
-    // 🐱 скрываем typing
+    // скрываем typing
     document.getElementById("ai-typing").style.display = "none";
 
     addMessage(data.reply, "bot");
-
-    setCatMood("happy");
 
   } catch (err) {
 
@@ -100,48 +92,6 @@ async function sendMessage() {
     console.error(err);
   }
 }
-
-// async function sendMessage() {
-
-//   const text = input.value.trim();
-
-//   if (!text) return;
-
-//   addMessage(text, "user");
-
-//   input.value = "";
-
-//   try {
-
-//     const response = await fetch(
-//       "https://asolontsov.ru/service/cat-ai/chat",
-//       {
-//         method: "POST",
-
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-
-//         body: JSON.stringify({
-//           message: text,
-//         }),
-//       }
-//     );
-
-//     const data = await response.json();
-
-//     addMessage(data.reply, "bot");
-
-//   } catch (err) {
-
-//     addMessage(
-//       "Ошибка соединения 😿",
-//       "bot"
-//     );
-
-//     console.error(err);
-//   }
-// }
 
 function addMessage(text, type) {
 
@@ -158,16 +108,6 @@ function addMessage(text, type) {
     messages.scrollHeight;
 }
 
-function setCatMood(mood) {
-  const avatar = document.querySelector(".cat-avatar");
-
-  if (!avatar) return;
-
-  if (mood === "happy") avatar.textContent = "😺";
-  if (mood === "thinking") avatar.textContent = "🤔";
-  if (mood === "sad") avatar.textContent = "😿";
-}
-
 sendButton.addEventListener(
   "click",
   sendMessage
@@ -181,32 +121,3 @@ input.addEventListener(
     }
   }
 );
-
-document.addEventListener("mousemove", (e) => {
-  lastActivity = Date.now();
-
-  const x = e.clientX;
-  const y = e.clientY;
-
-  cat.style.transform = `translate(${x / 50}px, ${y / 50}px)`;
-});
-
-cat.addEventListener("click", () => {
-  cat.classList.add("cat-jump");
-
-  setTimeout(() => {
-    cat.classList.remove("cat-jump");
-  }, 200);
-});
-
-setInterval(() => {
-  const now = Date.now();
-
-  if (now - lastActivity > 10000) {
-    cat.classList.add("cat-sleep");
-    cat.textContent = "😴";
-  } else {
-    cat.classList.remove("cat-sleep");
-    cat.textContent = "🐱";
-  }
-}, 1000);
