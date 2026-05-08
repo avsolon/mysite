@@ -59,7 +59,7 @@ async function sendMessage() {
   try {
 
     const response = await fetch(
-      "https://asolontsov.ru:3001/chat",
+      "https://asolontsov.ru/service/cat-ai/chat",
       {
         method: "POST",
 
