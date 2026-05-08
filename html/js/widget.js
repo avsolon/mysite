@@ -59,7 +59,7 @@ async function sendMessage() {
   try {
 
     const response = await fetch(
-      "https://138.124.70.3:3001/chat",
+      "https://asolontsov.ru:3001/chat",
       {
         method: "POST",
 
