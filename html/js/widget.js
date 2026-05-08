@@ -4,7 +4,7 @@ widget.id = "ai-cat-widget";
 widget.innerHTML = `
   <img
     id="ai-cat-button"
-    src="images/cat2.jpg"
+    src="../images/cat2.jpg"
     alt="AI Cat"
   />
 
