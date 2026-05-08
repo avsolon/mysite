@@ -8,7 +8,7 @@
 
 #ai-cat-button {
   width: 126px;
-  height: 156px;
+  height: 176px;
   cursor: pointer;
   image-rendering: pixelated;
   transition: transform 0.2s ease;
@@ -30,7 +30,7 @@
   box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 
   position: absolute;
-  bottom: 120px;
+  bottom: 190px;
   right: 0;
 
   display: none;
