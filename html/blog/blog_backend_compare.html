@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Что выбрать для бэкенда: Node.js, Python, Go или Java</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="page-nav">
+        <a href="../blog.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Назад
+        </a>
+    </nav>
+
+    <div class="main-content">
+
+        <!-- HERO -->
+        <div class="info-block animate-in">
+            <h1 class="name-title">
+                🚀 Что выбрать для бэкенда: Node.js, Python, Go или Java
+            </h1>
+
+            <p class="subtitle">
+                Разбираем плюсы, минусы, производительность и реальные сценарии использования популярных backend-технологий
+            </p>
+        </div>
+
+        <!-- INTRO -->
+        <div class="article-block animate-in">
+            <p>
+                Выбор технологии для бэкенда — это всегда компромисс между скоростью разработки,
+                производительностью, надежностью и удобством поддержки.
+            </p>
+
+            <p>
+                У каждой платформы есть сильные и слабые стороны, и правильный выбор зависит
+                не только от цифр в бенчмарках, но и от задач проекта, команды и будущего роста системы.
+            </p>
+
+            <p>
+                Давайте разберем все по порядку.
+            </p>
+        </div>
+
+        <!-- IMAGE PLACEHOLDER -->
+        <div class="image-placeholder animate-in">
+            [Изображение: сравнение backend-технологий]
+        </div>
+
+        <!-- NODE -->
+        <div class="article-block animate-in">
+            <h2>⚡ Чем хорош Node.js</h2>
+
+            <p>
+                Главная особенность Node.js — единый JavaScript/TypeScript стек и
+                неблокирующая event-loop архитектура.
+            </p>
+
+            <p>
+                Вместо создания отдельного потока под каждый запрос,
+                Node.js эффективно работает через асинхронный event-loop,
+                что позволяет обрабатывать тысячи соединений одновременно.
+            </p>
+
+            <h3>Ключевые преимущества:</h3>
+
+            <ul>
+                <li>неблокирующая I/O модель</li>
+                <li>высокая производительность для API и сетевых задач</li>
+                <li>идеален для WebSockets и realtime-приложений</li>
+                <li>огромная экосистема npm</li>
+                <li>быстрая разработка и деплой</li>
+                <li>TypeScript для строгой типизации</li>
+            </ul>
+
+            <p>
+                Node.js особенно хорошо показывает себя в задачах,
+                где приложение постоянно ожидает ответов от базы данных,
+                внешних API или файловой системы.
+            </p>
+        </div>
+
+        <!-- CODE -->
+        <div class="article-block animate-in">
+            <h2>💻 Пример простого API на Node.js</h2>
+
+            <pre class="code-block"><code>
+import express from "express";
+
+const app = express();
+
+app.get("/api/users", async (req, res) => {
+    res.json({
+        success: true,
+        users: []
+    });
+});
+
+app.listen(3000);
+            </code></pre>
+        </div>
+
+        <!-- MINUSES -->
+        <div class="article-block animate-in">
+            <h2>⚠️ Где Node.js может подвести</h2>
+
+            <ul>
+                <li>CPU-heavy задачи блокируют event-loop</li>
+                <li>ошибки рантайма могут уронить процесс</li>
+                <li>по умолчанию однопоточен</li>
+                <li>требует грамотной архитектуры при росте проекта</li>
+            </ul>
+
+            <p>
+                Если приложение активно занимается обработкой изображений,
+                шифрованием или сложной математикой —
+                Node.js может оказаться не лучшим выбором.
+            </p>
+        </div>
+
+        <!-- IMAGE -->
+        <div class="image-placeholder animate-in">
+            [Изображение: event-loop Node.js]
+        </div>
+
+        <!-- COMPARE -->
+        <div class="article-block animate-in">
+            <h2>📊 Сравнение технологий</h2>
+
+            <div class="table-wrapper">
+                <table class="tech-table">
+                    <thead>
+                        <tr>
+                            <th>Критерий</th>
+                            <th>FastAPI</th>
+                            <th>Node.js</th>
+                            <th>Go</th>
+                            <th>Java</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Скорость разработки</td>
+                            <td>⚡ Очень высокая</td>
+                            <td>⚡ Высокая</td>
+                            <td>🔸 Средняя</td>
+                            <td>🐢 Низкая</td>
+                        </tr>
+
+                        <tr>
+                            <td>Производительность</td>
+                            <td>Средняя</td>
+                            <td>Хорошая</td>
+                            <td>Отличная</td>
+                            <td>Отличная</td>
+                        </tr>
+
+                        <tr>
+                            <td>Потребление памяти</td>
+                            <td>Высокое</td>
+                            <td>Среднее</td>
+                            <td>Низкое</td>
+                            <td>Высокое</td>
+                        </tr>
+
+                        <tr>
+                            <td>Сложность</td>
+                            <td>Низкая</td>
+                            <td>Средняя</td>
+                            <td>Высокая</td>
+                            <td>Высокая</td>
+                        </tr>
+
+                        <tr>
+                            <td>Асинхронность</td>
+                            <td>Есть</td>
+                            <td>✅ Отличная</td>
+                            <td>✅ Отличная</td>
+                            <td>✅ Есть</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FASTAPI -->
+        <div class="article-block animate-in">
+            <h2>🐍 FastAPI — лучший выбор для большинства MVP</h2>
+
+            <p>
+                FastAPI стал невероятно популярным благодаря скорости разработки,
+                лаконичности кода и простоте создания API.
+            </p>
+
+            <p>
+                Особенно хорошо FastAPI подходит для:
+            </p>
+
+            <ul>
+                <li>MVP и стартапов</li>
+                <li>внутренних сервисов</li>
+                <li>AI/ML интеграций</li>
+                <li>админок и аналитики</li>
+                <li>проектов с ограниченным временем</li>
+            </ul>
+
+            <p>
+                Если задача — быстро запустить продукт и проверить гипотезу,
+                FastAPI почти всегда будет одним из лучших решений.
+            </p>
+        </div>
+
+        <!-- GO -->
+        <div class="article-block animate-in">
+            <h2>🚀 Когда выбирать Go</h2>
+
+            <p>
+                Go создавался как язык для высоконагруженных серверных систем.
+            </p>
+
+            <p>
+                Он отлично подходит для:
+            </p>
+
+            <ul>
+                <li>микросервисов</li>
+                <li>highload систем</li>
+                <li>сетевых сервисов</li>
+                <li>CLI и инфраструктурных инструментов</li>
+                <li>нагруженных API</li>
+            </ul>
+
+            <p>
+                Главный плюс Go — производительность и низкое потребление ресурсов.
+                Но за это приходится платить большим количеством ручного кода
+                и более высокой сложностью.
+            </p>
+        </div>
+
+        <!-- JAVA -->
+        <div class="article-block animate-in">
+            <h2>☕ Java — мощно, но тяжело</h2>
+
+            <p>
+                Java и Spring Boot остаются стандартом в enterprise-разработке,
+                особенно в банках, крупных компаниях и корпоративных системах.
+            </p>
+
+            <p>
+                Но для небольших проектов Java часто оказывается избыточной:
+            </p>
+
+            <ul>
+                <li>медленный старт приложения</li>
+                <li>большое потребление памяти</li>
+                <li>сложная конфигурация</li>
+                <li>много шаблонного кода</li>
+            </ul>
+
+            <p>
+                Если проект небольшой или средний —
+                чаще всего есть более простые и быстрые решения.
+            </p>
+        </div>
+
+        <!-- IMAGE -->
+        <div class="image-placeholder animate-in">
+            [Изображение: backend architecture]
+        </div>
+
+        <!-- FINAL -->
+        <div class="article-block animate-in">
+            <h2>🎯 Итоговая рекомендация</h2>
+
+            <div class="recommend-grid">
+
+                <div class="recommend-card">
+                    <h3>🐍 FastAPI</h3>
+                    <p>
+                        Если нужен быстрый MVP, простота и высокая скорость разработки.
+                    </p>
+                </div>
+
+                <div class="recommend-card">
+                    <h3>⚡ Node.js</h3>
+                    <p>
+                        Если проект активно работает с I/O, WebSockets и асинхронностью.
+                    </p>
+                </div>
+
+                <div class="recommend-card">
+                    <h3>🚀 Go</h3>
+                    <p>
+                        Если нужна максимальная производительность и экономия ресурсов.
+                    </p>
+                </div>
+
+                <div class="recommend-card">
+                    <h3>☕ Java</h3>
+                    <p>
+                        Если проект — часть большой enterprise-экосистемы.
+                    </p>
+                </div>
+
+            </div>
+
+            <p>
+                Для большинства небольших и средних проектов выбор обычно сводится
+                к FastAPI или Node.js.
+            </p>
+
+            <p>
+                И главный совет:
+                выбирайте не по хайпу и бенчмаркам,
+                а по тому, насколько быстро и удобно ваша команда сможет развивать продукт.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="../js/ci-cd_deploy.js"></script>
+<script src="../js/footer.js"></script>
+
+</body>
+</html>
