@@ -210,6 +210,69 @@ body {
     margin-bottom: 15px;
 }
 
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 25px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+}
+
+.tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.tech-table thead {
+    background: rgba(99, 102, 241, 0.12);
+}
+
+.tech-table th {
+    padding: 18px 20px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+}
+
+.tech-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    line-height: 1.6;
+}
+
+.tech-table tbody tr {
+    transition: all 0.25s ease;
+}
+
+.tech-table tbody tr:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.tech-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .table-wrapper {
+        border-radius: 12px;
+    }
+
+    .tech-table th,
+    .tech-table td {
+        padding: 14px 16px;
+        font-size: 13px;
+    }
+
+}
+
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));

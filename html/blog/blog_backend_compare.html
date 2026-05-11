@@ -157,6 +157,118 @@ app.listen(3000);
                 Если задача — быстро запустить продукт и проверить гипотезу,
                 FastAPI почти всегда будет одним из лучших решений.
             </p>
+            <p>
+                Для мелких и учебных проектов можно использовать также Flask.
+            </p>
+             <p>
+                Для максимального функционала классических WEB-приложений хорошо подойдет Django.
+            </p>
+
+ 
+
+    <h2>📊 Сравнение: Django vs Flask vs FastAPI</h2>
+
+    <div class="table-wrapper">
+
+        <table class="tech-table">
+
+            <thead>
+                <tr>
+                    <th>Критерий</th>
+                    <th>Django</th>
+                    <th>Flask</th>
+                    <th>FastAPI</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Тип фреймворка</td>
+                    <td>"Все включено" (монолитный)</td>
+                    <td>Микрофреймворк</td>
+                    <td>Современный (асинхронный)</td>
+                </tr>
+
+                <tr>
+                    <td>Скорость старта</td>
+                    <td>Средняя </td>
+                    <td>🔥 Очень быстрая</td>
+                    <td>🔥 Очень быстрая (CLI)</td>
+                </tr>
+
+                <tr>
+                    <td>Гибкость</td>
+                    <td>Низкая </td>
+                    <td>🔥 Высокая</td>
+                    <td>Высокая</td>
+                </tr>
+
+                <tr>
+                    <td>Асинхронность</td>
+                    <td>Частичная (ASGI с 3.0+)</td>
+                    <td>Нет (только WSGI)</td>
+                    <td>🔥 Нативная (async/await)</td>
+                </tr>
+
+                <tr>
+                    <td>Встроенная админка</td>
+                    <td>✅ Коробка</td>
+                    <td>❌ Нужно писать</td>
+                    <td>❌ Через extensions</td>
+                </tr>
+
+                <tr>
+                    <td>ORM</td>
+                    <td>✅ Встроенная</td>
+                    <td>❌ SQLAlchemy отдельно</td>
+                    <td>❌ SQLAlchemy отдельно</td>
+                </tr>
+
+                <tr>
+                    <td>Миграции БД</td>
+                    <td>✅ Встроенные</td>
+                    <td>❌ Alembic</td>
+                    <td>❌ Alembic</td>
+                </tr>
+
+                <tr>
+                    <td>Валидация / Сериализация</td>
+                    <td>DRF (отдельно)</td>
+                    <td>Marshmallow / Pydantic</td>
+                    <td>🔥 Pydantic (встроен)</td>
+                </tr>
+
+                <tr>
+                    <td>Документация API</td>
+                    <td>DRF-yasg / Swagger</td>
+                    <td>Swagger UI отдельно</td>
+                    <td>🔥 Swagger + ReDoc из коробки</td>
+                </tr>
+
+                <tr>
+                    <td>Производительность</td>
+                    <td>Средняя</td>
+                    <td>Средняя</td>
+                    <td>🔥 Высокая (близко к Node.js)</td>
+                </tr>
+
+                <tr>
+                    <td>Потребление памяти</td>
+                    <td>Высокое</td>
+                    <td>Низкое - Среднее</td>
+                    <td>Среднее</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    
+
+</div>
+
+
         </div>
 
         <!-- GO -->
@@ -213,9 +325,12 @@ app.listen(3000);
         </div>
 
         <!-- IMAGE -->
-        <div class="image-placeholder animate-in">
-            [Изображение: backend architecture]
+        
+            <div class="image-placeholder animate-in">
+            <img src="../images/blog/backend_architecture.png">
         </div>
+            
+        
 
         <!-- FINAL -->
         <div class="article-block animate-in">
@@ -224,7 +339,7 @@ app.listen(3000);
             <div class="recommend-grid">
 
                 <div class="recommend-card">
-                    <h3>🐍 FastAPI</h3>
+                    <h3>🐍 Python FastAPI</h3>
                     <p>
                         Если нужен быстрый MVP, простота и высокая скорость разработки.
                     </p>
