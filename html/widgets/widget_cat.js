@@ -380,25 +380,6 @@ document.body.appendChild(widget);
 
   chatClose.addEventListener('click', () => toggleChat());
 
-  // ===== SEND MESSAGE =====
-  // function sendMessage() {
-  //   const text = chatInput.value.trim();
-  //   if (!text) return;
-    
-  //   addMessage(text, 'user');
-  //   chatInput.value = '';
-    
-  //   showTyping();
-    
-  //   setTimeout(() => {
-  //     removeTyping();
-  //     const response = generateResponse(text);
-  //     addMessage(response, 'bot');
-  //     spawnHearts();
-  //   }, 1000 + Math.random() * 2000);
-  // }
-
-
   async function sendMessage() {
 
     const text = chatInput.value.trim();
@@ -428,6 +409,7 @@ document.body.appendChild(widget);
         data.reply || 'Мяу~ 😺',
         'bot'
       );
+      speakText(data.reply);
       spawnHearts();
     } catch (err) {
       removeTyping();
@@ -452,6 +434,16 @@ document.body.appendChild(widget);
     
     chatMessages.appendChild(msg);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function speakText(text) {
+    const speech =
+      new SpeechSynthesisUtterance(text);
+    speech.lang = 'ru-RU';
+    speech.pitch = 1.3;
+    speech.rate = 1;
+    speech.volume = 1;
+    speechSynthesis.speak(speech);
   }
 
   function showTyping() {
