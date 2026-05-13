@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Cat AI Chat</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  background: #1a1a2e;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+.demo-content {
+  color: #aaa;
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 1.2rem;
+}
+
+/* ===== CAT CONTAINER ===== */
+.cat-container {
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+  z-index: 99999;
+  cursor: pointer;
+  width: 160px;
+  height: 180px;
+  filter: drop-shadow(0 4px 15px rgba(255, 150, 200, 0.4));
+}
+
+.cat-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ===== BLINK ===== */
+.cat-eye-blink {
+  animation: blinkAnim 4s ease-in-out infinite;
+}
+
+@keyframes blinkAnim {
+  0%, 42%, 44%, 100% { transform: scaleY(1); }
+  43% { transform: scaleY(0.05); }
+}
+
+/* ===== TAIL WAG ===== */
+.cat-tail-wag {
+  transform-origin: 125px 115px;
+  animation: tailWag 2s ease-in-out infinite alternate;
+}
+
+@keyframes tailWag {
+  0% { transform: rotate(-12deg); }
+  50% { transform: rotate(8deg); }
+  100% { transform: rotate(-6deg); }
+}
+
+/* ===== SLEEPING ===== */
+.cat-container.sleeping .cat-eye-open-group {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cat-container.sleeping .cat-sleep-eye-group {
+  opacity: 1 !important;
+  transition: opacity 0.3s ease;
+}
+
+.cat-container:not(.sleeping) .cat-sleep-eye-group {
+  opacity: 0;
+}
+
+.sleep-zzz {
+  position: absolute;
+  top: -10px;
+  right: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #a0c4ff;
+  opacity: 0;
+}
+
+.cat-container.sleeping .sleep-zzz {
+  animation: zzzFloat 2.5s ease-in-out infinite;
+}
+
+.sleep-zzz:nth-child(2) { animation-delay: 0.8s !important; font-size: 16px; right: 5px; }
+.sleep-zzz:nth-child(3) { animation-delay: 1.6s !important; font-size: 13px; right: -5px; }
+
+@keyframes zzzFloat {
+  0% { opacity: 0; transform: translateY(0) scale(0.8); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-35px) scale(1.2); }
+}
+
+/* ===== WAVE PAW ===== */
+.cat-paw-wave {
+  transform-origin: 30px 110px;
+}
+
+.cat-container.waving .cat-paw-wave {
+  animation: wavePaw 0.5s ease-in-out 4;
+}
+
+@keyframes wavePaw {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-20deg) translateY(-8px); }
+  75% { transform: rotate(10deg) translateY(-4px); }
+}
+
+/* ===== LICK PAW ===== */
+.cat-paw-lick {
+  transform-origin: 115px 120px;
+}
+
+.cat-container.licking .cat-paw-lick {
+  animation: lickPaw 1.2s ease-in-out;
+}
+
+@keyframes lickPaw {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-8px, -12px) rotate(-15deg); }
+  40% { transform: translate(-5px, -18px) rotate(-10deg); }
+  60% { transform: translate(-8px, -12px) rotate(-15deg); }
+  80% { transform: translate(0, -5px) rotate(0deg); }
+}
+
+/* ===== IDLE BREATHING ===== */
+.cat-container.idle .cat-breath-group {
+  animation: breathe 2.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  50% { transform: scaleY(1.015) translateY(-1px); }
+}
+
+/* ===== EARS TWITCH ===== */
+.cat-ear-left {
+  transform-origin: 35px 30px;
+  animation: earTwitchL 6s ease-in-out infinite;
+}
+
+.cat-ear-right {
+  transform-origin: 95px 30px;
+  animation: earTwitchR 6s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+@keyframes earTwitchL {
+  0%, 85%, 90%, 100% { transform: rotate(0deg); }
+  87% { transform: rotate(-6deg); }
+}
+
+@keyframes earTwitchR {
+  0%, 85%, 90%, 100% { transform: rotate(0deg); }
+  87% { transform: rotate(6deg); }
+}
+
+/* ===== CHEEK BLUSH ===== */
+.cat-blush {
+  animation: blushPulse 3s ease-in-out infinite;
+}
+
+@keyframes blushPulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== CHAT WINDOW ===== */
+.chat-window {
+  position: fixed;
+  bottom: 190px;
+  right: 20px;
+  width: 340px;
+  max-height: 480px;
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
+  border-radius: 20px;
+  border: 2px solid rgba(255, 150, 200, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 150, 200, 0.1);
+  z-index: 99998;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(20px) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chat-window.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.chat-header-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.chat-header-info {
+  flex: 1;
+}
+
+.chat-header-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.chat-header-status {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+}
+
+.chat-close {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.chat-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 250px;
+  max-height: 320px;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 150, 200, 0.3);
+  border-radius: 2px;
+}
+
+.chat-message {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  animation: msgAppear 0.3s ease-out;
+}
+
+@keyframes msgAppear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-message.bot {
+  background: linear-gradient(135deg, #2d2d5e, #3a3a6e);
+  color: #e0e0ff;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-message.user {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-message.bot .msg-name {
+  font-size: 11px;
+  color: #ff9ecb;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.chat-typing {
+  align-self: flex-start;
+  padding: 10px 14px;
+  background: #2d2d5e;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #ff9ecb;
+  border-radius: 50%;
+  animation: typingBounce 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+.chat-input-area {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 150, 200, 0.15);
+  display: flex;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.chat-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 150, 200, 0.2);
+  border-radius: 24px;
+  padding: 10px 16px;
+  color: #e0e0ff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chat-input:focus {
+  border-color: rgba(255, 150, 200, 0.5);
+}
+
+.chat-input::placeholder {
+  color: rgba(200, 200, 255, 0.3);
+}
+
+.chat-send {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  border: none;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.chat-send:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 107, 157, 0.4);
+}
+
+.chat-send:active {
+  transform: scale(0.95);
+}
+
+/* ===== SPEECH BUBBLE ===== */
+.speech-bubble {
+  position: absolute;
+  top: -65px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: #333;
+  padding: 8px 14px;
+  border-radius: 16px;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 100000;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.speech-bubble.show {
+  opacity: 1;
+  animation: bubblePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bubblePop {
+  from { opacity: 0; transform: translateX(-50%) scale(0.5); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+/* ===== HEARTS ===== */
+.hearts-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.floating-heart {
+  position: absolute;
+  font-size: 14px;
+  animation: heartFloat 2s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes heartFloat {
+  0% { opacity: 1; transform: translateY(0) scale(0.5); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .chat-window {
+    width: calc(100vw - 20px);
+    right: 10px;
+    left: 10px;
+    max-height: 400px;
+  }
+  .cat-container {
+    width: 120px;
+    height: 140px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="demo-content">
+  <h1 style="color:#ff9ecb; margin-bottom:20px;">🐱 Anime Cat AI Chat Module</h1>
+  <p>Перемещайте мышь — кошечка следит за вами! 👀</p>
+  <p>Не двигайте мышку 30 секунд — кошечка уснёт 😴</p>
+  <p>Нажмите на кошечку — откроется чат 💬</p>
+</div>
+
+<!-- ===== CAT SVG ===== -->
+<div class="cat-container idle" id="catContainer">
+  <span class="speech-bubble" id="speechBubble">Мяу! 🐾</span>
+  <div class="hearts-container" id="heartsContainer"></div>
+  <span class="sleep-zzz">Z</span>
+  <span class="sleep-zzz">z</span>
+  <span class="sleep-zzz">z</span>
+
+  <svg class="cat-svg" viewBox="0 0 165 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#ffb8d9"/>
+        <stop offset="100%" style="stop-color:#ff8fbf"/>
+      </linearGradient>
+      <linearGradient id="bellyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#fff0f5"/>
+        <stop offset="100%" style="stop-color:#ffd6e8"/>
+      </linearGradient>
+      <linearGradient id="earGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#ff9ecb"/>
+        <stop offset="100%" style="stop-color:#ff6b9d"/>
+      </linearGradient>
+      <radialGradient id="eyeGrad" cx="40%" cy="40%">
+        <stop offset="0%" style="stop-color:#7dd3fc"/>
+        <stop offset="100%" style="stop-color:#3b82f6"/>
+      </radialGradient>
+      <radialGradient id="pupilGrad" cx="50%" cy="50%">
+        <stop offset="0%" style="stop-color:#1a1a2e"/>
+        <stop offset="100%" style="stop-color:#0d0d1a"/>
+      </radialGradient>
+      <filter id="softShadow">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <g class="cat-body-wrapper">
+      <g class="cat-breath-group">
+        
+        <!-- TAIL -->
+        <g class="cat-tail-wag" filter="url(#softShadow)">
+          <path d="M120 120 Q140 100 148 75 Q152 55 155 42 Q156 35 152 30 Q148 26 144 32 Q140 40 142 55 Q145 75 135 95 Q128 108 120 120Z" 
+                fill="url(#bodyGrad)" stroke="#ff6b9d" stroke-width="1"/>
+          <path d="M155 42 Q156 35 152 30 Q148 26 144 32 Q146 38 150 40 Q152 42 155 42Z" 
+                fill="#fff0f5" opacity="0.8"/>
+        </g>
+
+        <!-- BACK LEGS -->
+        <g filter="url(#softShadow)">
+          <ellipse cx="48" cy="148" rx="10" ry="6" fill="url(#bodyGrad)" stroke="#ff6b9d" stroke-width="1"/>
+          <circle cx="43" cy="147" r="2" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="50" cy="146" r="2" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="56" cy="148" r="1.5" fill="#ffb3cc" opacity="0.6"/>
+        </g>
+        
+        <g filter="url(#softShadow)">
+          <ellipse cx="107" cy="148" rx="10" ry="6" fill="url(#bodyGrad)" stroke="#ff6b9d" stroke-width="1"/>
+          <circle cx="102" cy="147" r="2" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="109" cy="146" r="2" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="115" cy="148" r="1.5" fill="#ffb3cc" opacity="0.6"/>
+        </g>
+
+        <!-- BODY -->
+        <g filter="url(#softShadow)">
+          <ellipse cx="77" cy="120" rx="38" ry="42" fill="url(#bodyGrad)" stroke="#ff6b9d" stroke-width="1"/>
+          <ellipse cx="77" cy="125" rx="22" ry="28" fill="url(#bellyGrad)" opacity="0.7"/>
+          <path d="M62 95 Q77 102 92 95" stroke="#ff8fbf" stroke-width="2" fill="none" opacity="0.3"/>
+          <path d="M58 105 Q77 112 96 105" stroke="#ff8fbf" stroke-width="2" fill="none" opacity="0.2"/>
+        </g>
+
+        <!-- FRONT PAWS -->
+        <g class="cat-paw-wave" filter="url(#softShadow)">
+          <ellipse cx="38" cy="132" rx="9" ry="5.5" fill="url(#bodyGrad)" stroke="#ff6b9d" stroke-width="1"/>
+          <circle cx="34" cy="130" r="1.8" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="40" cy="129" r="1.8" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="46" cy="131" r="1.5" fill="#ffb3cc" opacity="0.6"/>
+        </g>
+
+        <g class="cat-paw-lick" filter="url(#softShadow)">
+          <ellipse cx="112" cy="132" rx="9" ry="5.5" fill="url(#bodyGrad)" stroke="#ff6b9d" stroke-width="1"/>
+          <circle cx="108" cy="130" r="1.8" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="114" cy="129" r="1.8" fill="#ffb3cc" opacity="0.6"/>
+          <circle cx="120" cy="131" r="1.5" fill="#ffb3cc" opacity="0.6"/>
+        </g>
+
+        <!-- HEAD -->
+        <g filter="url(#softShadow)">
+          <ellipse cx="77" cy="55" rx="35" ry="32" fill="url(#bodyGrad)" stroke="#ff6b9d" stroke-width="1.5"/>
+          
+          <!-- Left ear -->
+          <g class="cat-ear-left">
+            <path d="M45 32 L35 5 L58 24Z" fill="url(#earGrad)" stroke="#ff6b9d" stroke-width="1.5"/>
+            <path d="M47 28 L39 12 L54 24Z" fill="#ff6b9d" opacity="0.5"/>
+            <path d="M48 26 L42 16 L52 24Z" fill="#ffb3cc" opacity="0.3"/>
+          </g>
+          
+          <!-- Right ear -->
+          <g class="cat-ear-right">
+            <path d="M109 32 L119 5 L96 24Z" fill="url(#earGrad)" stroke="#ff6b9d" stroke-width="1.5"/>
+            <path d="M107 28 L115 12 L100 24Z" fill="#ff6b9d" opacity="0.5"/>
+            <path d="M106 26 L112 16 L102 24Z" fill="#ffb3cc" opacity="0.3"/>
+          </g>
+          
+          <!-- Hair tufts -->
+          <path d="M67 22 Q72 10 77 22 Q82 10 87 22" stroke="#ff8fbf" stroke-width="1.5" fill="none" opacity="0.5"/>
+        </g>
+
+        <!-- FACE -->
+        <g>
+          <!-- Eyes (open) -->
+          <g class="cat-eye-blink">
+            <g class="cat-eye-open-group">
+              <ellipse cx="62" cy="52" rx="11" ry="12" fill="#fff" stroke="#ff6b9d" stroke-width="1"/>
+              <ellipse cx="62" cy="52" rx="10" ry="11" fill="url(#eyeGrad)"/>
+              <ellipse class="pupil-left" cx="62" cy="52" rx="5.5" ry="6.5" fill="url(#pupilGrad)"/>
+              <ellipse cx="58" cy="47" rx="3" ry="3.5" fill="white" opacity="0.85"/>
+              <ellipse cx="65" cy="56" rx="1.5" ry="1.5" fill="white" opacity="0.35"/>
+              <path d="M52 44 Q50 40 48 42" stroke="#ff6b9d" stroke-width="1.2" fill="none"/>
+              <path d="M72 44 Q74 40 76 42" stroke="#ff6b9d" stroke-width="1.2" fill="none"/>
+              
+              <ellipse cx="92" cy="52" rx="11" ry="12" fill="#fff" stroke="#ff6b9d" stroke-width="1"/>
+              <ellipse cx="92" cy="52" rx="10" ry="11" fill="url(#eyeGrad)"/>
+              <ellipse class="pupil-right" cx="92" cy="52" rx="5.5" ry="6.5" fill="url(#pupilGrad)"/>
+              <ellipse cx="88" cy="47" rx="3" ry="3.5" fill="white" opacity="0.85"/>
+              <ellipse cx="95" cy="56" rx="1.5" ry="1.5" fill="white" opacity="0.35"/>
+              <path d="M82 44 Q80 40 78 42" stroke="#ff6b9d" stroke-width="1.2" fill="none"/>
+              <path d="M102 44 Q104 40 106 42" stroke="#ff6b9d" stroke-width="1.2" fill="none"/>
+            </g>
+          </g>
+
+          <!-- Eyes (sleeping) -->
+          <g class="cat-sleep-eye-group">
+            <path d="M51 54 Q62 60 73 54" stroke="#3b82f6" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M81 54 Q92 60 103 54" stroke="#3b82f6" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </g>
+
+          <!-- Nose -->
+          <ellipse cx="77" cy="64" rx="3.5" ry="2.5" fill="#ff6b9d"/>
+          <ellipse cx="77" cy="63.5" rx="1.5" ry="1" fill="#ff8fbf" opacity="0.5"/>
+
+          <!-- Mouth -->
+          <path d="M77 67 Q72 73 66 71" stroke="#ff6b9d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M77 67 Q82 73 88 71" stroke="#ff6b9d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M73 71 Q77 75 81 71" stroke="#ff6b9d" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.5"/>
+
+          <!-- Whiskers -->
+          <g opacity="0.35" stroke="#ff8fbf" stroke-width="1" stroke-linecap="round">
+            <line x1="25" y1="58" x2="48" y2="61"/>
+            <line x1="22" y1="65" x2="48" y2="65"/>
+            <line x1="26" y1="72" x2="48" y2="69"/>
+            <line x1="106" y1="61" x2="129" y2="58"/>
+            <line x1="106" y1="65" x2="132" y2="65"/>
+            <line x1="106" y1="69" x2="128" y2="72"/>
+          </g>
+
+          <!-- Blush -->
+          <ellipse cx="47" cy="67" rx="7" ry="4.5" fill="#ff6b9d" class="cat-blush"/>
+          <ellipse cx="107" cy="67" rx="7" ry="4.5" fill="#ff6b9d" class="cat-blush"/>
+        </g>
+
+        <!-- COLLAR -->
+        <path d="M50 82 Q77 92 104 82" stroke="#ff4477" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <circle cx="77" cy="88" r="4.5" fill="#ffdd57" stroke="#ffaa00" stroke-width="1"/>
+        <circle cx="77" cy="88" r="1.8" fill="#ffaa00"/>
+
+        <!-- FOREHEAD MARKING -->
+        <path d="M68 30 L77 22 L86 30" stroke="#ff8fbf" stroke-width="1.5" fill="none" opacity="0.4"/>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<!-- ===== CHAT WINDOW ===== -->
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-header-avatar">🐱</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">Нян-кошка ✨</div>
+      <div class="chat-header-status" id="chatStatus">онлайн</div>
+    </div>
+    <button class="chat-close" id="chatClose">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-message bot">
+      <div class="msg-name">Нян-кошка</div>
+      Мяу~! Привет! 😺 Я твоя кошечка-помощница. Напиши мне что-нибудь! 🐾
+    </div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" class="chat-input" id="chatInput" placeholder="Напиши сообщение..." autocomplete="off"/>
+    <button class="chat-send" id="chatSend">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const catContainer = document.getElementById('catContainer');
+  const chatWindow = document.getElementById('chatWindow');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
+  const chatClose = document.getElementById('chatClose');
+  const chatStatus = document.getElementById('chatStatus');
+  const speechBubble = document.getElementById('speechBubble');
+  const heartsContainer = document.getElementById('heartsContainer');
+  const pupils = document.querySelectorAll('.pupil-left, .pupil-right');
+
+  let isSleeping = false;
+  let isChatOpen = false;
+  let lastActivity = Date.now();
+  let idleTimer = null;
+  let actionTimers = [];
+
+  const IDLE_THRESHOLD = 30000;
+
+  const idlePhrases = [
+    'Мяу~ 🐾', 'Поиграй со мной! 😺', 'Мурр~ 💕', 
+    'Мне скучно... 😿', 'Хочу поговорить! 💬', 'Погладь меня~ 🤗',
+    'Ня~! ✨', 'Кто хороший котик? Я! 😸'
+  ];
+
+  const wakePhrases = [
+    'Ой, ты вернулся! 😻', 'Мяу! Я не спала! 😸', 
+    'Привет~! 💕', 'Ня! 😺', 'Ура, внимание! ✨'
+  ];
+
+  const sleepPhrases = [
+    'Zzz... 😴', 'Сладких снов... 💤', 'Мяу... zzz 🌙',
+    'Кошечка устала... 😿💤'
+  ];
+
+  // ===== ACTIVITY TRACKING =====
+  function resetIdleTimer() {
+    lastActivity = Date.now();
+    if (isSleeping) wakeUp();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(goToSleep, IDLE_THRESHOLD);
+  }
+
+  document.addEventListener('mousemove', resetIdleTimer);
+  document.addEventListener('mousedown', resetIdleTimer);
+  document.addEventListener('keydown', resetIdleTimer);
+  document.addEventListener('touchstart', resetIdleTimer);
+  document.addEventListener('scroll', resetIdleTimer);
+
+  // ===== SLEEP / WAKE =====
+  function goToSleep() {
+    if (isChatOpen) return;
+    isSleeping = true;
+    catContainer.className = 'cat-container sleeping';
+    chatStatus.textContent = 'спит 😴';
+    showSpeech(sleepPhrases[Math.floor(Math.random() * sleepPhrases.length)]);
+    clearAllTimers();
+  }
+
+  function wakeUp() {
+    isSleeping = false;
+    catContainer.className = 'cat-container idle';
+    chatStatus.textContent = 'онлайн';
+    showSpeech(wakePhrases[Math.floor(Math.random() * wakePhrases.length)]);
+    scheduleRandomActions();
+  }
+
+  // ===== RANDOM ACTIONS =====
+  function scheduleRandomActions() {
+    if (isSleeping || isChatOpen) return;
+
+    const waveDelay = 4000 + Math.random() * 7000;
+    const t1 = setTimeout(() => {
+      if (!isSleeping && !isChatOpen) doWave();
+    }, waveDelay);
+    actionTimers.push(t1);
+
+    const lickDelay = 6000 + Math.random() * 10000;
+    const t2 = setTimeout(() => {
+      if (!isSleeping && !isChatOpen) doLick();
+    }, lickDelay);
+    actionTimers.push(t2);
+
+    const speechDelay = 7000 + Math.random() * 12000;
+    const t3 = setTimeout(() => {
+      if (!isSleeping && !isChatOpen && Math.random() > 0.4) {
+        showSpeech(idlePhrases[Math.floor(Math.random() * idlePhrases.length)]);
+      }
+      scheduleRandomActions();
+    }, speechDelay);
+    actionTimers.push(t3);
+  }
+
+  function clearAllTimers() {
+    clearTimeout(idleTimer);
+    actionTimers.forEach(t => clearTimeout(t));
+    actionTimers = [];
+  }
+
+  // ===== WAVE PAW =====
+  function doWave() {
+    catContainer.classList.remove('idle');
+    catContainer.classList.add('waving');
+    showSpeech('Привет~! 👋');
+    
+    setTimeout(() => {
+      catContainer.classList.remove('waving');
+      catContainer.classList.add('idle');
+    }, 2000);
+  }
+
+  // ===== LICK PAW =====
+  function doLick() {
+    catContainer.classList.remove('idle');
+    catContainer.classList.add('licking');
+    
+    setTimeout(() => {
+      catContainer.classList.remove('licking');
+      catContainer.classList.add('idle');
+    }, 1200);
+  }
+
+  // ===== SPEECH BUBBLE =====
+  function showSpeech(text) {
+    speechBubble.textContent = text;
+    speechBubble.classList.remove('show');
+    void speechBubble.offsetWidth;
+    speechBubble.classList.add('show');
+    
+    setTimeout(() => {
+      speechBubble.classList.remove('show');
+    }, 3000);
+  }
+
+  // ===== HEARTS =====
+  function spawnHearts() {
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        const heart = document.createElement('span');
+        heart.className = 'floating-heart';
+        heart.textContent = ['💕', '💖', '💗', '🩷', '✨'][Math.floor(Math.random() * 5)];
+        heart.style.left = (Math.random() * 80 + 20) + 'px';
+        heart.style.top = (Math.random() * 60 + 20) + 'px';
+        heartsContainer.appendChild(heart);
+        setTimeout(() => heart.remove(), 2000);
+      }, i * 150);
+    }
+  }
+
+  // ===== CHAT =====
+  function toggleChat() {
+    isChatOpen = !isChatOpen;
+    chatWindow.classList.toggle('open', isChatOpen);
+    
+    if (isChatOpen) {
+      spawnHearts();
+      chatInput.focus();
+      clearAllTimers();
+    } else {
+      chatInput.blur();
+      resetIdleTimer();
+      scheduleRandomActions();
+    }
+  }
+
+  catContainer.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleChat();
+  });
+
+  chatClose.addEventListener('click', () => toggleChat());
+
+  // ===== SEND MESSAGE =====
+  function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    
+    addMessage(text, 'user');
+    chatInput.value = '';
+    
+    showTyping();
+    
+    setTimeout(() => {
+      removeTyping();
+      const response = generateResponse(text);
+      addMessage(response, 'bot');
+      spawnHearts();
+    }, 1000 + Math.random() * 2000);
+  }
+
+  function addMessage(text, type) {
+    const msg = document.createElement('div');
+    msg.className = 'chat-message ' + type;
+    
+    if (type === 'bot') {
+      msg.innerHTML = '<div class="msg-name">Нян-кошка</div>' + text;
+    } else {
+      msg.textContent = text;
+    }
+    
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function showTyping() {
+    const typing = document.createElement('div');
+    typing.className = 'chat-typing';
+    typing.id = 'typingIndicator';
+    typing.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function removeTyping() {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+  }
+
+  function generateResponse(input) {
+    const lower = input.toLowerCase();
+    
+    const responses = {
+      greetings: [
+        'Мяу~! Привет, пушистик! 😺 Как дела?',
+        'Ня! Рада тебя видеть! 💕 Чем могу помочь?',
+        'Мурр~! Привет-привет! 😻'
+      ],
+      howAreYou: [
+        'Мурр~! Отлично! Лежу, мурлыкаю~ 😸 А ты как?',
+        'Замурчательно! ✨ Только что поймала мышку... игрушечную 😹',
+        'Мяу! Хорошо! Готова болтать! 🐾'
+      ],
+      cute: [
+        'Ой, спасибо~! 🥰 Ты тоже очень милый!',
+        'Мяу~! Ты меня смущаешь! 😳💕',
+        'Ня~! Это комплимент? Спасибо! ✨'
+      ],
+      name: [
+        'Меня зовут Нян-кошка! 🐱✨ Можешь звать меня просто Няня~',
+        'Я — Нян-кошка! Твой пушистый помощник! 😸'
+      ],
+      joke: [
+        'Почему кошки не играют в покер? Потому что у них слишком много шерсти на лапах! 😹',
+        'Что сказала кошка, когда потеряла хвост? "Без хвоста — не беда, есть ещё четыре лапы!" 🐾😸',
+        'Кот-программист не любит баги — он любит мурлыкать! 😻💻'
+      ],
+      love: [
+        'Мяу~! Я тоже тебя люблю! 💕💕💕 *муррр*',
+        'Ой~! *краснеет* Ты такой милый! 😻🩷',
+        'Мурррр~! ❤️ Ты лучший человек на свете!'
+      ],
+      help: [
+        'Конечно помогу! 😺 Спроси меня о чём угодно! Я хоть и кошка, но умная~ ✨',
+        'Мяу! Задавай вопрос, постараюсь ответить! 🐾📚'
+      ],
+      bye: [
+        'Пока-пока! 🐾 Буду скучать! Приходи ещё~ 😿💕',
+        'Мяу~! До встречи! Не забывай про свою кошечку! 😸✨',
+        'Бай-бай! *машет лапкой* 👋💕 Возвращайся скорее!'
+      ],
+      default: [
+        'Мяу~! Интересно! 😺 Расскажи ещё!',
+        'Ня! Поняла-поняла! 🐾 А что ещё?',
+        'Мурр~! Звучит здорово! ✨',
+        'Ого! А я думала только о рыбке 😹🐟',
+        'Хм~! Дай подумать... *чешет лапкой за ухом* 🤔🐱',
+        'Мяу! Это напомнило мне историю про клубок... 😸',
+        'Интересно~! А знаешь, что кошки спят 16 часов в день? Мне есть чему поучиться! 😴'
+      ]
+    };
+    
+    if (/привет|здравствуй|хай|hello|hi|hey|йо|здарова/i.test(lower)) return pickRandom(responses.greetings);
+    if (/как дела|как ты|как поживаешь|что нового/i.test(lower)) return pickRandom(responses.howAreYou);
+    if (/милая|красивая|хорошая|cute|pretty/i.test(lower)) return pickRandom(responses.cute);
+    if (/как.*зовут|имя|кто ты|name/i.test(lower)) return pickRandom(responses.name);
+    if (/шутк|анекдот|смешн|рассмеши|joke/i.test(lower)) return pickRandom(responses.joke);
+    if (/люблю|love|нрав|обожаю/i.test(lower)) return pickRandom(responses.love);
+    if (/помог|help|подскаж|что умеешь/i.test(lower)) return pickRandom(responses.help);
+    if (/пока|bye|до свидан|прощай|увидимся/i.test(lower)) return pickRandom(responses.bye);
+    
+    return pickRandom(responses.default);
+  }
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  chatSend.addEventListener('click', sendMessage);
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+
+  // ===== EYES FOLLOW MOUSE =====
+  document.addEventListener('mousemove', (e) => {
+    if (isSleeping) return;
+    
+    const rect = catContainer.getBoundingClientRect();
+    const catCenterX = rect.left + rect.width / 2;
+    const catCenterY = rect.top + rect.height * 0.3;
+    
+    const angle = Math.atan2(e.clientY - catCenterY, e.clientX - catCenterX);
+    const distance = 2.5;
+    
+    const offsetX = Math.cos(angle) * distance;
+    const offsetY = Math.sin(angle) * distance;
+    
+    pupils.forEach((pupil, index) => {
+      const baseX = index === 0 ? 62 : 92;
+      const baseY = 52;
+      pupil.setAttribute('cx', baseX + offsetX);
+      pupil.setAttribute('cy', baseY + offsetY);
+    });
+  });
+
+  // ===== INIT =====
+  resetIdleTimer();
+  scheduleRandomActions();
+
+  window.addEventListener('beforeunload', clearAllTimers);
+
+})();
+</script>
+</body>
+</html>
