@@ -180,7 +180,7 @@ widget.innerHTML = `
   <div class="chat-header">
     <div class="chat-header-avatar">🐱</div>
     <div class="chat-header-info">
-      <div class="chat-header-name">AI-киса ✨</div>
+      <div class="chat-header-name">AI-Киса ✨</div>
       <div class="chat-header-status" id="chatStatus">онлайн</div>
     </div>
     <button class="chat-close" id="chatClose">✕</button>
@@ -228,14 +228,14 @@ document.body.appendChild(widget);
   const IDLE_THRESHOLD = 30000;
 
   const idlePhrases = [
-    'Мяу~ 🐾', 'Поиграй со мной! 😺', 'Мурр~ 💕', 
-    'Мне скучно... 😿', 'Хочу поговорить! 💬', 'Погладь меня~ 🤗',
-    'Ня~! ✨', 'Кто хороший котик? Я! 😸'
+    'Мяу 🐾', 'Поиграй со мной! 😺', 'Мурр~ 💕', 
+    'Мне скучно... 😿', 'Хочу поговорить! 💬', 'Погладь меня 🤗',
+    'Ня! ✨', 'Кто хороший котик? Я! 😸'
   ];
 
   const wakePhrases = [
     'Ой, ты вернулся! 😻', 'Мяу! Я не спала! 😸', 
-    'Привет~! 💕', 'Ня! 😺', 'Ура, внимание! ✨'
+    'Привет! 💕', 'Ня! 😺', 'Ура, внимание! ✨'
   ];
 
   const sleepPhrases = [
