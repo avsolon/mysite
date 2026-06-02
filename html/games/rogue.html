@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rogue — Roguelike</title>
+<style>
+@import url('https://cdn.fontsource.org/font/fira-mono/400/700');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a0a;color:#e0e0e0;font-family:'Fira Mono','Courier New',monospace;display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden;}
+#game-container{max-width:1100px;width:100%;padding:10px;}
+#top-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#1a1a2e;border:1px solid #333;border-radius:6px;margin-bottom:8px;font-size:14px;flex-wrap:wrap;gap:6px;}
+#top-bar .stat{color:#aaa;}
+#top-bar .stat span{color:#fff;font-weight:700;}
+#hp-bar-container{width:160px;height:16px;background:#333;border-radius:8px;overflow:hidden;border:1px solid #555;}
+#hp-bar{height:100%;background:linear-gradient(90deg,#c0392b,#e74c3c);transition:width .3s;border-radius:8px;}
+#main-area{display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+#map-container{flex:1;min-width:300px;position:relative;background:#111;border:2px solid #333;border-radius:6px;overflow:hidden;min-height:580px;}
+#game-map{display:inline-block;position:relative;font-size:14px;line-height:14px;letter-spacing:1px;white-space:pre;user-select:none;padding:4px;}
+.cell{display:inline-block;width:10px;text-align:center;}
+#sidebar{width:260px;display:flex;flex-direction:column;gap:8px;}
+#inventory-panel{background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:10px;max-height:300px;overflow-y:auto;}
+#inventory-panel h3{color:#f39c12;margin-bottom:6px;font-size:13px;}
+.inv-item{padding:4px 6px;margin:2px 0;background:#222;border-radius:4px;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s;}
+.inv-item:hover{background:#333;}
+.inv-item .key{color:#3498db;font-weight:700;margin-right:6px;}
+.inv-item .iname{color:#ddd;}
+.inv-item .count{color:#999;font-size:11px;}
+#log-panel{background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:10px;max-height:200px;overflow-y:auto;}
+#log-panel h3{color:#2ecc71;margin-bottom:6px;font-size:13px;}
+.log-entry{font-size:11px;padding:2px 0;border-bottom:1px solid #222;color:#ccc;}
+.log-entry.combat{color:#e74c3c;}
+.log-entry.item{color:#2ecc71;}
+.log-entry.info{color:#3498db;}
+.log-entry.danger{color:#c0392b;}
+#controls{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;}
+#controls button{background:#2c3e50;color:#ecf0f1;border:1px solid #444;padding:8px 14px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;}
+#controls button:hover{background:#34495e;border-color:#666;}
+#controls button:active{background:#1a252f;}
+#dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:4px;justify-content:center;margin-bottom:8px;}
+#dpad button{background:#2c3e50;color:#ecf0f1;border:1px solid #555;border-radius:6px;cursor:pointer;font-size:18px;font-family:inherit;transition:all .15s;}
+#dpad button:hover{background:#34495e;border-color:#888;}
+#dpad button:active{background:#1a252f;transform:scale(.95);}
+#dpad .empty{background:transparent;border:none;cursor:default;}
+#modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:100;}
+#modal-overlay.active{display:flex;}
+#modal{background:#1a1a2e;border:2px solid #444;border-radius:10px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;}
+#modal h2{color:#f39c12;margin-bottom:16px;text-align:center;}
+#modal table{width:100%;border-collapse:collapse;font-size:13px;}
+#modal th{background:#2c3e50;color:#f39c12;padding:8px;text-align:left;}
+#modal td{padding:6px 8px;border-bottom:1px solid #333;}
+#modal tr:hover td{background:#222;}
+#modal button{display:block;margin:16px auto 0;background:#e74c3c;color:#fff;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:14px;}
+#modal button:hover{background:#c0392b;}
+#help-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:100;}
+#help-overlay.active{display:flex;}
+#help-content{background:#1a1a2e;border:2px solid #444;border-radius:10px;padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;}
+#help-content h2{color:#f39c12;margin-bottom:12px;text-align:center;}
+#help-content p{font-size:12px;line-height:1.6;color:#ccc;margin-bottom:8px;}
+#help-content button{display:block;margin:16px auto 0;background:#3498db;color:#fff;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:14px;}
+.player-cell{color:#3498db;font-weight:700;}
+.enemy-zombie{color:#2ecc71;}
+.enemy-vampire{color:#e74c3c;}
+.enemy-ghost{color:#ecf0f1;}
+.enemy-ogre{color:#f1c40f;}
+.enemy-snake{color:#fff;}
+.item-treasure{color:#f39c12;}
+.item-food{color:#e67e22;}
+.item-elixir{color:#9b59b6;}
+.item-scroll{color:#3498db;}
+.item-weapon{color:#1abc9c;}
+.stairs-cell{color:#e74c3c;font-weight:700;}
+.wall-cell{color:#555;}
+.floor-cell{color:#333;}
+.corridor-cell{color:#2a2a2a;}
+#weapon-display{color:#1abc9c;font-size:12px;}
+</style>
+</head>
+<body>
+<div id="game-container">
+  <div id="top-bar">
+    <div>Уровень: <span id="level-num">1</span>/21</div>
+    <div>❤️ <span id="hp-text">50/50</span>
+      <div id="hp-bar-container"><div id="hp-bar" style="width:100%"></div></div>
+    </div>
+    <div>🗡️ Сила: <span id="str-val">5</span></div>
+    <div>💨 Ловкость: <span id="agi-val">5</span></div>
+    <div id="weapon-display">🔪 Без оружия</div>
+    <div>💰 <span id="gold-val">0</span></div>
+  </div>
+  <div id="main-area">
+    <div id="map-container">
+      <div id="game-map"></div>
+    </div>
+    <div id="sidebar">
+      <div id="inventory-panel">
+        <h3>🎒 Рюкзак (<span id="inv-count">0</span>/18)</h3>
+        <div id="inventory-list"></div>
+      </div>
+      <div id="log-panel">
+        <h3>📜 Журнал</h3>
+        <div id="log-list"></div>
+      </div>
+    </div>
+  </div>
+  <div id="dpad">
+    <button class="empty"></button><button onclick="movePlayer(0,-1)">▲</button><button class="empty"></button>
+    <button onclick="movePlayer(-1,0)">◄</button><button onclick="waitTurn()">⏳</button><button onclick="movePlayer(1,0)">►</button>
+    <button class="empty"></button><button onclick="movePlayer(0,1)">▼</button><button class="empty"></button>
+  </div>
+  <div id="controls">
+    <button onclick="showHelp()">❓ Помощь</button>
+    <button onclick="showScores()">🏆 Рекорды</button>
+    <button onclick="restartGame()">🔄 Заново</button>
+  </div>
+</div>
+
+<div id="modal-overlay">
+  <div id="modal">
+    <h2 id="modal-title">Рекорды</h2>
+    <div id="modal-body"></div>
+    <button onclick="closeModal()">Закрыть</button>
+  </div>
+</div>
+
+<div id="help-overlay">
+  <div id="help-content">
+    <h2>Управление</h2>
+    <p><b>Перемещение:</b> Стрелки или WASD / кнопки на экране</p>
+    <p><b>Ожидание:</b> Пробел или кнопка ⏳</p>
+    <p><b>Использовать предмет:</b> Нажмите на предмет в рюкзаке</p>
+    <p><b>Экипировать оружие:</b> Нажмите на оружие в рюкзаке</p>
+    <p><b>Сбросить оружие:</b> Нажмите на текущее оружие</p>
+    <hr style="border-color:#333;margin:12px 0;">
+    <p><b>Враги:</b></p>
+    <p><span style="color:#2ecc71">z</span> — Зомби: медленный, живучий, средний урон</p>
+    <p><span style="color:#e74c3c">v</span> — Вампир: быстрый, отнимает макс. HP при ударе, первый удар — промах</p>
+    <p><span style="color:#ecf0f1">g</span> — Привидение: телепортируется, невидимо до боя</p>
+    <p><span style="color:#f1c40f">O</span> — Огр: ходит на 2 клетки, мощный, отдыхает после удара</p>
+    <p><span style="color:#fff">s</span> — Змей-маг: ходит по диагонали, может усыпить</p>
+    <button onclick="closeHelp()">Закрыть</button>
+  </div>
+</div>
+
+<script>
+// ========== CONSTANTS ==========
+const LEVELS = 21;
+const ROOMS_COUNT = 9;
+const MAP_W = 80;
+const MAP_H = 40;
+const MAX_INV_PER_TYPE = 9;
+const TILE_W = 10;
+const TILE_H = 14;
+
+// ========== GAME STATE ==========
+let gameState = null;
+let gameLog = [];
+
+// ========== UTILITY ==========
+function rng(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function dist(x1, y1, x2, y2) { return Math.abs(x1 - x2) + Math.abs(y1 - y2); }
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+// ========== PLAYER ==========
+function createPlayer() {
+  return {
+    x: 0, y: 0,
+    hp: 50, maxHp: 50,
+    agility: 5, strength: 5,
+    gold: 0,
+    weapon: null,
+    inventory: [],
+    sleeping: 0,
+    tempStr: 0, tempAgi: 0, tempMaxHp: 0
+  };
+}
+
+// ========== ENEMY TYPES ==========
+const ENEMY_TYPES = {
+  zombie: { ch: 'z', css: 'enemy-zombie', name: 'Зомби', hp: 30, str: 6, agi: 2, hostility: 5 },
+  vampire: { ch: 'v', css: 'enemy-vampire', name: 'Вампир', hp: 40, str: 7, agi: 10, hostility: 8, firstHitMiss: true },
+  ghost: { ch: 'g', css: 'enemy-ghost', name: 'Привидение', hp: 15, str: 3, agi: 12, hostility: 3, teleport: true },
+  ogre: { ch: 'O', css: 'enemy-ogre', name: 'Огр', hp: 60, str: 15, agi: 2, hostility: 5, moveStep: 2, restsAfterAttack: true },
+  snakemage: { ch: 's', css: 'enemy-snake', name: 'Змей-маг', hp: 20, str: 5, agi: 14, hostility: 8, diagonal: true, sleepChance: 0.3 }
+};
+
+function createEnemy(type, x, y, level) {
+  const base = ENEMY_TYPES[type];
+  const scale = 1 + (level - 1) * 0.15;
+  return {
+    type, x, y,
+    hp: Math.floor(base.hp * scale),
+    maxHp: Math.floor(base.hp * scale),
+    str: Math.floor(base.str * scale),
+    agi: Math.floor(base.agi * scale),
+    hostility: base.hostility,
+    ch: base.ch, css: base.css, name: base.name,
+    firstHitMiss: base.firstHitMiss || false,
+    teleport: base.teleport || false,
+    moveStep: base.moveStep || 1,
+    restsAfterAttack: base.restsAfterAttack || false,
+    diagonal: base.diagonal || false,
+    sleepChance: base.sleepChance || 0,
+    resting: false,
+    invisible: false,
+    inCombat: false,
+    teleportTimer: 0,
+    invisibleTimer: 0,
+    diagDir: Math.random() < 0.5 ? 1 : -1
+  };
+}
+
+// ========== ITEMS ==========
+const ITEM_TYPES = {
+  food: { ch: '!', css: 'item-food', name: 'Еда' },
+  elixir: { ch: '~', css: 'item-elixir', name: 'Эликсир' },
+  scroll: { ch: '?', css: 'item-scroll', name: 'Свиток' },
+  weapon: { ch: '/', css: 'item-weapon', name: 'Оружие' },
+  treasure: { ch: '$', css: 'item-treasure', name: 'Сокровище' }
+};
+
+function createItem(type, subtype, level) {
+  const scale = 1 + (level - 1) * 0.12;
+  const base = ITEM_TYPES[type];
+  let hpBoost = 0, maxHpBoost = 0, agiBoost = 0, strBoost = 0, cost = 0, power = 0;
+  if (type === 'food') {
+    hpBoost = rng(10, 20);
+  } else if (type === 'elixir') {
+    const s = pick(['str', 'agi', 'maxHp']);
+    if (s === 'str') strBoost = Math.floor(rng(2, 5) * scale);
+    else if (s === 'agi') agiBoost = Math.floor(rng(2, 5) * scale);
+    else maxHpBoost = Math.floor(rng(5, 10) * scale);
+    subtype = s;
+  } else if (type === 'scroll') {
+    const s = pick(['str', 'agi', 'maxHp']);
+    if (s === 'str') strBoost = Math.floor(rng(1, 3) * scale);
+    else if (s === 'agi') agiBoost = Math.floor(rng(1, 3) * scale);
+    else maxHpBoost = Math.floor(rng(3, 6) * scale);
+    subtype = s;
+  } else if (type === 'weapon') {
+    power = Math.floor(rng(2, 6) * scale);
+    subtype = pick(['Меч', 'Топор', 'Кинжал', 'Булава', 'Посох']);
+  } else if (type === 'treasure') {
+    cost = rng(10, 30) * level;
+  }
+  return { type, subtype, baseCh: base.ch, baseCss: base.css, baseName: base.name, hpBoost, maxHpBoost, agiBoost, strBoost, cost, power, elixirTimer: type === 'elixir' ? rng(5, 10) : 0 };
+}
+
+// ========== LEVEL GENERATION ==========
+function generateLevel(levelNum) {
+  const map = [];
+  for (let y = 0; y < MAP_H; y++) {
+    map[y] = [];
+    for (let x = 0; x < MAP_W; x++) {
+      map[y][x] = 'wall';
+    }
+  }
+
+  const rooms = [];
+  const sectionW = Math.floor(MAP_W / 3);
+  const sectionH = Math.floor(MAP_H / 3);
+
+  for (let sy = 0; sy < 3; sy++) {
+    for (let sx = 0; sx < 3; sx++) {
+      const rw = rng(6, 12);
+      const rh = rng(5, 9);
+      const rx = rng(sx * sectionW + 2, (sx + 1) * sectionW - rw - 2);
+      const ry = rng(sy * sectionH + 2, (sy + 1) * sectionH - rh - 2);
+      rooms.push({ x: rx, y: ry, w: rw, h: rh, cx: Math.floor(rx + rw / 2), cy: Math.floor(ry + rh / 2) });
+    }
+  }
+
+  for (const r of rooms) {
+    for (let y = r.y; y < r.y + r.h; y++) {
+      for (let x = r.x; x < r.x + r.w; x++) {
+        if (y >= 0 && y < MAP_H && x >= 0 && x < MAP_W) map[y][x] = 'floor';
+      }
+    }
+  }
+
+  const edges = [];
+  for (let i = 0; i < rooms.length; i++) {
+    for (let j = i + 1; j < rooms.length; j++) {
+      edges.push({ i, j, d: dist(rooms[i].cx, rooms[i].cy, rooms[j].cx, rooms[j].cy) });
+    }
+  }
+  edges.sort((a, b) => a.d - b.d);
+
+  const parent = rooms.map((_, i) => i);
+  const find = i => parent[i] === i ? i : (parent[i] = find(parent[i]));
+  const union = (i, j) => parent[find(i)] = find(j);
+
+  for (const e of edges) {
+    if (find(e.i) !== find(e.j)) {
+      union(e.i, e.j);
+      carveCorridor(map, rooms[e.i].cx, rooms[e.i].cy, rooms[e.j].cx, rooms[e.j].cy);
+    }
+  }
+
+  let extra = 0;
+  for (const e of edges) {
+    if (extra >= 3) break;
+    if (Math.random() < 0.3) {
+      carveCorridor(map, rooms[e.i].cx, rooms[e.i].cy, rooms[e.j].cx, rooms[e.j].cy);
+      extra++;
+    }
+  }
+
+  const startRoom = rng(0, 8);
+  let endRoom = rng(0, 8);
+  while (endRoom === startRoom) endRoom = rng(0, 8);
+
+  const stairs = { x: rooms[endRoom].cx, y: rooms[endRoom].cy };
+  map[stairs.y][stairs.x] = 'stairs';
+
+  const enemies = [];
+  const enemyTypes = Object.keys(ENEMY_TYPES);
+  const numEnemies = rng(3 + levelNum, 6 + levelNum * 2);
+  let placed = 0;
+  for (let attempt = 0; attempt < numEnemies * 10 && placed < numEnemies; attempt++) {
+    const ri = rng(0, 8);
+    if (ri === startRoom) continue;
+    const r = rooms[ri];
+    const ex = rng(r.x + 1, r.x + r.w - 2);
+    const ey = rng(r.y + 1, r.y + r.h - 2);
+    if (map[ey][ex] !== 'floor' || enemies.some(e => e.x === ex && e.y === ey)) continue;
+    let typeIdx = levelNum > 5 ? 1 : 0;
+    if (levelNum > 10) typeIdx = 2;
+    if (levelNum > 15) typeIdx = 3;
+    if (levelNum > 18) typeIdx = 4;
+    enemies.push(createEnemy(enemyTypes[Math.min(typeIdx, 4)], ex, ey, levelNum));
+    placed++;
+  }
+
+  const items = [];
+  const foodChance = clamp(0.3 - levelNum * 0.01, 0.05, 0.3);
+  const scrollChance = clamp(0.2 - levelNum * 0.008, 0.03, 0.2);
+  const elixirChance = clamp(0.15 - levelNum * 0.006, 0.02, 0.15);
+  const weaponChance = clamp(0.1 - levelNum * 0.004, 0.02, 0.1);
+  const treasureChance = clamp(0.1 + levelNum * 0.02, 0.1, 0.5);
+
+  for (let attempt = 0; attempt < 100; attempt++) {
+    if (items.length > 5 + levelNum) break;
+    const ri = rng(0, 8);
+    if (ri === startRoom) continue;
+    const r = rooms[ri];
+    const ix = rng(r.x + 1, r.x + r.w - 2);
+    const iy = rng(r.y + 1, r.y + r.h - 2);
+    if (map[iy][ix] !== 'floor' || items.some(it => it.x === ix && it.y === iy)) continue;
+    const roll = Math.random();
+    let type = roll < treasureChance ? 'treasure' : roll < treasureChance + foodChance ? 'food' : roll < treasureChance + foodChance + scrollChance ? 'scroll' : roll < treasureChance + foodChance + scrollChance + elixirChance ? 'elixir' : roll < treasureChance + foodChance + scrollChance + elixirChance + weaponChance ? 'weapon' : null;
+    if (type) items.push({ ...createItem(type, '', levelNum), x: ix, y: iy });
+  }
+
+  const sr = rooms[startRoom];
+  const playerX = rng(sr.x + 1, sr.x + sr.w - 2);
+  const playerY = rng(sr.y + 1, sr.y + sr.h - 2);
+  return { map, rooms, enemies, items, stairs, playerStart: { x: playerX, y: playerY }, roomsList: rooms };
+}
+
+function carveCorridor(map, x1, y1, x2, y2) {
+  let cx = x1, cy = y1;
+  while (cx !== x2 || cy !== y2) {
+    if (cy !== y2) cy += cy < y2 ? 1 : -1;
+    else if (cx !== x2) cx += cx < x2 ? 1 : -1;
+    if (cy >= 0 && cy < MAP_H && cx >= 0 && cx < MAP_W && map[cy][cx] === 'wall') map[cy][cx] = 'corridor';
+  }
+}
+
+// ========== INIT GAME ==========
+function initGame() {
+  gameState = { level: 1, player: createPlayer(), levelData: null, gameOver: false, gameWon: false };
+  gameLog = [];
+  loadLevel(1);
+}
+
+function loadLevel(lvl) {
+  const ld = generateLevel(lvl);
+  gameState.level = lvl;
+  gameState.levelData = ld;
+  gameState.player.x = ld.playerStart.x;
+  gameState.player.y = ld.playerStart.y;
+  gameState.player.sleeping = 0;
+  addLog(`Вы спустились на уровень ${lvl}.`, 'info');
+  if (lvl === 1) addLog('Добро пожаловать в подземелье! Найдите лестницу (>) чтобы спуститься глубже.', 'info');
+  render();
+}
+
+// ========== MOVEMENT & COMBAT ==========
+function movePlayer(dx, dy) {
+  if (!gameState || gameState.gameOver || gameState.gameWon || !gameState.levelData) return;
+  const p = gameState.player;
+  if (p.sleeping > 0) {
+    p.sleeping--;
+    addLog('Вы спите и пропускаете ход!', 'danger');
+    processEnemies();
+    render();
+    return;
+  }
+
+  const nx = p.x + dx;
+  const ny = p.y + dy;
+  if (nx < 0 || nx >= MAP_W || ny < 0 || ny >= MAP_H) return;
+  const tile = gameState.levelData.map[ny][nx];
+  if (tile === 'wall') return;
+
+  const enemy = gameState.levelData.enemies.find(e => e.x === nx && e.y === ny && !e.invisible);
+  if (enemy) {
+    playerAttack(enemy);
+  } else {
+    p.x = nx;
+    p.y = ny;
+    pickupItems();
+    if (tile === 'stairs') {
+      if (gameState.level >= LEVELS) {
+        gameState.gameWon = true;
+        addLog('🎉 Вы прошли все 21 уровень! Победа!', 'info');
+        saveScore();
+      } else {
+        loadLevel(gameState.level + 1);
+        return;
+      }
+    }
+  }
+
+  processEnemies();
+  processElixirTimers();
+  render();
+  checkPlayerDeath();
+}
+
+function waitTurn() {
+  if (!gameState || gameState.gameOver || gameState.gameWon) return;
+  const p = gameState.player;
+  if (p.sleeping > 0) {
+    p.sleeping--;
+    addLog('Вы спите и пропускаете ход!', 'danger');
+  }
+  processEnemies();
+  processElixirTimers();
+  render();
+  checkPlayerDeath();
+}
+
+function pickupItems() {
+  const ld = gameState.levelData;
+  const p = gameState.player;
+  const idx = ld.items.findIndex(it => it.x === p.x && it.y === p.y);
+  if (idx === -1) return;
+  const item = ld.items[idx];
+
+  if (item.type === 'treasure') {
+    p.gold += item.cost;
+    addLog(`Подобрано сокровище: ${item.cost} золота!`, 'item');
+    ld.items.splice(idx, 1);
+    return;
+  }
+
+  const sameType = p.inventory.filter(i => i.type === item.type);
+  if (sameType.length >= MAX_INV_PER_TYPE) {
+    addLog('Рюкзак полон для этого типа предметов!', 'danger');
+    return;
+  }
+
+  p.inventory.push(item);
+  ld.items.splice(idx, 1);
+  addLog(`Подобрано: ${item.baseName}${item.subtype ? ' (' + item.subtype + ')' : ''}`, 'item');
+}
+
+function playerAttack(enemy) {
+  const p = gameState.player;
+  enemy.inCombat = true;
+  if (enemy.firstHitMiss && !enemy.hitByPlayer) {
+    enemy.hitByPlayer = true;
+    addLog(`Ваш удар по ${enemy.name} промахивается!`, 'combat');
+    enemyTurn(enemy);
+    return;
+  }
+
+  const hitChance = calcHitChance(p, enemy);
+  if (Math.random() > hitChance) {
+    addLog(`Вы промахиваетесь по ${enemy.name}!`, 'combat');
+    enemyTurn(enemy);
+    return;
+  }
+
+  const totalStr = p.strength + p.tempStr + (p.weapon ? p.weapon.power : 0);
+  let dmg = Math.max(1, Math.floor(totalStr * (0.8 + Math.random() * 0.4)));
+  enemy.hp -= dmg;
+  addLog(`Вы наносите ${enemy.name} ${dmg} урона!`, 'combat');
+
+  if (enemy.hp <= 0) { killEnemy(enemy); return; }
+  enemyTurn(enemy);
+}
+
+function enemyTurn(enemy) {
+  if (enemy.resting) { enemy.resting = false; return; }
+  if (!isEnemyAdjacent(enemy)) moveEnemy(enemy);
+  if (isEnemyAdjacent(enemy)) enemyAttack(enemy);
+}
+
+function isEnemyAdjacent(enemy) {
+  const p = gameState.player;
+  return Math.abs(enemy.x - p.x) + Math.abs(enemy.y - p.y) === 1;
+}
+
+function calcHitChance(attacker, defender) {
+  return clamp(0.65 + (attacker.agi - defender.agi) * 0.03, 0.2, 0.95);
+}
+
+function enemyAttack(enemy) {
+  const p = gameState.player;
+  if (Math.random() > calcHitChance(enemy, p)) { addLog(`${enemy.name} промахивается!`, 'combat'); return; }
+  let dmg = Math.max(1, Math.floor(enemy.str * (0.8 + Math.random() * 0.4)));
+  if (enemy.type === 'vampire') {
+    const drain = Math.floor(dmg * 0.3);
+    p.maxHp -= drain;
+    addLog(`${enemy.name} отнимает ${drain} макс. HP!`, 'combat');
+  }
+  if (enemy.type === 'snakemage' && Math.random() < enemy.sleepChance) {
+    p.sleeping = 1;
+    addLog(`${enemy.name} усыпляет вас!`, 'combat');
+  }
+  p.hp -= dmg;
+  addLog(`${enemy.name} наносит вам ${dmg} урона!`, 'combat');
+  if (enemy.restsAfterAttack) enemy.resting = true;
+}
+
+function killEnemy(enemy) {
+  const ld = gameState.levelData;
+  const idx = ld.enemies.indexOf(enemy);
+  if (idx !== -1) ld.enemies.splice(idx, 1);
+  const treasure = Math.floor((enemy.str + enemy.agi + enemy.hostility) * (0.5 + Math.random()));
+  gameState.player.gold += treasure;
+  addLog(`${enemy.name} повержен! +${treasure} золота`, 'item');
+}
+
+function processEnemies() {
+  const ld = gameState.levelData;
+  if (!ld) return;
+  const p = gameState.player;
+  for (const e of ld.enemies) {
+    if (e.hp <= 0) continue;
+    if (e.teleport && !e.inCombat) {
+      e.teleportTimer++;
+      if (e.teleportTimer >= 3) { e.teleportTimer = 0; teleportGhost(e); }
+      e.invisibleTimer++;
+      if (e.invisibleTimer >= 2) { e.invisible = !e.invisible; e.invisibleTimer = 0; }
+    }
+    const d = dist(e.x, e.y, p.x, p.y);
+    if (d <= e.hostility && !e.invisible) {
+      e.inCombat = true;
+      if (!tryChasePlayer(e)) moveEnemyRandom(e);
+    } else {
+      moveEnemyPattern(e);
+    }
+  }
+}
+
+function tryChasePlayer(enemy) {
+  const p = gameState.player;
+  const ld = gameState.levelData;
+  const queue = [{ x: enemy.x, y: enemy.y, path: [] }];
+  const visited = new Set();
+  visited.add(`${enemy.x},${enemy.y}`);
+  while (queue.length > 0) {
+    const cur = queue.shift();
+    if (cur.x === p.x && cur.y === p.y) {
+      if (cur.path.length > 0) {
+        const next = cur.path[0];
+        if (ld.map[next.y][next.x] !== 'wall' && !ld.enemies.some(e => e !== enemy && e.x === next.x && e.y === next.y)) {
+          enemy.x = next.x; enemy.y = next.y;
+        }
+      }
+      return true;
+    }
+    for (const d of [{x:0,y:-1},{x:0,y:1},{x:-1,y:0},{x:1,y:0}]) {
+      const nx = cur.x + d.x, ny = cur.y + d.y, key = `${nx},${ny}`;
+      if (nx >= 0 && nx < MAP_W && ny >= 0 && ny < MAP_H && !visited.has(key)) {
+        visited.add(key);
+        queue.push({ x: nx, y: ny, path: [...cur.path, { x: nx, y: ny }] });
+      }
+    }
+  }
+  return false;
+}
+
+function moveEnemyRandom(enemy) {
+  const ld = gameState.levelData;
+  const valid = [{x:0,y:-1},{x:0,y:1},{x:-1,y:0},{x:1,y:0}].filter(d => {
+    const nx = enemy.x + d.x, ny = enemy.y + d.y;
+    return nx >= 0 && nx < MAP_W && ny >= 0 && ny < MAP_H && ld.map[ny][nx] !== 'wall' && !ld.enemies.some(e => e !== enemy && e.x === nx && e.y === ny);
+  });
+  if (valid.length > 0) { const d = pick(valid); enemy.x += d.x; enemy.y += d.y; }
+}
+
+function moveEnemyPattern(enemy) {
+  if (enemy.type === 'ogre') moveOgrePattern(enemy);
+  else if (enemy.type === 'snakemage') moveSnakePattern(enemy);
+  else moveEnemyRandom(enemy);
+}
+
+function moveOgrePattern(enemy) {
+  const ld = gameState.levelData;
+  for (const d of [{x:0,y:-1},{x:0,y:1},{x:-1,y:0},{x:1,y:0}]) {
+    const nx = enemy.x + d.x * 2, ny = enemy.y + d.y * 2;
+    if (nx >= 0 && nx < MAP_W && ny >= 0 && ny < MAP_H && ld.map[ny][nx] !== 'wall' && !ld.enemies.some(e => e !== enemy && e.x === nx && e.y === ny)) {
+      enemy.x = nx; enemy.y = ny; return;
+    }
+  }
+  moveEnemyRandom(enemy);
+}
+
+function moveSnakePattern(enemy) {
+  const ld = gameState.levelData;
+  let nx = enemy.x + enemy.diagDir, ny = enemy.y + 1;
+  if (nx >= 0 && nx < MAP_W && ny >= 0 && ny < MAP_H && ld.map[ny][nx] !== 'wall' && !ld.enemies.some(e => e !== enemy && e.x === nx && e.y === ny)) {
+    enemy.x = nx; enemy.y = ny;
+    if (ny <= 1 || ny >= MAP_H - 2 || nx <= 1 || nx >= MAP_W - 2) enemy.diagDir *= -1;
+    return;
+  }
+  nx = enemy.x - enemy.diagDir; ny = enemy.y + 1;
+  if (nx >= 0 && nx < MAP_W && ny >= 0 && ny < MAP_H && ld.map[ny][nx] !== 'wall' && !ld.enemies.some(e => e !== enemy && e.x === nx && e.y === ny)) {
+    enemy.x = nx; enemy.y = ny; return;
+  }
+  enemy.diagDir *= -1; moveEnemyRandom(enemy);
+}
+
+function teleportGhost(enemy) {
+  const ld = gameState.levelData, p = gameState.player;
+  const r = ld.roomsList[rng(0, ld.roomsList.length - 1)];
+  const nx = rng(r.x + 1, r.x + r.w - 2), ny = rng(r.y + 1, r.y + r.h - 2);
+  if (ld.map[ny][nx] !== 'wall' && !(nx === p.x && ny === p.y) && !ld.enemies.some(e => e !== enemy && e.x === nx && e.y === ny)) {
+    enemy.x = nx; enemy.y = ny;
+  }
+}
+
+function processElixirTimers() {
+  const p = gameState.player;
+  for (let i = p.inventory.length - 1; i >= 0; i--) {
+    const item = p.inventory[i];
+    if (item.type === 'elixir' && item.elixirTimer > 0) {
+      item.elixirTimer--;
+      if (item.elixirTimer <= 0) {
+        if (item.strBoost > 0) p.tempStr -= item.strBoost;
+        if (item.agiBoost > 0) p.tempAgi -= item.agiBoost;
+        if (item.maxHpBoost > 0) { p.tempMaxHp -= item.maxHpBoost; p.maxHp -= item.maxHpBoost; }
+        p.inventory.splice(i, 1);
+        addLog(`Действие эликсира ${item.subtype} закончилось.`, 'info');
+      }
+    }
+  }
+}
+
+function checkPlayerDeath() {
+  const p = gameState.player;
+  if (p.hp <= 0) { p.hp = 0; gameState.gameOver = true; addLog('💀 Вы погибли!', 'danger'); saveScore(); }
+}
+
+// ========== INVENTORY ==========
+function useItem(index) {
+  if (!gameState || gameState.gameOver || gameState.gameWon) return;
+  const p = gameState.player;
+  if (index < 0 || index >= p.inventory.length) return;
+  const item = p.inventory[index];
+
+  if (item.type === 'weapon') {
+    if (p.weapon) {
+      const ld = gameState.levelData;
+      const dropX = clamp(p.x + 1, 0, MAP_W - 1), dropY = clamp(p.y, 0, MAP_H - 1);
+      if (ld.map[dropY][dropX] !== 'wall') { ld.items.push({ ...p.weapon, x: dropX, y: dropY }); addLog(`Сбросили ${p.weapon.subtype}.`, 'info'); }
+    }
+    p.weapon = item;
+    addLog(`Экипировано: ${item.subtype} (+${item.power} силы)`, 'item');
+  } else if (item.type === 'food') {
+    p.hp = Math.min(p.hp + item.hpBoost, p.maxHp + p.tempMaxHp);
+    addLog(`Съедено ${item.baseName}. +${item.hpBoost} HP`, 'item');
+    p.inventory.splice(index, 1);
+  } else if (item.type === 'scroll') {
+    if (item.maxHpBoost > 0) { p.maxHp += item.maxHpBoost; p.hp += item.maxHpBoost; addLog(`Свиток макс. HP. +${item.maxHpBoost}`, 'item'); }
+    if (item.strBoost > 0) { p.strength += item.strBoost; addLog(`Свиток силы. +${item.strBoost}`, 'item'); }
+    if (item.agiBoost > 0) { p.agility += item.agiBoost; addLog(`Свиток ловкости. +${item.agiBoost}`, 'item'); }
+    p.inventory.splice(index, 1);
+  } else if (item.type === 'elixir') {
+    if (item.maxHpBoost > 0) { p.maxHp += item.maxHpBoost; p.hp += item.maxHpBoost; p.tempMaxHp += item.maxHpBoost; }
+    if (item.strBoost > 0) p.tempStr += item.strBoost;
+    if (item.agiBoost > 0) p.tempAgi += item.agiBoost;
+    addLog(`Эликсир ${item.subtype} активирован на ${item.elixirTimer} ходов.`, 'item');
+  }
+  render();
+}
+
+// ========== RENDERING ==========
+function render() {
+  if (!gameState || !gameState.levelData) return;
+  const p = gameState.player;
+  const ld = gameState.levelData;
+  const mapEl = document.getElementById('game-map');
+
+  const container = document.getElementById('map-container');
+  const cw = container.clientWidth || 800;
+  const ch = container.clientHeight || 450;
+  const viewW = Math.floor(cw / TILE_W);
+  const viewH = Math.floor(ch / TILE_H);
+
+  const loX = 0, hiX = Math.max(0, MAP_W - viewW);
+  const loY = 0, hiY = Math.max(0, MAP_H - viewH);
+  const offsetX = Math.max(loX, Math.min(hiX, p.x - Math.floor(viewW / 2)));
+  const offsetY = Math.max(loY, Math.min(hiY, p.y - Math.floor(viewH / 2)));
+
+  let html = '';
+  for (let y = offsetY; y < offsetY + viewH && y < MAP_H; y++) {
+    for (let x = offsetX; x < offsetX + viewW && x < MAP_W; x++) {
+      if (x === p.x && y === p.y) { html += `<span class="cell player-cell">@</span>`; continue; }
+      const enemy = ld.enemies.find(e => e.x === x && e.y === y);
+      if (enemy && !enemy.invisible) { html += `<span class="cell ${enemy.css}">${enemy.ch}</span>`; continue; }
+      const item = ld.items.find(it => it.x === x && it.y === y);
+      if (item) { html += `<span class="cell ${item.baseCss}">${item.baseCh}</span>`; continue; }
+      const tile = ld.map[y][x];
+      if (tile === 'wall') html += `<span class="cell wall-cell">#</span>`;
+      else if (tile === 'corridor') html += `<span class="cell corridor-cell">·</span>`;
+      else if (tile === 'stairs') html += `<span class="cell stairs-cell">&gt;</span>`;
+      else html += `<span class="cell floor-cell">.</span>`;
+    }
+    html += '\n';
+  }
+  mapEl.innerHTML = html; // Fixed: was textContent
+
+  const totalMaxHp = p.maxHp + p.tempMaxHp;
+  document.getElementById('level-num').textContent = gameState.level;
+  document.getElementById('hp-text').textContent = `${p.hp}/${totalMaxHp}`;
+  document.getElementById('hp-bar').style.width = `${(p.hp / Math.max(1, totalMaxHp)) * 100}%`;
+  document.getElementById('str-val').textContent = p.strength + p.tempStr;
+  document.getElementById('agi-val').textContent = p.agility + p.tempAgi;
+  document.getElementById('gold-val').textContent = p.gold;
+  document.getElementById('weapon-display').textContent = p.weapon ? `🔪 ${p.weapon.subtype} (+${p.weapon.power})` : '🔪 Без оружия';
+
+  renderInventory();
+  renderLog();
+  if (gameState.gameOver) showGameOver();
+  else if (gameState.gameWon) showGameWin();
+}
+
+function renderInventory() {
+  const p = gameState.player;
+  const list = document.getElementById('inventory-list');
+  const count = document.getElementById('inv-count');
+  count.textContent = p.inventory.length;
+
+  let html = `<div style="color:#f39c12;font-size:11px;margin-bottom:4px;">💰 Золото: ${p.gold}</div>`;
+  if (p.weapon) html += `<div class="inv-item" onclick="dropWeapon()" style="border:1px solid #1abc9c;"><span class="key">⚔</span><span class="iname">[Экип] ${p.weapon.subtype} (+${p.weapon.power})</span></div>`;
+  
+  const keyMap = '123456789abcdefghi';
+  for (let i = 0; i < p.inventory.length; i++) {
+    const item = p.inventory[i];
+    const label = item.type === 'food' ? `🍖 Еда (+${item.hpBoost} HP)` : item.type === 'scroll' ? `📜 Свиток ${item.maxHpBoost ? 'макс.HP' : item.strBoost ? 'силы' : 'ловкости'} (+${item.maxHpBoost||item.strBoost||item.agiBoost})` : item.type === 'elixir' ? `🧪 Эликсир ${item.subtype} (+${item.maxHpBoost||item.strBoost||item.agiBoost})` : `⚔ ${item.subtype} (+${item.power})`;
+    html += `<div class="inv-item" onclick="useItem(${i})"><span class="key">${keyMap[i]||'?'}</span><span class="iname">${label}</span>${item.elixirTimer>0?`<span class="count">(${item.elixirTimer})</span>`:''}</div>`;
+  }
+  if (p.inventory.length === 0 && !p.weapon) html += '<div style="color:#666;font-size:11px;padding:4px;">Пусто</div>';
+  list.innerHTML = html;
+}
+
+function dropWeapon() {
+  if (!gameState || !gameState.player.weapon) return;
+  const p = gameState.player, ld = gameState.levelData;
+  const dropX = clamp(p.x + 1, 0, MAP_W - 1), dropY = clamp(p.y, 0, MAP_H - 1);
+  if (ld.map[dropY][dropX] !== 'wall') { ld.items.push({ ...p.weapon, x: dropX, y: dropY }); addLog(`Сбросили ${p.weapon.subtype}.`, 'info'); }
+  p.weapon = null; render();
+}
+
+function renderLog() {
+  const list = document.getElementById('log-list');
+  list.innerHTML = gameLog.slice(-30).map(l => `<div class="log-entry ${l.type}">${l.msg}</div>`).join('');
+  list.scrollTop = list.scrollHeight;
+}
+
+function addLog(msg, type = '') { gameLog.push({ msg, type }); }
+
+// ========== SCORES ==========
+function saveScore() {
+  const scores = JSON.parse(localStorage.getItem('rogue_scores') || '[]');
+  scores.push({ level: gameState.level, gold: gameState.player.gold, won: gameState.gameWon, date: new Date().toLocaleDateString('ru-RU') });
+  scores.sort((a, b) => b.gold - a.gold);
+  if (scores.length > 20) scores.length = 20;
+  localStorage.setItem('rogue_scores', JSON.stringify(scores));
+}
+
+function showScores() {
+  const scores = JSON.parse(localStorage.getItem('rogue_scores') || '[]');
+  document.getElementById('modal-title').textContent = '🏆 Таблица рекордов';
+  if (scores.length === 0) document.getElementById('modal-body').innerHTML = '<p style="text-align:center;color:#666;">Пока нет записей</p>';
+  else {
+    let html = '<table><tr><th>#</th><th>Уровень</th><th>Золото</th><th>Результат</th><th>Дата</th></tr>';
+    scores.forEach((s, i) => html += `<tr><td>${i + 1}</td><td>${s.level}</td><td>${s.gold}</td><td>${s.won ? '🎉 Победа' : '💀 Смерть'}</td><td>${s.date}</td></tr>`);
+    document.getElementById('modal-body').innerHTML = html + '</table>';
+  }
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function showGameOver() {
+  document.getElementById('modal-title').textContent = '💀 Игра окончена';
+  document.getElementById('modal-body').innerHTML = `<p style="text-align:center;color:#e74c3c;font-size:16px;margin-bottom:12px;">Вы погибли на уровне ${gameState.level}</p><p style="text-align:center;color:#f39c12;">Собрано золота: ${gameState.player.gold}</p><p style="text-align:center;color:#aaa;font-size:12px;margin-top:8px;">Результат сохранён в таблицу рекордов</p>`;
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function showGameWin() {
+  document.getElementById('modal-title').textContent = '🎉 Победа!';
+  document.getElementById('modal-body').innerHTML = `<p style="text-align:center;color:#2ecc71;font-size:16px;margin-bottom:12px;">Вы прошли все 21 уровень!</p><p style="text-align:center;color:#f39c12;">Собрано золота: ${gameState.player.gold}</p><p style="text-align:center;color:#aaa;font-size:12px;margin-top:8px;">Результат сохранён в таблицу рекордов</p>`;
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('active'); }
+function showHelp() { document.getElementById('help-overlay').classList.add('active'); }
+function closeHelp() { document.getElementById('help-overlay').classList.remove('active'); }
+function restartGame() { closeModal(); closeHelp(); initGame(); }
+
+document.addEventListener('keydown', e => {
+  if (!gameState) return;
+  const key = e.key.toLowerCase();
+  if (gameState.gameOver || gameState.gameWon) { if (key === 'enter' || key === ' ') restartGame(); return; }
+  switch (key) {
+    case 'arrowup': case 'w': e.preventDefault(); movePlayer(0, -1); break;
+    case 'arrowdown': case 's': e.preventDefault(); movePlayer(0, 1); break;
+    case 'arrowleft': case 'a': e.preventDefault(); movePlayer(-1, 0); break;
+    case 'arrowright': case 'd': e.preventDefault(); movePlayer(1, 0); break;
+    case ' ': e.preventDefault(); waitTurn(); break;
+    case 'escape': closeHelp(); closeModal(); break;
+  }
+  const num = parseInt(key);
+  if (num >= 1 && num <= 9 && num <= gameState.player.inventory.length) useItem(num - 1);
+});
+
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target.id === 'modal-overlay') closeModal(); });
+document.getElementById('help-overlay').addEventListener('click', e => { if (e.target.id === 'help-overlay') closeHelp(); });
+
+initGame();
+</script>
+</body>
+</html>
+
