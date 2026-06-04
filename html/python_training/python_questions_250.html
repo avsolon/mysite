@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>250 вопросов для Junior Python Developer</title>
+
+    <meta name="description"
+          content="250 популярных вопросов и ответов для Junior Python Developer. Подготовка к техническому собеседованию Python.">
+
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link rel="stylesheet" href="css/interview.css">
+</head>
+
+<body>
+    <div class="python-interview-page">
+
+        <header class="article-header">
+
+            <div class="container">
+
+                <h1>
+                    250 вопросов для Junior Python Developer
+                </h1>
+
+                <p class="article-description">
+                    Полная подборка популярных вопросов по Python,
+                    SQL, FastAPI, Git, Linux и тестированию.
+                </p>
+
+            </div>
+
+        </header>
+
+        <main class="container">
+
+            <article class="article-content">
+
+                <!-- <div class="article-block">
+
+                    <div class="image-placeholder">
+                        <img
+                            src="../images/blog/python-junior-interview.webp"
+                            alt="250 вопросов Junior Python Developer">
+                    </div>
+
+                </div> -->
+
+                <div class="interview-block">
+
+                    <h2>Подготовка к собеседованию Python Junior</h2>
+
+                    <p>
+                        В этой подборке собраны самые популярные вопросы,
+                        которые задают Junior Python Developer на
+                        технических интервью в 2025–2026 годах.
+                    </p>
+
+                    <p>
+                        Можно выбрать случайные вопросы для тренировки
+                        либо изучить полный список.
+                    </p>
+
+                </div>
+
+                <div class="interview-block">
+
+                    <div class="interview-toolbar">
+
+                        <input
+                            id="search-input"
+                            class="search-input"
+                            type="text"
+                            placeholder="Поиск вопроса..."
+                            oninput="app.filter(this.value)"
+                        >
+
+                        <div class="interview-controls">
+
+                            <button
+                                class="interview-btn"
+                                onclick="app.showRandom(10)">
+                                10 вопросов
+                            </button>
+
+                            <button
+                                class="interview-btn"
+                                onclick="app.showRandom(20)">
+                                20 вопросов
+                            </button>
+
+                            <button
+                                class="interview-btn"
+                                onclick="app.showRandom(50)">
+                                50 вопросов
+                            </button>
+
+                            <button
+                                class="interview-btn"
+                                onclick="app.showRandom(100)">
+                                100 вопросов
+                            </button>
+
+                            <button
+                                class="interview-btn interview-btn-primary"
+                                onclick="app.showAll()">
+                                Все 250
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="counter"
+                        class="interview-counter">
+
+                        Выберите режим отображения
+
+                    </div>
+
+                    <div
+                        id="qa-container"
+                        class="questions-container">
+
+                        <div class="empty-state">
+
+                            <div class="empty-state-icon">
+                                🐍
+                            </div>
+
+                            <h3>
+                                Начните подготовку
+                            </h3>
+
+                            <p>
+                                Нажмите кнопку выше и получите набор вопросов
+                                для тренировки собеседования.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="interview-block">
+
+                    <h2>
+                        Какие темы входят в подборку
+                    </h2>
+
+                    <ul>
+                        <li>Python Core</li>
+                        <li>Collections</li>
+                        <li>Functions</li>
+                        <li>OOP</li>
+                        <li>Exceptions</li>
+                        <li>Asyncio</li>
+                        <li>SQL</li>
+                        <li>REST API</li>
+                        <li>FastAPI</li>
+                        <li>Testing</li>
+                        <li>Git</li>
+                        <li>Linux</li>
+                    </ul>
+
+                </div>
+
+            </article>
+
+        </main>
+
+        <footer class="footer">
+
+            <div class="container">
+
+                <p>
+                    © 2026 IT Blog. Python Interview Questions.
+                </p>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+<script src="data/python-basics.js"></script>
+
+<script>
+const QUESTIONS = [...PYTHON_BASICS];
+</script>
+
+<script src="js/interview.js"></script>
+
+</body>
+</html>
+
+
+<!-- <script src="data/python-basics.js"></script>
+<script src="data/python-collections.js"></script>
+<script src="data/python-functions.js"></script>
+<script src="data/python-oop.js"></script>
+<script src="data/python-exceptions.js"></script>
+<script src="data/python-asyncio.js"></script>
+<script src="data/python-sql.js"></script>
+<script src="data/python-web.js"></script>
+<script src="data/python-fastapi.js"></script>
+<script src="data/python-testing.js"></script>
+<script src="data/python-git-linux.js"></script>
+
+<script src="data/index.js"></script>
+
+
+
+<script src="js/interview.js"></script> -->
