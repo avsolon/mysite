@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ветки в Git: от создания до командной работы</title>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/fira-code@5.0.0/index.min.css" rel="stylesheet">
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --bg-body: #0a0e1a;
+    --bg-card: #131827;
+    --bg-card-hover: #1a2033;
+    --border: #1f2937;
+    --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #10b981 100%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ====== Пользовательские стили (из ТЗ) ====== */
+.page-nav { padding: 30px 0; }
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+}
+.back-btn:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    transform: translateX(-5px);
+}
+.back-btn svg { width: 18px; height: 18px; }
+
+.blog-hero { text-align: center; padding: 40px 0 60px; }
+.blog-title {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+}
+.blog-subtitle {
+    font-size: 18px;
+    color: var(--text-secondary);
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.article-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px 30px;
+    margin-bottom: 25px;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
+.article-block::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.08), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+.article-block:hover {
+    transform: translateY(-6px);
+    border-color: var(--primary);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+.article-block:hover::before { opacity: 1; }
+
+.article-block h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--primary);
+    position: relative;
+}
+.article-block h2::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    margin-top: 8px;
+    background: var(--gradient-1);
+    border-radius: 2px;
+}
+.article-block h3 {
+    font-size: 18px;
+    color: var(--text-primary);
+    margin: 20px 0 12px;
+    font-weight: 600;
+}
+.article-block p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    opacity: 0.9;
+    margin-bottom: 12px;
+}
+.article-block ul { padding-left: 20px; margin: 10px 0 15px; }
+.article-block ul li {
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: var(--text-primary);
+    opacity: 0.9;
+}
+.article-block ul li::marker { color: var(--primary); }
+.article-block strong { color: var(--primary); font-weight: 600; }
+.article-block p, .article-block li { transition: opacity 0.3s ease; }
+.article-block:hover p, .article-block:hover li { opacity: 1; }
+
+.code-block {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 16px;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid var(--border);
+}
+.code-block code { font-family: "Fira Code", monospace; }
+
+/* ====== TOC (содержание) ====== */
+.toc {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px 30px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+.toc::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.08), transparent 60%);
+    pointer-events: none;
+}
+.toc-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-family: "Fira Code", monospace;
+    position: relative;
+}
+.toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 8px 24px;
+    position: relative;
+}
+.toc-list li { margin: 0; }
+.toc-list a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.2s ease;
+    opacity: 0.85;
+}
+.toc-list a:hover { color: var(--primary); opacity: 1; }
+.toc-list .num {
+    color: var(--primary);
+    font-family: "Fira Code", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 22px;
+}
+
+/* ====== Терминал ====== */
+.terminal {
+    background: #020617;
+    border-radius: 10px;
+    padding: 0;
+    font-family: "Fira Code", monospace;
+    font-size: 13px;
+    min-height: 120px;
+    color: #22c55e;
+    overflow: hidden;
+    margin-top: 15px;
+    border: 1px solid var(--border);
+}
+.terminal-header {
+    background: #0f172a;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+}
+.terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+.terminal-title {
+    margin-left: 12px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+.terminal-body {
+    padding: 16px;
+    min-height: 100px;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+.terminal-line { display: block; white-space: pre-wrap; word-break: break-word; }
+.prompt { color: #22c55e; }
+.cmd { color: #e2e8f0; }
+.comment { color: #64748b; font-style: italic; }
+.output { color: #94a3b8; }
+.highlight { color: #fbbf24; }
+.success { color: #22c55e; font-weight: 600; }
+.error { color: #ef4444; }
+
+/* ====== Replay-кнопка ====== */
+.replay-btn {
+    background: linear-gradient(135deg, #6366f1, #10b981);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    margin-top: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+.replay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+}
+
+/* ====== Графики ====== */
+.graph-wrap {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    overflow-x: auto;
+}
+.graph-wrap svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.graph-label {
+    text-align: center;
+    font-family: "Fira Code", monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+}
+
+/* ====== Файловое дерево ====== */
+.file-tree {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-family: "Fira Code", monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-primary);
+}
+.file-tree .folder { color: #60a5fa; }
+.file-tree .added {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.08);
+    padding: 1px 6px;
+    border-radius: 3px;
+}
+.file-tree .changed {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.08);
+    padding: 1px 6px;
+    border-radius: 3px;
+}
+
+/* ====== Diff ====== */
+.diff {
+    background: #020617;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-family: "Fira Code", monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+}
+.diff .add { color: #22c55e; background: rgba(34, 197, 94, 0.08); display: block; padding: 0 4px; }
+.diff .del { color: #ef4444; background: rgba(239, 68, 68, 0.08); display: block; padding: 0 4px; }
+.diff .ctx { color: #94a3b8; display: block; }
+
+/* ====== Callout ====== */
+.callout {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 15px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.callout-icon { font-size: 18px; flex-shrink: 0; }
+.callout-content { flex: 1; font-size: 14px; color: var(--text-primary); opacity: 0.95; }
+.callout-content strong { color: var(--primary); }
+.callout.warn { border-left-color: #fbbf24; }
+.callout.success { border-left-color: #10b981; }
+
+/* ====== Flow ====== */
+.flow-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 15px 0;
+}
+.flow-vertical .flow-item {
+    background: #1e293b;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border);
+}
+.flow-vertical .flow-item + .flow-item { margin-top: 8px; }
+.flow-vertical .flow-item .emoji { font-size: 16px; }
+.flow-vertical .flow-item .desc {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-left: auto;
+    font-family: "Fira Code", monospace;
+}
+.flow-vertical .flow-item code {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* ====== Шпаргалка команд ====== */
+.cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+.cmd-item {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: all 0.3s ease;
+}
+.cmd-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+.cmd-item code {
+    display: block;
+    font-family: "Fira Code", monospace;
+    font-size: 14px;
+    color: #22c55e;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.cmd-item span {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ====== Префиксы веток ====== */
+.prefix-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+}
+.prefix-item {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--primary);
+}
+.prefix-item code {
+    font-family: "Fira Code", monospace;
+    font-size: 14px;
+    color: #22c55e;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+.prefix-item span {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ====== Анимация появления ====== */
+.animate-in {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+.article-block:nth-child(2) { animation-delay: 0.05s; }
+.article-block:nth-child(3) { animation-delay: 0.1s; }
+.article-block:nth-child(4) { animation-delay: 0.15s; }
+.article-block:nth-child(5) { animation-delay: 0.2s; }
+.article-block:nth-child(6) { animation-delay: 0.25s; }
+.article-block:nth-child(7) { animation-delay: 0.3s; }
+.article-block:nth-child(8) { animation-delay: 0.35s; }
+.article-block:nth-child(9) { animation-delay: 0.4s; }
+.article-block:nth-child(10) { animation-delay: 0.45s; }
+.article-block:nth-child(11) { animation-delay: 0.5s; }
+.article-block:nth-child(12) { animation-delay: 0.55s; }
+
+/* ====== Адаптив ====== */
+@media (max-width: 768px) {
+    .blog-title { font-size: 36px; }
+    .article-block { padding: 20px; }
+    .article-block h2 { font-size: 20px; }
+    .flow-vertical .flow-item .desc { display: none; }
+    .toc-list { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    .blog-title { font-size: 28px; }
+    .blog-subtitle { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ====== NAV ====== -->
+    <nav class="page-nav">
+        <a href="/blog" class="back-btn">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Назад к блогу
+        </a>
+    </nav>
+
+    <!-- ====== HERO ====== -->
+    <section class="blog-hero">
+        <h1 class="blog-title">Ветки в Git</h1>
+        <p class="blog-subtitle">От создания до командной работы: разбираем два сценария, именование веток, Pull Request, Merge и полный цикл разработки с анимациями в терминале.</p>
+    </section>
+
+    <!-- ====== TOC ====== -->
+    <nav class="toc animate-in">
+        <div class="toc-title">📑 Содержание</div>
+        <ol class="toc-list">
+            <li><a href="#variant-1"><span class="num">01</span>Вариант 1. Пустая ветка (orphan)</a></li>
+            <li><a href="#variant-2"><span class="num">02</span>Вариант 2. Ветка как копия main</a></li>
+            <li><a href="#naming"><span class="num">03</span>Именование веток: feature/login</a></li>
+            <li><a href="#inside"><span class="num">04</span>Что происходит внутри Git</a></li>
+            <li><a href="#pr-merge"><span class="num">05</span>Pull Request и Merge</a></li>
+            <li><a href="#flow"><span class="num">06</span>Полный цикл разработки</a></li>
+            <li><a href="#teamwork"><span class="num">07</span>Командная работа: день 1 и день 2</a></li>
+            <li><a href="#sync"><span class="num">08</span>Синхронизация с сервером</a></li>
+            <li><a href="#conflicts"><span class="num">09</span>Конфликты слияния</a></li>
+            <li><a href="#workflow"><span class="num">10</span>Как работают в командах</a></li>
+            <li><a href="#cheatsheet"><span class="num">11</span>Основные команды Git — шпаргалка</a></li>
+        </ol>
+    </nav>
+
+    <!-- ====== INTRO ====== -->
+    <div class="article-block animate-in">
+        <p>Есть два принципиально разных сценария создания ветки. <strong>Второй</strong> — это обычная практика разработки, с ней вы столкнётесь в 99% случаев. <strong>Первый</strong> используется редко, но знать о нём полезно.</p>
+    </div>
+
+    <!-- ====== VARIANT 1 ====== -->
+    <div class="article-block animate-in" id="variant-1">
+        <h2>Вариант 1. Создать полностью пустую ветку (без истории)</h2>
+        <p>Такая ветка <strong>не содержит ни одного файла и ни одного коммита</strong> из <code>main</code>. Она начинается с чистого листа — как будто вы только что создали новый репозиторий, но внутри уже существующего.</p>
+
+        <h3>Последовательность команд</h3>
+        <div class="terminal" id="term-orphan">
+            <div class="terminal-header">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+                <span class="terminal-title">~/projects/my-repo — zsh</span>
+            </div>
+            <div class="terminal-body" data-script="orphan"></div>
+        </div>
+        <button class="replay-btn" data-replay="orphan">↻ Повторить анимацию</button>
+
+        <h3>История после создания orphan-ветки</h3>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 180" width="500" height="180">
+                <line x1="40" y1="60" x2="280" y2="60" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="160" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="240" cy="60" r="10" fill="#6366f1"/>
+                <text x="80" y="40" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">A</text>
+                <text x="160" y="40" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">B</text>
+                <text x="240" y="40" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">C</text>
+                <text x="300" y="65" fill="#6366f1" font-family="Fira Code" font-size="13" font-weight="bold">main</text>
+
+                <line x1="360" y1="130" x2="420" y2="130" stroke="#10b981" stroke-width="3"/>
+                <circle cx="400" cy="130" r="10" fill="#10b981"/>
+                <text x="400" y="110" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">X</text>
+                <text x="440" y="135" fill="#10b981" font-family="Fira Code" font-size="13" font-weight="bold">new-branch</text>
+
+                <text x="250" y="100" fill="#ef4444" font-family="Fira Code" font-size="11" text-anchor="middle" font-style="italic">нет связи</text>
+            </svg>
+            <div class="graph-label">Orphan-ветка не имеет общей истории с main</div>
+        </div>
+
+        <h3>Когда используют</h3>
+        <ul>
+            <li><strong>GitHub Pages</strong> — ветка <code>gh-pages</code> со статическим сайтом.</li>
+            <li>Хранение <strong>документации</strong> в отдельной ветке.</li>
+            <li>Отдельный <strong>сайт внутри того же репозитория</strong>.</li>
+            <li>Совершенно <strong>новый проект</strong> в старом репозитории.</li>
+        </ul>
+
+        <div class="callout warn">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">В обычной разработке <strong>почти никогда</strong> не используют. Если вы не уверены — вам нужен второй вариант.</div>
+        </div>
+    </div>
+
+    <!-- ====== VARIANT 2 ====== -->
+    <div class="article-block animate-in" id="variant-2">
+        <h2>Вариант 2. Создать ветку как копию main</h2>
+        <p>Это именно тот вариант, который используется <strong>практически всегда</strong>. Новая ветка начинается с того же коммита, на котором находится <code>main</code>, и дальше живёт своей жизнью.</p>
+
+        <h3>Создаём ветку от main и делаем коммит</h3>
+        <div class="terminal" id="term-branch">
+            <div class="terminal-header">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+                <span class="terminal-title">~/projects/my-repo — zsh</span>
+            </div>
+            <div class="terminal-body" data-script="branch"></div>
+        </div>
+        <button class="replay-btn" data-replay="branch">↻ Повторить анимацию</button>
+
+        <h3>Сразу после создания ветки</h3>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 140" width="500" height="140">
+                <line x1="40" y1="70" x2="320" y2="70" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="70" r="10" fill="#6366f1"/>
+                <circle cx="180" cy="70" r="10" fill="#6366f1"/>
+                <circle cx="280" cy="70" r="10" fill="#8b5cf6"/>
+                <text x="80" y="50" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">A</text>
+                <text x="180" y="50" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">B</text>
+                <text x="280" y="50" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">C</text>
+                <text x="340" y="55" fill="#6366f1" font-family="Fira Code" font-size="12" font-weight="bold">main</text>
+                <text x="340" y="90" fill="#10b981" font-family="Fira Code" font-size="12" font-weight="bold">feature/login</text>
+                <text x="280" y="115" fill="#fbbf24" font-family="Fira Code" font-size="11" text-anchor="middle">HEAD</text>
+            </svg>
+            <div class="graph-label">Обе ветки указывают на один коммит</div>
+        </div>
+
+        <h3>После коммита в новой ветке</h3>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 140" width="500" height="140">
+                <line x1="40" y1="70" x2="420" y2="70" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="70" r="10" fill="#6366f1"/>
+                <circle cx="160" cy="70" r="10" fill="#6366f1"/>
+                <circle cx="240" cy="70" r="10" fill="#6366f1"/>
+                <circle cx="380" cy="70" r="12" fill="#10b981" stroke="#10b981" stroke-width="2"/>
+                <text x="80" y="50" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">A</text>
+                <text x="160" y="50" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">B</text>
+                <text x="240" y="50" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">C</text>
+                <text x="380" y="50" fill="#94a3b8" font-family="Fira Code" font-size="12" text-anchor="middle">D</text>
+                <text x="300" y="110" fill="#6366f1" font-family="Fira Code" font-size="12" font-weight="bold">main</text>
+                <text x="400" y="110" fill="#10b981" font-family="Fira Code" font-size="12" font-weight="bold">feature/login</text>
+            </svg>
+            <div class="graph-label">main остался на месте, feature/login ушёл вперёд</div>
+        </div>
+
+        <h3>Пушим ветку</h3>
+        <div class="code-block"><code>$ git push -u origin feature/login
+Enumerating objects: 5, done.
+remote: Create a pull request for 'feature/login' on GitHub by visiting:
+remote:      https://github.com/you/repo/pull/new/feature/login</code></div>
+
+        <p>После этого можно создавать <strong>Pull Request</strong> (или <strong>Merge Request</strong> в GitLab).</p>
+    </div>
+
+    <!-- ====== NAMING (НОВОЕ) ====== -->
+    <div class="article-block animate-in" id="naming">
+        <h2>Именование веток: почему feature/login?</h2>
+        <p>Вы могли заметить, что в примерах ветка называется <code>feature/login</code>. Это не правило Git — это <strong>соглашение</strong>, которое используют почти все команды. Git разрешает практически любые имена: <code>dev</code>, <code>my_branch</code>, <code>ivan</code>, <code>test123</code> — всё будет работать.</p>
+
+        <h3>Структура названия</h3>
+        <p>Название состоит из двух частей, разделённых символом <code>/</code>:</p>
+        <div class="file-tree">
+feature/login
+│       │
+│       └── <span style="color:#22c55e">что именно делаем</span>
+│
+└──────── <span style="color:#60a5fa">тип работы</span>
+        </div>
+
+        <h3>Популярные префиксы</h3>
+        <div class="prefix-grid">
+            <div class="prefix-item">
+                <code>feature/</code>
+                <span>Новая функциональность</span>
+            </div>
+            <div class="prefix-item">
+                <code>bugfix/</code>
+                <span>Исправление ошибки</span>
+            </div>
+            <div class="prefix-item">
+                <code>hotfix/</code>
+                <span>Срочная правка в продакшене</span>
+            </div>
+            <div class="prefix-item">
+                <code>refactor/</code>
+                <span>Изменение кода без новой функциональности</span>
+            </div>
+            <div class="prefix-item">
+                <code>docs/</code>
+                <span>Изменения документации</span>
+            </div>
+            <div class="prefix-item">
+                <code>test/</code>
+                <span>Добавление тестов</span>
+            </div>
+            <div class="prefix-item">
+                <code>chore/</code>
+                <span>Технические задачи (Docker, CI/CD, зависимости)</span>
+            </div>
+        </div>
+
+        <h3>Зачем нужен символ "/"</h3>
+        <p>Для Git <code>feature/login</code> и <code>feature-login</code> почти одинаковы. Но человеку гораздо удобнее видеть структуру. Сравните:</p>
+
+        <div class="file-tree">
+<span style="color:#ef4444">❌ Без "/":</span>
+login, payment, profile, docker, readme, bug1, bug2, bug3
+
+<span style="color:#22c55e">✓ С "/":</span>
+<span style="color:#22c55e">feature/</span>login, <span style="color:#22c55e">feature/</span>payment, <span style="color:#22c55e">feature/</span>profile
+<span style="color:#fbbf24">bugfix/</span>login, <span style="color:#fbbf24">bugfix/</span>docker
+<span style="color:#60a5fa">docs/</span>readme
+<span style="color:#8b5cf6">chore/</span>docker
+        </div>
+
+        <p>Сразу видно, какая ветка для чего. GitHub и GitLab тоже группируют такие ветки визуально, поэтому их проще искать.</p>
+
+        <h3>Примеры названий</h3>
+        <ul>
+            <li><code>feature/login</code> — добавляем авторизацию</li>
+            <li><code>feature/google-auth</code> — вход через Google</li>
+            <li><code>feature/user-profile</code> — профиль пользователя</li>
+            <li><code>bugfix/login-error</code> — исправляем ошибку входа</li>
+            <li><code>hotfix/payment-crash</code> — срочная правка оплаты</li>
+            <li><code>refactor/auth-service</code> — рефакторинг сервиса авторизации</li>
+        </ul>
+
+        <h3>В реальных проектах</h3>
+        <p>Очень часто ветки называют по номеру задачи из Jira:</p>
+        <div class="code-block"><code>feature/PROJ-125-login
+bugfix/PROJ-241-auth-error</code></div>
+        <p>Сразу понятно, к какой задаче относится код.</p>
+
+        <h3>Для личных проектов</h3>
+        <p>Если вы работаете один, достаточно простой схемы:</p>
+        <div class="code-block"><code>feature/login
+feature/docker
+feature/parser
+
+bugfix/auth
+bugfix/nginx
+
+refactor/api
+docs/readme</code></div>
+
+        <div class="callout">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+                <strong>Важно запомнить:</strong> название ветки никак не влияет на работу Git. Для Git это просто строка. Эти две команды абсолютно равнозначны: <code>git switch -c feature/login</code> и <code>git switch -c banana</code>. Обе создадут ветку. Разница только в том, что <code>feature/login</code> сразу говорит разработчикам: «в этой ветке разрабатывается авторизация», а <code>banana</code> не несёт никакой полезной информации.
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== INSIDE ====== -->
+    <div class="article-block animate-in" id="inside">
+        <h2>Что происходит внутри Git</h2>
+        <p>Когда вы создаёте новую ветку командой <code>git switch -c feature/login</code>, Git <strong>не копирует файлы</strong>. Он просто создаёт <strong>новый указатель</strong> на существующий коммит.</p>
+
+        <h3>До и после создания ветки</h3>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 160" width="500" height="160">
+                <text x="10" y="20" fill="#94a3b8" font-family="Fira Code" font-size="11">ДО:</text>
+                <line x1="40" y1="50" x2="220" y2="50" stroke="#64748b" stroke-width="3"/>
+                <circle cx="60" cy="50" r="8" fill="#6366f1"/>
+                <circle cx="130" cy="50" r="8" fill="#6366f1"/>
+                <circle cx="200" cy="50" r="8" fill="#6366f1"/>
+                <text x="60" y="35" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="130" y="35" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="200" y="35" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">C</text>
+                <text x="200" y="80" fill="#6366f1" font-family="Fira Code" font-size="10" text-anchor="middle" font-weight="bold">main / HEAD</text>
+
+                <text x="260" y="20" fill="#94a3b8" font-family="Fira Code" font-size="11">ПОСЛЕ:</text>
+                <line x1="290" y1="50" x2="470" y2="50" stroke="#64748b" stroke-width="3"/>
+                <circle cx="310" cy="50" r="8" fill="#6366f1"/>
+                <circle cx="380" cy="50" r="8" fill="#6366f1"/>
+                <circle cx="450" cy="50" r="8" fill="#6366f1"/>
+                <text x="310" y="35" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="380" y="35" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="450" y="35" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">C</text>
+                <text x="450" y="80" fill="#6366f1" font-family="Fira Code" font-size="10" text-anchor="middle" font-weight="bold">main</text>
+                <text x="450" y="110" fill="#10b981" font-family="Fira Code" font-size="10" text-anchor="middle" font-weight="bold">feature/login</text>
+                <text x="450" y="125" fill="#fbbf24" font-family="Fira Code" font-size="9" text-anchor="middle">HEAD</text>
+                <line x1="450" y1="100" x2="450" y2="58" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2"/>
+            </svg>
+            <div class="graph-label">Ветка — это просто указатель на коммит (несколько байт)</div>
+        </div>
+
+        <h3>Что выбрать</h3>
+        <p>Практически всегда используйте второй вариант:</p>
+        <div class="code-block"><code>$ git switch -c имя_ветки
+# или старый синтаксис
+$ git checkout -b имя_ветки</code></div>
+
+        <p>Именно так работают команды в большинстве проектов: клонируют репозиторий, создают ветку от <code>main</code> (или <code>develop</code>), делают изменения, затем отправляют ветку в удалённый репозиторий и создают Pull Request. Первый вариант (<code>--orphan</code>) нужен только для специальных случаев, когда новая ветка должна иметь полностью независимую историю.</p>
+    </div>
+
+    <!-- ====== PR & MERGE ====== -->
+    <div class="article-block animate-in" id="pr-merge">
+        <h2>Pull Request и Merge на простом примере</h2>
+        <p>Это один из самых важных моментов в Git. Многие путают Git и GitHub/GitLab.</p>
+        <ul>
+            <li><strong>Git</strong> — хранит историю изменений и умеет объединять ветки (merge).</li>
+            <li><strong>GitHub / GitLab</strong> — добавляют удобный интерфейс и механизм Pull Request (PR) или Merge Request (MR).</li>
+        </ul>
+
+        <h3>Шаг 1. В репозитории есть только main</h3>
+        <div class="file-tree">
+<span class="folder">project/</span>
+└── file1.txt  →  <span style="color:#fbbf24">"Привет"</span>
+        </div>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 200 80" width="200" height="80">
+                <circle cx="100" cy="40" r="12" fill="#6366f1"/>
+                <text x="100" y="45" fill="#ffffff" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                <text x="100" y="70" fill="#6366f1" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">main</text>
+            </svg>
+            <div class="graph-label">A — первый коммит</div>
+        </div>
+
+        <h3>Шаг 2. Клонируем проект</h3>
+        <div class="code-block"><code>$ git clone repo.git
+Cloning into 'repo'...
+remote: Enumerating objects: 3, done.</code></div>
+
+        <h3>Шаг 3. Создаём свою ветку</h3>
+        <div class="code-block"><code>$ git switch -c dev
+Switched to a new branch 'dev'</code></div>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 300 140" width="300" height="140">
+                <line x1="40" y1="70" x2="200" y2="70" stroke="#64748b" stroke-width="3"/>
+                <circle cx="120" cy="70" r="12" fill="#8b5cf6" stroke="#8b5cf6" stroke-width="2"/>
+                <text x="120" y="75" fill="#ffffff" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                <text x="120" y="40" fill="#6366f1" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">main</text>
+                <text x="120" y="110" fill="#10b981" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">dev</text>
+                <text x="120" y="128" fill="#fbbf24" font-family="Fira Code" font-size="10" text-anchor="middle">HEAD</text>
+            </svg>
+            <div class="graph-label">Ветки абсолютно одинаковые</div>
+        </div>
+
+        <h3>Шаг 4. Вносим изменения</h3>
+        <p>Добавляем новый файл <code>file2.txt</code> со словом <strong>"Мир"</strong> и меняем <code>file1.txt</code> — добавляем второе слово:</p>
+        <div class="file-tree">
+<span class="folder">project/</span>
+├── <span class="changed">file1.txt</span>  →  <span style="color:#fbbf24">"Привет Git"</span>  <span style="color:#64748b;font-size:12px">(было: "Привет")</span>
+└── <span class="added">file2.txt</span>  →  <span style="color:#fbbf24">"Мир"</span>  <span style="color:#64748b;font-size:12px">(новый файл)</span>
+        </div>
+
+        <h3>Шаг 5. Коммитим</h3>
+        <div class="code-block"><code>$ git add .
+$ git commit -m "Добавил второй файл"
+[dev b2f3a1c] Добавил второй файл
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+ create mode 100644 file2.txt</code></div>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 400 140" width="400" height="140">
+                <line x1="40" y1="70" x2="300" y2="70" stroke="#64748b" stroke-width="3"/>
+                <circle cx="100" cy="70" r="11" fill="#6366f1"/>
+                <circle cx="240" cy="70" r="13" fill="#10b981" stroke="#10b981" stroke-width="2"/>
+                <text x="100" y="75" fill="#ffffff" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                <text x="240" y="75" fill="#ffffff" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                <text x="100" y="40" fill="#6366f1" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">main</text>
+                <text x="240" y="115" fill="#10b981" font-family="Fira Code" font-size="12" text-anchor="middle" font-weight="bold">dev</text>
+            </svg>
+            <div class="graph-label">Коммит B существует только в ветке dev</div>
+        </div>
+
+        <h3>Шаг 6. Пушим</h3>
+        <div class="code-block"><code>$ git push origin dev
+Enumerating objects: 4, done.
+To github.com:you/repo.git
+ * [new branch]      dev -> dev</code></div>
+        <p>Теперь на GitHub появились две ветки. Но <strong>main вообще не изменился</strong>. Это очень важно понимать.</p>
+
+        <h3>Что происходит дальше? Pull Request</h3>
+        <p><strong>Pull Request</strong> означает буквально: <em>"Прошу забрать мои изменения."</em></p>
+        <p>Вы говорите владельцу проекта:</p>
+        <ul>
+            <li>Я закончил работу.</li>
+            <li>Посмотрите изменения.</li>
+            <li>Если всё нормально — добавьте их в main.</li>
+        </ul>
+
+        <div class="callout">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">Это <strong>не merge</strong>. Это только <strong>просьба</strong>. Merge произойдёт позже, после проверки.</div>
+        </div>
+
+        <p>На GitHub вы нажимаете кнопку <strong>"Create Pull Request"</strong>. Что увидит другой разработчик?</p>
+        <div class="diff">
+<span class="ctx">  file1.txt</span>
+<span class="ctx">-Привет</span>
+<span class="add">+Привет</span>
+<span class="add">+Git</span>
+<span class="ctx"></span>
+<span class="add">+ file2.txt</span>
+<span class="add">+Мир</span>
+        </div>
+        <p>Ревьюер может написать комментарий: <em>"Здесь ошибка"</em>, <em>"Добавь ещё один тест"</em> или <em>"Всё отлично"</em>.</p>
+
+        <h3>После проверки — Merge</h3>
+        <p>Если всё хорошо, нажимается кнопка <strong>"Merge Pull Request"</strong>. И только теперь происходит <strong>merge</strong> — объединение двух веток.</p>
+
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 220" width="500" height="220">
+                <text x="10" y="20" fill="#94a3b8" font-family="Fira Code" font-size="11">ДО MERGE:</text>
+                <line x1="40" y1="60" x2="200" y2="60" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="160" cy="60" r="10" fill="#6366f1"/>
+                <text x="80" y="45" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="160" y="45" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="220" y="65" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+
+                <line x1="160" y1="60" x2="300" y2="120" stroke="#10b981" stroke-width="3"/>
+                <circle cx="300" cy="120" r="10" fill="#10b981"/>
+                <text x="300" y="105" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="320" y="125" fill="#10b981" font-family="Fira Code" font-size="11" font-weight="bold">dev</text>
+
+                <text x="10" y="170" fill="#94a3b8" font-family="Fira Code" font-size="11">ПОСЛЕ MERGE:</text>
+                <line x1="40" y1="200" x2="300" y2="200" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="200" r="10" fill="#6366f1"/>
+                <circle cx="160" cy="200" r="10" fill="#6366f1"/>
+                <circle cx="240" cy="200" r="12" fill="#8b5cf6" stroke="#8b5cf6" stroke-width="2"/>
+                <text x="80" y="185" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="160" y="185" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="240" y="185" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B'</text>
+                <text x="260" y="205" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+            </svg>
+            <div class="graph-label">Теперь обе ветки содержат одинаковую историю</div>
+        </div>
+
+        <p>Обычно после merge рабочую ветку <strong>удаляют</strong>:</p>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 300 80" width="300" height="80">
+                <line x1="40" y1="40" x2="240" y2="40" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="40" r="10" fill="#6366f1"/>
+                <circle cx="160" cy="40" r="10" fill="#6366f1"/>
+                <circle cx="220" cy="40" r="10" fill="#6366f1"/>
+                <text x="80" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="160" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="220" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B'</text>
+                <text x="260" y="45" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+            </svg>
+            <div class="graph-label">Ветка dev исчезла — она больше не нужна</div>
+        </div>
+
+        <h3>Почему нельзя сразу пушить в main?</h3>
+        <p>Представьте, что в компании работают 20 разработчиков. Если каждый будет писать сразу в main, получится хаос:</p>
+        <ul>
+            <li><strong>Иван</strong> меняет <code>file1.txt</code></li>
+            <li><strong>Пётр</strong> меняет <code>file1.txt</code></li>
+            <li><strong>Анна</strong> удаляет <code>file1.txt</code></li>
+        </ul>
+        <p>Все одновременно. Никто ничего не проверяет. В итоге главный проект может перестать работать.</p>
+
+        <p>Поэтому используют такую схему:</p>
+        <div class="file-tree">
+<span class="folder">main</span>
+│
+├── <span style="color:#e2e8f0">feature/login</span>
+├── <span style="color:#e2e8f0">feature/payment</span>
+├── <span style="color:#e2e8f0">feature/profile</span>
+└── <span style="color:#e2e8f0">feature/search</span>
+        </div>
+    </div>
+
+    <!-- ====== FLOW ====== -->
+    <div class="article-block animate-in" id="flow">
+        <h2>Полный цикл разработки</h2>
+        <p>Многие новички думают, что Pull Request и Merge — это одно и то же. На самом деле это <strong>разные этапы</strong>.</p>
+
+        <div class="flow-vertical">
+            <div class="flow-item"><span class="emoji">🌿</span> Создал ветку</div>
+            <div class="flow-item"><span class="emoji">💻</span> Написал код</div>
+            <div class="flow-item"><span class="emoji">💾</span> Commit <span class="desc">"Я сохранил свою работу"</span></div>
+            <div class="flow-item"><span class="emoji">📤</span> Push <span class="desc">"Отправил на сервер"</span></div>
+            <div class="flow-item"><span class="emoji">📨</span> Pull Request <span class="desc">"Посмотрите, можно добавить?"</span></div>
+            <div class="flow-item"><span class="emoji">🔍</span> Проверка кода <span class="desc">Code Review</span></div>
+            <div class="flow-item"><span class="emoji">🔀</span> Merge <span class="desc">"Изменения добавлены в main"</span></div>
+            <div class="flow-item"><span class="emoji">🗑️</span> Удаление рабочей ветки</div>
+        </div>
+
+        <div class="callout success">
+            <div class="callout-icon">✅</div>
+            <div class="callout-content">
+                <strong>Запомните простой образ:</strong><br>
+                <strong>Commit</strong> — "Я сохранил свою работу."<br>
+                <strong>Push</strong> — "Я отправил свою работу на сервер."<br>
+                <strong>Pull Request</strong> — "Пожалуйста, посмотрите мою работу и решите, можно ли её добавить."<br>
+                <strong>Merge</strong> — "Изменения действительно добавлены в основную ветку."
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== TEAMWORK ====== -->
+    <div class="article-block animate-in" id="teamwork">
+        <h2>Командная работа: день 1 и день 2</h2>
+        <p>Именно здесь начинается реальная командная работа, и это тот момент, который вызывает больше всего путаницы у новичков. Разберём весь цикл.</p>
+
+        <h3>День 1. Первый разработчик</h3>
+        <div class="terminal" id="term-day1">
+            <div class="terminal-header">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+                <span class="terminal-title">developer-1 — zsh</span>
+            </div>
+            <div class="terminal-body" data-script="day1"></div>
+        </div>
+        <button class="replay-btn" data-replay="day1">↻ Повторить анимацию</button>
+
+        <p>После merge в <code>main</code> теперь:</p>
+        <div class="file-tree">
+<span class="folder">project/</span>
+├── file1.txt  →  <span style="color:#fbbf24">"Привет Git"</span>
+└── file2.txt  →  <span style="color:#fbbf24">"Мир"</span>
+        </div>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 400 80" width="400" height="80">
+                <line x1="40" y1="40" x2="340" y2="40" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="40" r="10" fill="#6366f1"/>
+                <circle cx="180" cy="40" r="10" fill="#6366f1"/>
+                <circle cx="280" cy="40" r="10" fill="#6366f1"/>
+                <text x="80" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="180" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="280" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">C</text>
+                <text x="360" y="45" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+            </svg>
+            <div class="graph-label">main после merge первого разработчика</div>
+        </div>
+
+        <h3>День 2. Второй разработчик добавляет file3</h3>
+        <p>Другой разработчик берёт уже новый main. Он создаёт свою ветку <code>feature/admin</code>, добавляет <code>file3.txt</code> со словом "Админка" и делает коммит. После его merge в main появляется новый коммит.</p>
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 80" width="500" height="80">
+                <line x1="40" y1="40" x2="440" y2="40" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="40" r="10" fill="#6366f1"/>
+                <circle cx="180" cy="40" r="10" fill="#6366f1"/>
+                <circle cx="280" cy="40" r="10" fill="#6366f1"/>
+                <circle cx="400" cy="40" r="12" fill="#8b5cf6" stroke="#8b5cf6" stroke-width="2"/>
+                <text x="80" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="180" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="280" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">C</text>
+                <text x="400" y="25" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">D</text>
+                <text x="460" y="45" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+            </svg>
+            <div class="graph-label">main после merge второго разработчика (появился file3.txt)</div>
+        </div>
+
+        <h3>Что происходит у первого разработчика?</h3>
+        <p>На его компьютере до сих пор старый main. Он вообще ничего не знает про новый коммит на сервере.</p>
+        <div class="callout warn">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">Локальный <code>main</code> <strong>не обновляется автоматически</strong>. Нужно сделать это вручную.</div>
+        </div>
+    </div>
+
+    <!-- ====== SYNC ====== -->
+    <div class="article-block animate-in" id="sync">
+        <h2>Синхронизация с сервером</h2>
+
+        <h3>Шаг 1. Получаем изменения с сервера</h3>
+        <div class="terminal" id="term-day2">
+            <div class="terminal-header">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+                <span class="terminal-title">developer-1 — zsh</span>
+            </div>
+            <div class="terminal-body" data-script="day2"></div>
+        </div>
+        <button class="replay-btn" data-replay="day2">↻ Повторить анимацию</button>
+
+        <p>Важно понимать: <code>git fetch</code> <strong>ничего не меняет в ваших файлах</strong>. Он только говорит Git: "На сервере появился новый коммит".</p>
+
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 180" width="500" height="180">
+                <text x="10" y="20" fill="#94a3b8" font-family="Fira Code" font-size="11">ПОСЛЕ git fetch:</text>
+                <line x1="40" y1="60" x2="420" y2="60" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="60" r="9" fill="#6366f1"/>
+                <circle cx="180" cy="60" r="9" fill="#6366f1"/>
+                <circle cx="280" cy="60" r="9" fill="#6366f1"/>
+                <circle cx="400" cy="60" r="11" fill="#8b5cf6"/>
+                <text x="80" y="45" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">A</text>
+                <text x="180" y="45" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">B</text>
+                <text x="280" y="45" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">C</text>
+                <text x="400" y="45" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">D</text>
+                <text x="300" y="85" fill="#6366f1" font-family="Fira Code" font-size="10" font-weight="bold">локальный main</text>
+                <text x="420" y="85" fill="#f59e0b" font-family="Fira Code" font-size="10" font-weight="bold">origin/main</text>
+
+                <text x="10" y="125" fill="#94a3b8" font-family="Fira Code" font-size="11">ПОСЛЕ git pull:</text>
+                <line x1="40" y1="155" x2="420" y2="155" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="155" r="9" fill="#6366f1"/>
+                <circle cx="180" cy="155" r="9" fill="#6366f1"/>
+                <circle cx="280" cy="155" r="9" fill="#6366f1"/>
+                <circle cx="400" cy="155" r="11" fill="#6366f1"/>
+                <text x="80" y="140" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">A</text>
+                <text x="180" y="140" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">B</text>
+                <text x="280" y="140" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">C</text>
+                <text x="400" y="140" fill="#94a3b8" font-family="Fira Code" font-size="10" text-anchor="middle">D</text>
+                <text x="420" y="180" fill="#6366f1" font-family="Fira Code" font-size="10" font-weight="bold">локальный main</text>
+            </svg>
+            <div class="graph-label">Файл file3.txt появился и у вас</div>
+        </div>
+
+        <h3>Шаг 2. Обновляем свою рабочую ветку</h3>
+        <p>А что с веткой <code>dev</code>? Она осталась старой — каждая ветка это снимок истории на момент её создания.</p>
+
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 140" width="500" height="140">
+                <line x1="40" y1="60" x2="400" y2="60" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="180" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="280" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="380" cy="60" r="10" fill="#6366f1"/>
+                <text x="80" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="180" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="280" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">C</text>
+                <text x="380" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">D</text>
+                <text x="420" y="65" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+
+                <text x="80" y="110" fill="#10b981" font-family="Fira Code" font-size="11" font-weight="bold">dev</text>
+                <line x1="100" y1="105" x2="280" y2="65" stroke="#10b981" stroke-width="2" stroke-dasharray="4,3"/>
+                <text x="200" y="125" fill="#ef4444" font-family="Fira Code" font-size="10" font-style="italic">← не обновилась автоматически</text>
+            </svg>
+            <div class="graph-label">dev осталась в прошлом</div>
+        </div>
+
+        <p>Теперь нужно обновить <code>dev</code>. Переходим в неё и объединяем изменения из main:</p>
+        <div class="code-block"><code>$ git switch dev
+Switched to branch 'dev'
+$ git merge main
+Updating a1b2c3d → e4f5g6h
+Fast-forward
+ file3.txt | 1 +
+ 1 file changed, 1 insertion(+)</code></div>
+
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 140" width="500" height="140">
+                <line x1="40" y1="60" x2="400" y2="60" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="180" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="280" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="380" cy="60" r="12" fill="#10b981" stroke="#10b981" stroke-width="2"/>
+                <text x="80" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="180" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="280" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">C</text>
+                <text x="380" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">D</text>
+                <text x="420" y="65" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+                <text x="420" y="85" fill="#10b981" font-family="Fira Code" font-size="11" font-weight="bold">dev</text>
+            </svg>
+            <div class="graph-label">Ветка dev получила новый файл file3.txt</div>
+        </div>
+
+        <h3>Шаг 3. Продолжаем работу</h3>
+        <p>Теперь разработчик делает изменения — например, создаёт <code>file4.txt</code> или меняет <code>file3.txt</code>:</p>
+        <div class="file-tree">
+<span class="folder">project/</span>
+├── file1.txt  →  "Привет Git"
+├── file2.txt  →  "Мир"
+├── <span class="changed">file3.txt</span>  →  <span style="color:#fbbf24">"Админка\nНастройки"</span>  <span style="color:#64748b;font-size:12px">(добавили строку)</span>
+└── <span class="added">file4.txt</span>  →  <span style="color:#fbbf24">"Новый модуль"</span>  <span style="color:#64748b;font-size:12px">(новый файл)</span>
+        </div>
+        <div class="code-block"><code>$ git add .
+$ git commit -m "Добавил настройки админки"
+$ git push origin dev</code></div>
+        <p>Открываем новый Pull Request → после merge в main появляется ещё один коммит.</p>
+    </div>
+
+    <!-- ====== CONFLICTS ====== -->
+    <div class="article-block animate-in" id="conflicts">
+        <h2>Конфликты слияния</h2>
+        <p>Представим: в <code>main</code> файл <code>file3.txt</code> содержит слово <strong>"Админка"</strong>. Вы обновили ветку <code>dev</code> из main. Потом решили изменить "Админка" на <strong>"Панель администратора"</strong>.</p>
+        <p>Но в это время другой разработчик уже изменил тот же файл в main: "Админка" → <strong>"Административная панель"</strong>.</p>
+
+        <div class="graph-wrap">
+            <svg viewBox="0 0 500 180" width="500" height="180">
+                <line x1="40" y1="60" x2="400" y2="60" stroke="#64748b" stroke-width="3"/>
+                <circle cx="80" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="160" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="240" cy="60" r="10" fill="#6366f1"/>
+                <circle cx="360" cy="60" r="11" fill="#8b5cf6"/>
+                <text x="80" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">A</text>
+                <text x="160" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">B</text>
+                <text x="240" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">C</text>
+                <text x="360" y="40" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">E</text>
+                <text x="420" y="65" fill="#6366f1" font-family="Fira Code" font-size="11" font-weight="bold">main</text>
+
+                <line x1="240" y1="60" x2="340" y2="130" stroke="#10b981" stroke-width="3"/>
+                <circle cx="340" cy="130" r="11" fill="#10b981"/>
+                <text x="340" y="115" fill="#94a3b8" font-family="Fira Code" font-size="11" text-anchor="middle">D</text>
+                <text x="360" y="150" fill="#10b981" font-family="Fira Code" font-size="11" font-weight="bold">dev</text>
+
+                <text x="250" y="100" fill="#ef4444" font-family="Fira Code" font-size="11" text-anchor="middle" font-weight="bold">⚠ КОНФЛИКТ</text>
+            </svg>
+            <div class="graph-label">Один и тот же участок файла изменили два человека</div>
+        </div>
+
+        <p>Когда вы выполняете <code>git merge main</code>, Git видит: <strong>один и тот же участок файла изменили два человека</strong>. Сам решить он уже не может. Появляется <strong>merge conflict</strong>.</p>
+
+        <div class="diff">
+<span class="ctx">  file3.txt</span>
+<span class="ctx"> &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="add">+Панель администратора</span>
+<span class="ctx"> =======</span>
+<span class="del">-Административная панель</span>
+<span class="ctx"> &gt;&gt;&gt;&gt;&gt;&gt;&gt; main</span>
+        </div>
+        <p>Git попросит вручную выбрать, какой текст оставить, либо объединить оба изменения.</p>
+    </div>
+
+    <!-- ====== WORKFLOW ====== -->
+    <div class="article-block animate-in" id="workflow">
+        <h2>Как обычно работают в командах</h2>
+        <p>На практике цикл выглядит так:</p>
+
+        <div class="flow-vertical">
+            <div class="flow-item"><span class="emoji">1️⃣</span> Создал ветку от main</div>
+            <div class="flow-item"><span class="emoji">2️⃣</span> Пишешь код</div>
+            <div class="flow-item"><span class="emoji">3️⃣</span> Commit</div>
+            <div class="flow-item"><span class="emoji">4️⃣</span> Push</div>
+            <div class="flow-item"><span class="emoji">5️⃣</span> Pull Request</div>
+            <div class="flow-item"><span class="emoji">⏳</span> Пока идёт проверка, в main могут появиться новые изменения</div>
+            <div class="flow-item"><span class="emoji">6️⃣</span> Обновляешь свою ветку из main (<code>git merge main</code> или <code>git rebase main</code>)</div>
+            <div class="flow-item"><span class="emoji">7️⃣</span> Исправляешь возможные конфликты</div>
+            <div class="flow-item"><span class="emoji">8️⃣</span> Push</div>
+            <div class="flow-item"><span class="emoji">9️⃣</span> Merge Pull Request</div>
+            <div class="flow-item"><span class="emoji">🔟</span> Удаляешь рабочую ветку</div>
+            <div class="flow-item"><span class="emoji">🔄</span> Переходишь на main → <code>git pull</code></div>
+            <div class="flow-item"><span class="emoji">✨</span> Создаёшь новую ветку для следующей задачи</div>
+        </div>
+
+        <div class="callout success">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+                Последний пункт — <strong>важная привычка</strong>. В большинстве команд не продолжают бесконечно работать в одной и той же ветке <code>dev</code>. После слияния Pull Request рабочую ветку обычно удаляют, обновляют локальный main (<code>git pull</code>) и создают новую ветку от актуального main для следующей задачи, например <code>feature/user-profile</code> или <code>bugfix/login-error</code>. Так история остаётся чище, а вероятность конфликтов уменьшается.
+            </div>
+        </div>
+
+        <h3>Шпаргалка: что делать каждый день</h3>
+        <div class="code-block"><code># Утро: синхронизируемся с сервером
+$ git switch main
+$ git pull
+
+# Создаём новую ветку под задачу
+$ git switch -c feature/название-задачи
+
+# Работаем, коммитим, пушим
+$ git add .
+$ git commit -m "Описание изменений"
+$ git push -u origin feature/название-задачи
+
+# Создаём Pull Request на GitHub
+# Ждём ревью → merge
+
+# После merge: возвращаемся в начало цикла
+$ git switch main
+$ git pull</code></div>
+    </div>
+
+    <!-- ====== CHEATSHEET (НОВОЕ) ====== -->
+    <div class="article-block animate-in" id="cheatsheet">
+        <h2>Основные команды Git — краткий список</h2>
+        <p>Шпаргалка самых важных команд. Сохраните себе — пригодится.</p>
+
+        <h3>📦 Настройка и начало работы</h3>
+        <div class="cmd-grid">
+            <div class="cmd-item">
+                <code>git init</code>
+                <span>Создать новый репозиторий в текущей папке</span>
+            </div>
+            <div class="cmd-item">
+                <code>git clone &lt;url&gt;</code>
+                <span>Скачать репозиторий с сервера к себе</span>
+            </div>
+            <div class="cmd-item">
+                <code>git config --global user.name "Имя"</code>
+                <span>Задать имя автора для всех коммитов</span>
+            </div>
+            <div class="cmd-item">
+                <code>git config --global user.email "mail"</code>
+                <span>Задать email автора для всех коммитов</span>
+            </div>
+        </div>
+
+        <h3>🔍 Статус и история</h3>
+        <div class="cmd-grid">
+            <div class="cmd-item">
+                <code>git status</code>
+                <span>Показать изменённые файлы и текущую ветку</span>
+            </div>
+            <div class="cmd-item">
+                <code>git log</code>
+                <span>Показать историю коммитов</span>
+            </div>
+            <div class="cmd-item">
+                <code>git log --oneline</code>
+                <span>Компактный вид истории (один коммит — одна строка)</span>
+            </div>
+            <div class="cmd-item">
+                <code>git diff</code>
+                <span>Показать, что изменилось в файлах</span>
+            </div>
+        </div>
+
+        <h3>💾 Сохранение изменений</h3>
+        <div class="cmd-grid">
+            <div class="cmd-item">
+                <code>git add &lt;файл&gt;</code>
+                <span>Подготовить файл к коммиту (добавить в индекс)</span>
+            </div>
+            <div class="cmd-item">
+                <code>git add .</code>
+                <span>Подготовить все изменённые файлы сразу</span>
+            </div>
+            <div class="cmd-item">
+                <code>git commit -m "сообщение"</code>
+                <span>Сохранить подготовленные изменения с описанием</span>
+            </div>
+            <div class="cmd-item">
+                <code>git commit --amend</code>
+                <span>Исправить последний коммит (изменить сообщение или файлы)</span>
+            </div>
+        </div>
+
+        <h3>🌿 Ветки</h3>
+        <div class="cmd-grid">
+            <div class="cmd-item">
+                <code>git branch</code>
+                <span>Показать список локальных веток</span>
+            </div>
+            <div class="cmd-item">
+                <code>git branch &lt;имя&gt;</code>
+                <span>Создать новую ветку (без переключения)</span>
+            </div>
+            <div class="cmd-item">
+                <code>git switch &lt;имя&gt;</code>
+                <span>Переключиться на другую ветку</span>
+            </div>
+            <div class="cmd-item">
+                <code>git switch -c &lt;имя&gt;</code>
+                <span>Создать новую ветку и сразу переключиться на неё</span>
+            </div>
+            <div class="cmd-item">
+                <code>git branch -d &lt;имя&gt;</code>
+                <span>Удалить локальную ветку</span>
+            </div>
+        </div>
+
+        <h3>🔀 Объединение и синхронизация</h3>
+        <div class="cmd-grid">
+            <div class="cmd-item">
+                <code>git merge &lt;ветка&gt;</code>
+                <span>Влить изменения из указанной ветки в текущую</span>
+            </div>
+            <div class="cmd-item">
+                <code>git rebase &lt;ветка&gt;</code>
+                <span>Перенести коммиты текущей ветки на верх другой</span>
+            </div>
+            <div class="cmd-item">
+                <code>git fetch</code>
+                <span>Скачать изменения с сервера, не трогая файлы</span>
+            </div>
+            <div class="cmd-item">
+                <code>git pull</code>
+                <span>Скачать и сразу применить изменения с сервера (fetch + merge)</span>
+            </div>
+        </div>
+
+        <h3>📤 Отправка на сервер</h3>
+        <div class="cmd-grid">
+            <div class="cmd-item">
+                <code>git push</code>
+                <span>Отправить свои коммиты на удалённый сервер</span>
+            </div>
+            <div class="cmd-item">
+                <code>git push -u origin &lt;ветка&gt;</code>
+                <span>Отправить ветку и связать её с удалённой</span>
+            </div>
+            <div class="cmd-item">
+                <code>git push origin --delete &lt;ветка&gt;</code>
+                <span>Удалить ветку на удалённом сервере</span>
+            </div>
+        </div>
+
+        <h3>🛟 Откат и временное хранение</h3>
+        <div class="cmd-grid">
+            <div class="cmd-item">
+                <code>git stash</code>
+                <span>Временно спрятать незакоммиченные изменения</span>
+            </div>
+            <div class="cmd-item">
+                <code>git stash pop</code>
+                <span>Вернуть спрятанные изменения</span>
+            </div>
+            <div class="cmd-item">
+                <code>git reset --soft HEAD~1</code>
+                <span>Отменить последний коммит, сохранив изменения</span>
+            </div>
+            <div class="cmd-item">
+                <code>git checkout -- &lt;файл&gt;</code>
+                <span>Отменить изменения в файле (вернуть к последнему коммиту)</span>
+            </div>
+        </div>
+
+        <div class="callout success">
+            <div class="callout-icon">🚀</div>
+            <div class="callout-content">
+                <strong>Минимальный набор для старта:</strong> <code>git status</code>, <code>git add .</code>, <code>git commit</code>, <code>git push</code>, <code>git pull</code>, <code>git switch -c</code>. Освойте их — и вы уже сможете работать в большинстве проектов.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ====== Terminal scripts с комментариями для новичков ======
+const scripts = {
+  orphan: [
+    { type: 'comment', text: '# клонируем репозиторий с GitHub к себе на компьютер' },
+    { type: 'cmd', text: 'git clone https://github.com/you/my-repo.git', delay: 40 },
+    { type: 'out', text: 'Cloning into \'my-repo\'...' },
+    { type: 'comment', text: '# заходим в папку проекта' },
+    { type: 'cmd', text: 'cd my-repo', delay: 30 },
+    { type: 'comment', text: '# создаём "сиротскую" ветку — без истории и файлов из main' },
+    { type: 'cmd', text: 'git switch --orphan new-branch', delay: 40 },
+    { type: 'out', text: 'Switched to a new branch \'new-branch\'' },
+    { type: 'comment', text: '# файлы из main пока ещё лежат на диске — удаляем их' },
+    { type: 'cmd', text: 'git rm -rf .', delay: 30 },
+    { type: 'out', text: 'rm \'README.md\'' },
+    { type: 'out', text: 'rm \'src/index.js\'' },
+    { type: 'comment', text: '# проверяем, что папка действительно пустая' },
+    { type: 'cmd', text: 'ls', delay: 20 },
+    { type: 'out', text: '(каталог пуст)' },
+    { type: 'comment', text: '# создаём новый README с нуля' },
+    { type: 'cmd', text: 'echo "# Новый проект" > README.md', delay: 30 },
+    { type: 'comment', text: '# добавляем все файлы в индекс (подготавливаем к коммиту)' },
+    { type: 'cmd', text: 'git add .', delay: 20 },
+    { type: 'comment', text: '# сохраняем первый коммит в новой ветке' },
+    { type: 'cmd', text: 'git commit -m "Initial commit"', delay: 40 },
+    { type: 'out', text: '[new-branch (root-commit) x7k2m1p] Initial commit' },
+    { type: 'out', text: ' 1 file changed, 1 insertion(+)' },
+    { type: 'out', text: ' create mode 100644 README.md' },
+    { type: 'success', text: '✓ Ветка без истории создана' }
+  ],
+  branch: [
+    { type: 'comment', text: '# клонируем репозиторий с сервера' },
+    { type: 'cmd', text: 'git clone https://github.com/you/my-repo.git', delay: 40 },
+    { type: 'comment', text: '# заходим в папку проекта' },
+    { type: 'cmd', text: 'cd my-repo', delay: 30 },
+    { type: 'comment', text: '# смотрим, какие ветки есть (должна быть только main)' },
+    { type: 'cmd', text: 'git branch', delay: 30 },
+    { type: 'out', text: '* main' },
+    { type: 'comment', text: '# создаём новую ветку feature/login и переключаемся на неё' },
+    { type: 'cmd', text: 'git switch -c feature/login', delay: 40 },
+    { type: 'out', text: 'Switched to a new branch \'feature/login\'' },
+    { type: 'comment', text: '# обе ветки пока указывают на один и тот же коммит' },
+    { type: 'comment', text: '# создаём новый файл со страницей входа' },
+    { type: 'cmd', text: 'echo "Страница входа" > login.html', delay: 30 },
+    { type: 'comment', text: '# добавляем все изменения в индекс' },
+    { type: 'cmd', text: 'git add .', delay: 20 },
+    { type: 'comment', text: '# сохраняем изменения с описанием' },
+    { type: 'cmd', text: 'git commit -m "Add login page"', delay: 40 },
+    { type: 'out', text: '[feature/login d4f8a2c] Add login page' },
+    { type: 'out', text: ' 1 file changed, 1 insertion(+)' },
+    { type: 'success', text: '✓ main не изменился, feature/login ушёл вперёд' }
+  ],
+  day1: [
+    { type: 'comment', text: '# День 1. Первый разработчик' },
+    { type: 'comment', text: '# создаём свою рабочую ветку dev и переключаемся на неё' },
+    { type: 'cmd', text: 'git switch -c dev', delay: 30 },
+    { type: 'out', text: 'Switched to a new branch \'dev\'' },
+    { type: 'comment', text: '# меняем содержимое первого файла' },
+    { type: 'cmd', text: 'echo "Привет Git" > file1.txt', delay: 30 },
+    { type: 'comment', text: '# создаём второй файл' },
+    { type: 'cmd', text: 'echo "Мир" > file2.txt', delay: 30 },
+    { type: 'comment', text: '# подготавливаем все изменения к коммиту' },
+    { type: 'cmd', text: 'git add .', delay: 20 },
+    { type: 'comment', text: '# сохраняем изменения с описанием' },
+    { type: 'cmd', text: 'git commit -m "Добавил второй файл"', delay: 40 },
+    { type: 'out', text: '[dev b2f3a1c] Добавил второй файл' },
+    { type: 'out', text: ' 2 files changed, 2 insertions(+), 1 deletion(-)' },
+    { type: 'comment', text: '# отправляем свою ветку на GitHub' },
+    { type: 'cmd', text: 'git push origin dev', delay: 40 },
+    { type: 'out', text: 'To github.com:you/repo.git' },
+    { type: 'out', text: ' * [new branch]      dev -> dev' },
+    { type: 'comment', text: '# на GitHub создаём Pull Request' },
+    { type: 'comment', text: '# ревьюер проверяет код → нажимает Merge Pull Request' },
+    { type: 'success', text: '✓ PR merged. В main теперь file1.txt + file2.txt' }
+  ],
+  day2: [
+    { type: 'comment', text: '# День 2. Первый разработчик возвращается к работе' },
+    { type: 'comment', text: '# пока его не было, второй разработчик добавил file3.txt в main' },
+    { type: 'comment', text: '# скачиваем информацию о новых коммитах с сервера (файлы не меняются)' },
+    { type: 'cmd', text: 'git fetch origin', delay: 40 },
+    { type: 'out', text: 'From github.com:you/repo' },
+    { type: 'out', text: '   a1b2c3d..e4f5g6h  main       -> origin/main' },
+    { type: 'comment', text: '# переключаемся на локальную ветку main' },
+    { type: 'cmd', text: 'git switch main', delay: 30 },
+    { type: 'out', text: 'Switched to branch \'main\'' },
+    { type: 'comment', text: '# скачиваем и сразу применяем изменения с сервера' },
+    { type: 'cmd', text: 'git pull', delay: 30 },
+    { type: 'out', text: 'Updating a1b2c3d..e4f5g6h' },
+    { type: 'out', text: 'Fast-forward' },
+    { type: 'out', text: ' file3.txt | 1 +' },
+    { type: 'success', text: '✓ file3.txt ("Админка") появился локально' },
+    { type: 'comment', text: '# переключаемся обратно в свою рабочую ветку dev' },
+    { type: 'cmd', text: 'git switch dev', delay: 30 },
+    { type: 'out', text: 'Switched to branch \'dev\'' },
+    { type: 'comment', text: '# вливаем свежие изменения из main в свою ветку' },
+    { type: 'cmd', text: 'git merge main', delay: 40 },
+    { type: 'out', text: 'Updating a1b2c3d..e4f5g6h' },
+    { type: 'out', text: 'Fast-forward' },
+    { type: 'out', text: ' file3.txt | 1 +' },
+    { type: 'success', text: '✓ dev получила file3.txt из main' },
+    { type: 'comment', text: '# дописываем строку в file3.txt' },
+    { type: 'cmd', text: 'echo "Настройки" >> file3.txt', delay: 30 },
+    { type: 'comment', text: '# создаём новый файл file4.txt' },
+    { type: 'cmd', text: 'echo "Новый модуль" > file4.txt', delay: 30 },
+    { type: 'comment', text: '# подготавливаем все изменения' },
+    { type: 'cmd', text: 'git add .', delay: 20 },
+    { type: 'comment', text: '# сохраняем коммит с описанием' },
+    { type: 'cmd', text: 'git commit -m "Добавил настройки админки"', delay: 40 },
+    { type: 'out', text: '[dev f8g9h0i] Добавил настройки админки' },
+    { type: 'comment', text: '# отправляем ветку на сервер для ревью' },
+    { type: 'cmd', text: 'git push origin dev', delay: 40 },
+    { type: 'out', text: 'To github.com:you/repo.git' },
+    { type: 'out', text: '   e4f5g6h..f8g9h0i  dev -> dev' },
+    { type: 'success', text: '✓ Новый Pull Request готов' }
+  ]
+};
+
+async function typeText(element, text, delay) {
+    for (let i = 0; i < text.length; i++) {
+        element.textContent += text[i];
+        await new Promise(r => setTimeout(r, delay));
+    }
+}
+
+async function runScript(container, scriptName) {
+    const script = scripts[scriptName];
+    if (!script) return;
+    container.innerHTML = '';
+
+    for (const line of script) {
+        const lineEl = document.createElement('span');
+        lineEl.className = 'terminal-line';
+
+        if (line.type === 'cmd') {
+            const prompt = document.createElement('span');
+            prompt.className = 'prompt';
+            prompt.textContent = '$ ';
+            lineEl.appendChild(prompt);
+            const cmdSpan = document.createElement('span');
+            cmdSpan.className = 'cmd';
+            lineEl.appendChild(cmdSpan);
+            container.appendChild(lineEl);
+            await typeText(cmdSpan, line.text, line.delay || 30);
+            await new Promise(r => setTimeout(r, 300));
+        } else {
+            lineEl.classList.add(
+                line.type === 'out' ? 'output' :
+                line.type === 'comment' ? 'comment' :
+                line.type === 'success' ? 'success' :
+                line.type === 'error' ? 'error' : 'highlight'
+            );
+            lineEl.textContent = line.text;
+            container.appendChild(lineEl);
+            await new Promise(r => setTimeout(r, 120));
+        }
+        container.scrollTop = container.scrollHeight;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Intersection Observer для автозапуска терминалов
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const body = entry.target.querySelector('.terminal-body');
+                if (body && !body.dataset.played) {
+                    body.dataset.played = '1';
+                    const scriptName = body.dataset.script;
+                    runScript(body, scriptName);
+                }
+            }
+        });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.terminal[data-script]').forEach(term => {
+        observer.observe(term);
+    });
+
+    // Replay-кнопки
+    document.querySelectorAll('.replay-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const scriptName = btn.dataset.replay;
+            const term = btn.closest('.article-block').querySelector('.terminal-body');
+            if (term) {
+                term.dataset.played = '';
+                runScript(term, scriptName);
+            }
+        });
+    });
+
+    // Плавная прокрутка по TOC
+    document.querySelectorAll('.toc-list a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+});
+</script>
+
+
+</body>
+</html>
