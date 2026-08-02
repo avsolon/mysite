@@ -489,7 +489,7 @@ body {
 
     <!-- ====== NAV ====== -->
     <nav class="page-nav">
-        <a href="/blog" class="back-btn">
+        <a href="../blog.html" class="back-btn">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
@@ -632,10 +632,10 @@ body {
         </div>
 
         <h3>Пушим ветку</h3>
-        <div class="code-block"><code>$ git push -u origin feature/login
-Enumerating objects: 5, done.
-remote: Create a pull request for 'feature/login' on GitHub by visiting:
-remote:      https://github.com/you/repo/pull/new/feature/login</code></div>
+        <div class="code-block"><code>$ git push -u origin feature/login<br>
+                                        Enumerating objects: 5, done.<br>
+                                        remote: Create a pull request for 'feature/login' on GitHub by visiting:<br>
+                                        remote: https://github.com/you/repo/pull/new/feature/login</code></div>
 
         <p>После этого можно создавать <strong>Pull Request</strong> (или <strong>Merge Request</strong> в GitLab).</p>
     </div>
@@ -692,12 +692,12 @@ feature/login
 
         <div class="file-tree">
 <span style="color:#ef4444">❌ Без "/":</span>
-login, payment, profile, docker, readme, bug1, bug2, bug3
+login, payment, profile, docker, readme, bug1, bug2, bug3<br>
 
 <span style="color:#22c55e">✓ С "/":</span>
-<span style="color:#22c55e">feature/</span>login, <span style="color:#22c55e">feature/</span>payment, <span style="color:#22c55e">feature/</span>profile
-<span style="color:#fbbf24">bugfix/</span>login, <span style="color:#fbbf24">bugfix/</span>docker
-<span style="color:#60a5fa">docs/</span>readme
+<span style="color:#22c55e">feature/</span>login, <span style="color:#22c55e">feature/</span>payment, <span style="color:#22c55e">feature/</span>profile,
+<span style="color:#fbbf24">bugfix/</span>login, <span style="color:#fbbf24">bugfix/</span>docker,
+<span style="color:#60a5fa">docs/</span>readme,
 <span style="color:#8b5cf6">chore/</span>docker
         </div>
 
@@ -775,9 +775,12 @@ docs/readme</code></div>
 
         <h3>Что выбрать</h3>
         <p>Практически всегда используйте второй вариант:</p>
-        <div class="code-block"><code>$ git switch -c имя_ветки
-# или старый синтаксис
-$ git checkout -b имя_ветки</code></div>
+        <div class="code-block">
+            <code>$ git switch -c имя_ветки
+                # или старый синтаксис
+                $ git checkout -b имя_ветки
+            </code>
+        </div>
 
         <p>Именно так работают команды в большинстве проектов: клонируют репозиторий, создают ветку от <code>main</code> (или <code>develop</code>), делают изменения, затем отправляют ветку в удалённый репозиторий и создают Pull Request. Первый вариант (<code>--orphan</code>) нужен только для специальных случаев, когда новая ветка должна иметь полностью независимую историю.</p>
     </div>
@@ -806,13 +809,20 @@ $ git checkout -b имя_ветки</code></div>
         </div>
 
         <h3>Шаг 2. Клонируем проект</h3>
-        <div class="code-block"><code>$ git clone repo.git
-Cloning into 'repo'...
-remote: Enumerating objects: 3, done.</code></div>
+        <div class="code-block">
+            <code>
+                $ git clone repo.git<br>
+                Cloning into 'repo'...<br>
+                remote: Enumerating objects: 3, done.
+            </code>
+        </div>
 
         <h3>Шаг 3. Создаём свою ветку</h3>
-        <div class="code-block"><code>$ git switch -c dev
-Switched to a new branch 'dev'</code></div>
+        <div class="code-block">
+            <code>$ git switch -c dev<br>
+                Switched to a new branch 'dev'
+            </code>
+            </div>
         <div class="graph-wrap">
             <svg viewBox="0 0 300 140" width="300" height="140">
                 <line x1="40" y1="70" x2="200" y2="70" stroke="#64748b" stroke-width="3"/>
@@ -834,11 +844,14 @@ Switched to a new branch 'dev'</code></div>
         </div>
 
         <h3>Шаг 5. Коммитим</h3>
-        <div class="code-block"><code>$ git add .
-$ git commit -m "Добавил второй файл"
-[dev b2f3a1c] Добавил второй файл
- 2 files changed, 2 insertions(+), 1 deletion(-)
- create mode 100644 file2.txt</code></div>
+        <div class="code-block">
+            <code>$ git add .<br>
+                $ git commit -m "Добавил второй файл"<br>
+                [dev b2f3a1c] Добавил второй файл<br>
+                2 files changed, 2 insertions(+), 1 deletion(-)<br>
+                create mode 100644 file2.txt
+            </code>
+        </div>
         <div class="graph-wrap">
             <svg viewBox="0 0 400 140" width="400" height="140">
                 <line x1="40" y1="70" x2="300" y2="70" stroke="#64748b" stroke-width="3"/>
@@ -853,10 +866,13 @@ $ git commit -m "Добавил второй файл"
         </div>
 
         <h3>Шаг 6. Пушим</h3>
-        <div class="code-block"><code>$ git push origin dev
-Enumerating objects: 4, done.
-To github.com:you/repo.git
- * [new branch]      dev -> dev</code></div>
+        <div class="code-block">
+            <code>$ git push origin dev<br>
+                Enumerating objects: 4, done.<br>
+                To github.com:you/repo.git<br>
+                * [new branch]      dev -> dev
+            </code>
+        </div>
         <p>Теперь на GitHub появились две ветки. Но <strong>main вообще не изменился</strong>. Это очень важно понимать.</p>
 
         <h3>Что происходит дальше? Pull Request</h3>
@@ -1114,13 +1130,16 @@ To github.com:you/repo.git
         </div>
 
         <p>Теперь нужно обновить <code>dev</code>. Переходим в неё и объединяем изменения из main:</p>
-        <div class="code-block"><code>$ git switch dev
-Switched to branch 'dev'
-$ git merge main
-Updating a1b2c3d → e4f5g6h
-Fast-forward
- file3.txt | 1 +
- 1 file changed, 1 insertion(+)</code></div>
+        <div class="code-block">
+            <code>$ git switch dev<br>
+                Switched to branch 'dev'<br>
+                $ git merge main<br>
+                Updating a1b2c3d → e4f5g6h<br>
+                Fast-forward<br>
+                file3.txt | 1 +<br>
+                1 file changed, 1 insertion(+)
+            </code>
+        </div>
 
         <div class="graph-wrap">
             <svg viewBox="0 0 500 140" width="500" height="140">
@@ -1142,15 +1161,18 @@ Fast-forward
         <h3>Шаг 3. Продолжаем работу</h3>
         <p>Теперь разработчик делает изменения — например, создаёт <code>file4.txt</code> или меняет <code>file3.txt</code>:</p>
         <div class="file-tree">
-<span class="folder">project/</span>
-├── file1.txt  →  "Привет Git"
-├── file2.txt  →  "Мир"
-├── <span class="changed">file3.txt</span>  →  <span style="color:#fbbf24">"Админка\nНастройки"</span>  <span style="color:#64748b;font-size:12px">(добавили строку)</span>
-└── <span class="added">file4.txt</span>  →  <span style="color:#fbbf24">"Новый модуль"</span>  <span style="color:#64748b;font-size:12px">(новый файл)</span>
+            <span class="folder">project/</span>
+            ├── file1.txt  →  "Привет Git"
+            ├── file2.txt  →  "Мир"
+            ├── <span class="changed">file3.txt</span>  →  <span style="color:#fbbf24">"Админка\nНастройки"</span>  <span style="color:#64748b;font-size:12px">(добавили строку)</span>
+            └── <span class="added">file4.txt</span>  →  <span style="color:#fbbf24">"Новый модуль"</span>  <span style="color:#64748b;font-size:12px">(новый файл)</span>
         </div>
-        <div class="code-block"><code>$ git add .
-$ git commit -m "Добавил настройки админки"
-$ git push origin dev</code></div>
+        <div class="code-block">
+            <code>$ git add .<br>
+                $ git commit -m "Добавил настройки админки"<br>
+                $ git push origin dev
+            </code>
+        </div>
         <p>Открываем новый Pull Request → после merge в main появляется ещё один коммит.</p>
     </div>
 
@@ -1186,12 +1208,12 @@ $ git push origin dev</code></div>
         <p>Когда вы выполняете <code>git merge main</code>, Git видит: <strong>один и тот же участок файла изменили два человека</strong>. Сам решить он уже не может. Появляется <strong>merge conflict</strong>.</p>
 
         <div class="diff">
-<span class="ctx">  file3.txt</span>
-<span class="ctx"> &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
-<span class="add">+Панель администратора</span>
-<span class="ctx"> =======</span>
-<span class="del">-Административная панель</span>
-<span class="ctx"> &gt;&gt;&gt;&gt;&gt;&gt;&gt; main</span>
+            <span class="ctx">  file3.txt</span>
+            <span class="ctx"> &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+            <span class="add">+Панель администратора</span>
+            <span class="ctx"> =======</span>
+            <span class="del">-Административная панель</span>
+            <span class="ctx"> &gt;&gt;&gt;&gt;&gt;&gt;&gt; main</span>
         </div>
         <p>Git попросит вручную выбрать, какой текст оставить, либо объединить оба изменения.</p>
     </div>
@@ -1225,24 +1247,27 @@ $ git push origin dev</code></div>
         </div>
 
         <h3>Шпаргалка: что делать каждый день</h3>
-        <div class="code-block"><code># Утро: синхронизируемся с сервером
-$ git switch main
-$ git pull
+        <div class="code-block">
+            <code># Утро: синхронизируемся с сервером<br>
+            $ git switch main<br>
+            $ git pull<br>
 
-# Создаём новую ветку под задачу
-$ git switch -c feature/название-задачи
+            # Создаём новую ветку под задачу<br>
+            $ git switch -c feature/название-задачи<br>
 
-# Работаем, коммитим, пушим
-$ git add .
-$ git commit -m "Описание изменений"
-$ git push -u origin feature/название-задачи
+            # Работаем, коммитим, пушим<br>
+            $ git add .<br>
+            $ git commit -m "Описание изменений"<br>
+            $ git push -u origin feature/название-задачи<br>
 
-# Создаём Pull Request на GitHub
-# Ждём ревью → merge
+            # Создаём Pull Request на GitHub<br>
+            # Ждём ревью → merge<br>
 
-# После merge: возвращаемся в начало цикла
-$ git switch main
-$ git pull</code></div>
+            # После merge: возвращаемся в начало цикла<br>
+            $ git switch main<br>
+            $ git pull
+            </code>
+        </div>
     </div>
 
     <!-- ====== CHEATSHEET (НОВОЕ) ====== -->
@@ -1393,7 +1418,17 @@ $ git pull</code></div>
         <div class="callout success">
             <div class="callout-icon">🚀</div>
             <div class="callout-content">
-                <strong>Минимальный набор для старта:</strong> <code>git status</code>, <code>git add .</code>, <code>git commit</code>, <code>git push</code>, <code>git pull</code>, <code>git switch -c</code>. Освойте их — и вы уже сможете работать в большинстве проектов.
+                <strong>Минимальный набор для старта:</strong> 
+                <code><p>
+                    git status, <br>
+                    git add ., <br>
+                    git commit, <br>
+                    git push, <br>
+                    git pull, <br>
+                    git switch -c <br>
+                    Освойте их — и вы уже сможете работать в большинстве проектов.
+                    </p>
+                </code>
             </div>
         </div>
     </div>
