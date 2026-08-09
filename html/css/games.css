@@ -72,6 +72,20 @@
     margin-bottom: 10px;
 }
 
+.game-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.game-link:link,
+.game-link:visited,
+.game-link:hover,
+.game-link:active {
+    color: inherit;
+    text-decoration: none;
+}
+
 /* МОДАЛКА */
 .modal {
     display: none;
